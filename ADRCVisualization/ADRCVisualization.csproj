@@ -60,8 +60,11 @@
     <Compile Include="Class Files\FourierTransforms\FourierBitmap.cs" />
     <Compile Include="Class Files\FourierTransforms\FourierTransform.cs" />
     <Compile Include="Class Files\KalmanFilter.cs" />
+    <Compile Include="Class Files\Quadcopter.cs" />
+    <Compile Include="Class Files\QuadcopterSim\MotionProcessor.cs" />
+    <Compile Include="Class Files\QuadcopterSim\Motor.cs" />
+    <Compile Include="Class Files\QuadcopterSim\Thruster.cs" />
     <Compile Include="Class Files\Solvers\GeneticAlgorithmSolver.cs" />
-    <Compile Include="Class Files\InvertedPendulum.cs" />
     <Compile Include="Class Files\MathFunctions.cs" />
     <Compile Include="Class Files\Solvers\NeuralNetworkSolver.cs" />
     <Compile Include="Class Files\ADRC\NonlinearCombiner.cs" />

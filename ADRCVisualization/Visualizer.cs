@@ -13,6 +13,7 @@ using ADRCVisualization.Class_Files;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using ADRCVisualization.Class_Files.Mathematics;
 
 namespace ADRCVisualization
 {
@@ -380,8 +381,8 @@ namespace ADRCVisualization
                 chart4.Series[1].Points.Add(freq);
             }
 
-            double pidFFTWStdDev = MathFunctions.CalculateStdDev(Array.ConvertAll(((float[][])(e.Result))[0], x => (double)x).AsEnumerable());
-            double adrcFFTWStdDev = MathFunctions.CalculateStdDev(Array.ConvertAll(((float[][])(e.Result))[1], x => (double)x).AsEnumerable());
+            double pidFFTWStdDev = Statistics.CalculateStdDev(Array.ConvertAll(((float[][])(e.Result))[0], x => (double)x).AsEnumerable());
+            double adrcFFTWStdDev = Statistics.CalculateStdDev(Array.ConvertAll(((float[][])(e.Result))[1], x => (double)x).AsEnumerable());
             
             if (pidFFTWStdDev > FourierTolerance)
             {
