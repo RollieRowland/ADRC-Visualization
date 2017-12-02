@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B11EB7B2-7563-4F8B-A81A-2FAE529A8C2C}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>ADRCVisualization</RootNamespace>
     <AssemblyName>ADRCVisualization</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -59,13 +59,17 @@
     <Compile Include="Class Files\ADRC\ExtendedStateObserver.cs" />
     <Compile Include="Class Files\FourierTransforms\FourierBitmap.cs" />
     <Compile Include="Class Files\FourierTransforms\FourierTransform.cs" />
-    <Compile Include="Class Files\KalmanFilter.cs" />
+    <Compile Include="Class Files\Filters\KalmanFilter.cs" />
+    <Compile Include="Class Files\Mathematics\Matrix.cs" />
+    <Compile Include="Class Files\Mathematics\Misc.cs" />
+    <Compile Include="Class Files\Mathematics\Statistics.cs" />
+    <Compile Include="Class Files\Mathematics\Vector.cs" />
     <Compile Include="Class Files\Quadcopter.cs" />
-    <Compile Include="Class Files\QuadcopterSim\MotionProcessor.cs" />
-    <Compile Include="Class Files\QuadcopterSim\Motor.cs" />
-    <Compile Include="Class Files\QuadcopterSim\Thruster.cs" />
+    <Compile Include="Class Files\QuadcopterSimulation\IMU.cs" />
+    <Compile Include="Class Files\QuadcopterSimulation\Motor.cs" />
+    <Compile Include="Class Files\QuadcopterSimulation\Servo.cs" />
+    <Compile Include="Class Files\QuadcopterSimulation\Thruster.cs" />
     <Compile Include="Class Files\Solvers\GeneticAlgorithmSolver.cs" />
-    <Compile Include="Class Files\MathFunctions.cs" />
     <Compile Include="Class Files\Solvers\NeuralNetworkSolver.cs" />
     <Compile Include="Class Files\ADRC\NonlinearCombiner.cs" />
     <Compile Include="Class Files\PID.cs" />

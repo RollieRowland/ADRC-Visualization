@@ -11,38 +11,25 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }
-        public static readonly Vector ORIGIN = new Vector(0, 0, 0);
+        //public static readonly Vector ORIGIN = new Vector(0, 0, 0);
 
-        public Vector(double x, double y, double z)
+        public Vector(double X, double Y, double Z)
         {
-            X = x; Y = y; Z = z;
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
         }
 
-        public static Vector Normal(Vector vector)
+        public Vector Normal(Vector vector)
         {
             double mult = Magnitude(vector) == 0 ? Double.PositiveInfinity : 1 / Magnitude(vector);
 
-            return Multiply(mult, vector);
+            return Multiply(mult);
         }
 
-        public static bool IsEqual(Vector vectorO, Vector vectorT)
+        public bool IsEqual(Vector vector)
         {
-            return (vectorO.X == vectorT.X) && (vectorO.Y == vectorT.Y) && (vectorO.Z == vectorT.Z);
-        }
-
-        public static Vector Multiply(double k, Vector vector)
-        {
-            return new Vector((vector.X * k), (vector.Y * k), (vector.Z * k));
-        }
-
-        public static Vector Multiply(Vector vectorO, Vector vectorT)
-        {
-            return new Vector((vectorO.X * vectorT.X), (vectorO.Y * vectorT.Y), (vectorO.Z * vectorT.Z));
-        }
-        
-        public static Vector Multiply(double k, double i)
-        {
-            return new Vector((k * i), (k * i), (k * i));
+            return (X == vector.X) && (Y == vector.Y) && (Z == vector.Z);
         }
 
         public Vector Multiply(double k)
@@ -50,24 +37,33 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return new Vector((X * k), (Y * k), (Z * k));
         }
 
-        public static Vector Divide(double k, Vector vector)
+        public Vector Multiply(Vector vector)
         {
-            return new Vector((vector.X / k), (vector.Y / k), (vector.Z / k));
+            X = X * vector.X;
+            Y = Y * vector.Y;
+            Z = Z * vector.Z;
+
+            return this;
         }
 
-        public static Vector Divide(Vector vectorO, Vector vectorT)
+        public Vector Divide(double k)
         {
-            return new Vector((vectorT.X / vectorO.X), (vectorT.Y / vectorO.Y), (vectorT.Z / vectorO.Z));
+            return new Vector((X / k), (Y / k), (Z / k));
         }
 
-        public static Vector Subtract(Vector vectorO, Vector vectorT)
+        public Vector Divide(Vector vector)
         {
-            return new Vector(vectorO.X - vectorT.X, vectorO.Y - vectorT.Y, vectorO.Z - vectorT.Z);
+            return new Vector((X / vector.X), (Y / vector.Y), (Z / vector.Z));
         }
 
-        public static Vector Add(Vector vectorO, Vector vectorT)
+        public Vector Subtract(Vector vector)
         {
-            return new Vector(vectorO.X + vectorT.X, vectorO.Y + vectorT.Y, vectorO.Z + vectorT.Z);
+            return new Vector(X - vector.X, Y - vector.Y, Z - vector.Z);
+        }
+
+        public Vector Add(Vector vector)
+        {
+            return new Vector(X + vector.X, Y + vector.Y, Z + vector.Z);
         }
 
         public static double DotProduct(Vector vectorO, Vector vectorT)
@@ -97,6 +93,43 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public static double GetLength(Vector vector)
         {
             return Math.Sqrt(Math.Pow(vector.X, 2) + Math.Pow(vector.Y, 2) + Math.Pow(vector.Z, 2));
+        }
+
+        public Vector Rotate(double pitch, double roll, double yaw)
+        {
+            var cosa = Math.Cos(yaw);
+            var sina = Math.Sin(yaw);
+
+            var cosb = Math.Cos(pitch);
+            var sinb = Math.Sin(pitch);
+
+            var cosc = Math.Cos(roll);
+            var sinc = Math.Sin(roll);
+
+            var Axx = cosa * cosb;
+            var Axy = cosa * sinb * sinc - sina * cosc;
+            var Axz = cosa * sinb * cosc + sina * sinc;
+
+            var Ayx = sina * cosb;
+            var Ayy = sina * sinb * sinc + cosa * cosc;
+            var Ayz = sina * sinb * cosc - cosa * sinc;
+
+            var Azx = -sinb;
+            var Azy = cosb * sinc;
+            var Azz = cosb * cosc;
+
+            X = Axx * X + Axy * Y + Axz * Z;
+            Y = Ayx * X + Ayy * Y + Ayz * Z;
+            Z = Azx * X + Azy * Y + Azz * Z;
+
+            return new Vector(Axx * X + Axy * Y + Axz * Z,
+                              Ayx * X + Ayy * Y + Ayz * Z,
+                              Azx * X + Azy * Y + Azz * Z);
+        }
+
+        public override string ToString()
+        {
+            return Math.Round(X, 3) + " " + Math.Round(Y, 3) + " " + Math.Round(Z, 3);
         }
     }
 }

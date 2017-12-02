@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ADRCVisualization.Class_Files.Quadcopter
+namespace ADRCVisualization.Class_Files.QuadcopterSimulation
 {
-    class Motor
+    class Servo
     {
-
     }
 }

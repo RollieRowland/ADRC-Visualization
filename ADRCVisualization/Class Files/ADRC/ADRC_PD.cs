@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ADRCVisualization.Class_Files.Mathematics;
 
 namespace ADRCVisualization.Class_Files
 {
@@ -74,7 +75,7 @@ namespace ADRCVisualization.Class_Files
                 dateTime = DateTime.Now;
             }
 
-            return MathFunctions.Constrain(output, -maxOutput, maxOutput);
+            return Misc.Constrain(output, -maxOutput, maxOutput);
         }
     }
 }

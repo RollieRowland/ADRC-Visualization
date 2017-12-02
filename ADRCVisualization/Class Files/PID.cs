@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ADRCVisualization.Class_Files.Mathematics;
 
 namespace ADRCVisualization.Class_Files
 {
@@ -59,7 +60,7 @@ namespace ADRCVisualization.Class_Files
 
                 DOut = kd * ((error - previousError) / dt);
 
-                output = MathFunctions.Constrain(POut + IOut + DOut, -maxOutput, maxOutput);
+                output = Misc.Constrain(POut + IOut + DOut, -maxOutput, maxOutput);
 
                 time = currentTime;
                 previousError = error;
@@ -90,7 +91,7 @@ namespace ADRCVisualization.Class_Files
 
                 DOut = kd * ((error - previousError) / samplingPeriod);
 
-                output = MathFunctions.Constrain(POut + IOut + DOut, -maxOutput, maxOutput);
+                output = Misc.Constrain(POut + IOut + DOut, -maxOutput, maxOutput);
                 
                 previousError = error;
             }

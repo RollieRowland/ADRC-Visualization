@@ -11,14 +11,28 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public Vector XAxis { get; set; }
         public Vector YAxis { get; set; }
         public Vector ZAxis { get; set; }
-
-        public Matrix(params double[] e)
+        
+        public Matrix(Vector axes)
         {
-            if (e.Length != 9) throw new Exception();
+            XAxis = new Vector(axes.X, axes.X, axes.X);
+            YAxis = new Vector(axes.Y, axes.Y, axes.Y);
+            ZAxis = new Vector(axes.Z, axes.Z, axes.Z);
+        }
 
-            XAxis = new Vector(e[0], e[3], e[6]);
-            YAxis = new Vector(e[1], e[4], e[7]);
-            ZAxis = new Vector(e[2], e[5], e[8]);
+        public Vector ConvertCoordinateToVector()
+        {
+            return new Vector((XAxis.X + YAxis.X + ZAxis.X), (XAxis.Y + YAxis.Y + ZAxis.Y), (XAxis.Z + YAxis.Z + ZAxis.Z));
+        }
+
+        public void ReadjustMatrix()
+        {
+            double X = (XAxis.X + YAxis.X + ZAxis.X);
+            double Y = (XAxis.Y + YAxis.Y + ZAxis.Y);
+            double Z = (XAxis.Z + YAxis.Z + ZAxis.Z);
+
+            XAxis = new Vector(X, X, X);
+            YAxis = new Vector(Y, Y, Y);
+            ZAxis = new Vector(Z, Z, Z);
         }
 
         public Matrix(Vector XAxis, Vector YAxis, Vector ZAxis)
@@ -27,7 +41,12 @@ namespace ADRCVisualization.Class_Files.Mathematics
             this.YAxis = YAxis;
             this.ZAxis = ZAxis;
         }
-
+        
+        /// <summary>
+        /// Rotate about arbitrary axis
+        /// </summary>
+        /// <param name="axis"></param>
+        /// <param name="theta"></param>
         public Matrix(Vector axis, double theta)
         {
             Vector u = Vector.Normalize(axis);
@@ -51,86 +70,116 @@ namespace ADRCVisualization.Class_Files.Mathematics
             ZAxis = new Vector(uxz + uysin, uyz - uxsin, cos + uz2);
         }
 
-        static public Matrix XRotationMatrix(Vector vectorX, double theta)
+        /// <summary>
+        /// Rotation with the right-hand rule
+        /// </summary>
+        /// <param name="alpha">Pitch</param>
+        /// <param name="beta">Heading</param>
+        /// <param name="gamma">Bank</param>
+        public void Rotate(Vector rotation)
         {
-            double cos = Math.Cos(theta);
-            double sin = Math.Sin(theta);
+            if (rotation.X != 0)
+            {
+                RotateX(rotation.X);
 
-            return new Matrix(vectorX,
-                              new Vector(0, cos, sin),
-                              new Vector(0, -sin, cos));
+                if (rotation.Y != 0 || rotation.Z != 0)
+                {
+                    ReadjustMatrix();
+                }
+            }
+
+            if (rotation.Y != 0)
+            {
+                RotateY(rotation.Y);
+                
+                if (rotation.Z != 0)
+                {
+                    ReadjustMatrix();
+                }
+            }
+
+            if (rotation.Z != 0)
+            {
+                RotateZ(rotation.Z);
+            }
         }
 
-        static public Matrix YRotationMatrix(Vector vectorY, double theta)
+        /// <summary>
+        /// Rotates around the X axis, pitch
+        /// </summary>
+        /// <param name="theta"></param>
+        public void RotateX(double theta)
         {
-            double cos = Math.Cos(theta);
-            double sin = Math.Sin(theta);
+            double cos = Math.Cos(Misc.DegreesToRadians(theta));
+            double sin = Math.Sin(Misc.DegreesToRadians(theta));
 
-            return new Matrix(new Vector(cos, 0, -sin),
-                              vectorY,
-                              new Vector(sin, 0, cos));
+            XAxis = new Vector(1, 0,      0).Multiply(XAxis);
+            YAxis = new Vector(0, cos, -sin).Multiply(YAxis);
+            ZAxis = new Vector(0, sin,  cos).Multiply(ZAxis);
         }
 
-        static public Matrix ZRotationMatrix(Vector vectorZ, double theta)
+        /// <summary>
+        /// Rotates around the Y axis, heading
+        /// </summary>
+        /// <param name="theta"></param>
+        public void RotateY(double theta)
         {
-            double cos = Math.Cos(theta);
-            double sin = Math.Sin(theta);
+            double cos = Math.Cos(Misc.DegreesToRadians(theta));
+            double sin = Math.Sin(Misc.DegreesToRadians(theta));
 
-            return new Matrix(new Vector(cos, sin, 0),
-                              new Vector(-sin, cos, 0),
-                              vectorZ);
+            XAxis = new Vector(cos,  0,  sin).Multiply(XAxis);
+            YAxis = new Vector(0,    1,  0  ).Multiply(YAxis);
+            ZAxis = new Vector(-sin, 0,  cos).Multiply(ZAxis);
         }
 
-        public Matrix RotateX(double theta)
+        /// <summary>
+        /// Rotates around the Z axis, bank
+        /// </summary>
+        /// <param name="theta"></param>
+        public void RotateZ(double theta)
         {
-            return XRotationMatrix(XAxis, theta).Multiply(this);
+            double cos = Math.Cos(Misc.DegreesToRadians(theta));
+            double sin = Math.Sin(Misc.DegreesToRadians(theta));
+
+            XAxis = new Vector(cos, -sin, 0).Multiply(XAxis);
+            YAxis = new Vector(sin, cos,  0).Multiply(YAxis);
+            ZAxis = new Vector(0,   0,    1).Multiply(ZAxis);
         }
 
-        public Matrix RotateY(double theta)
+        public void Multiply(double d)
         {
-            return YRotationMatrix(YAxis, theta).Multiply(this);
+            XAxis = XAxis.Multiply(d);
+            YAxis = YAxis.Multiply(d);
+            ZAxis = ZAxis.Multiply(d);
         }
 
-        public Matrix RotateZ(double theta)
+        private void Multiply(Matrix m)
         {
-            return ZRotationMatrix(ZAxis, theta).Multiply(this);
+            XAxis = XAxis.Multiply(m.XAxis);
+            YAxis = YAxis.Multiply(m.YAxis);
+            ZAxis = ZAxis.Multiply(m.ZAxis);
         }
 
-        public Matrix Multiply(double d)
+        public void RotateRelative(Matrix m)
         {
-            return new Matrix(XAxis.Multiply(d), YAxis.Multiply(d), ZAxis.Multiply(d));
+            Multiply(m);
         }
-
-        private Matrix Multiply(Matrix m)
-        {
-            return new Matrix(Vector.Multiply(XAxis, m.XAxis), Vector.Multiply(YAxis, m.YAxis), Vector.Multiply(ZAxis, m.ZAxis));
-        }
-
-        public Matrix RotateRelative(Matrix m)
-        {
-            return Multiply(m);
-        }
-
-        public Matrix RotateAbsolute(Matrix m)
-        {
-            return m.Multiply(this);
-        }
-
-        public Matrix Normalize()
+        
+        public void Normalize()
         {
             Vector vz = Vector.CrossProduct(XAxis, YAxis);
             Vector vy = Vector.CrossProduct(vz, XAxis);
 
-            return new Matrix(Vector.Normalize(XAxis),
-                              Vector.Normalize(vy),
-                              Vector.Normalize(vz));
+            XAxis = Vector.Normalize(XAxis);
+            YAxis = Vector.Normalize(vy);
+            ZAxis = Vector.Normalize(vz);
         }
 
-        public Matrix Transpose()
+        public void Transpose()//opposite rotation matrix
         {
-            return new Matrix(XAxis.X, XAxis.Y, XAxis.Z,
-                              YAxis.X, YAxis.Y, YAxis.Z,
-                              ZAxis.X, ZAxis.Y, ZAxis.Z);
+            XAxis = new Vector(XAxis.X, YAxis.X, ZAxis.X);
+            YAxis = new Vector(XAxis.Y, YAxis.Y, ZAxis.Y);
+            ZAxis = new Vector(XAxis.Z, YAxis.Z, ZAxis.Z);
         }
 
         public double Determinant()
@@ -140,31 +189,28 @@ namespace ADRCVisualization.Class_Files.Mathematics
                    ZAxis.X * (XAxis.Y * YAxis.Z - YAxis.Y * XAxis.Z);
         }
 
-        public Matrix Inverse()
+        public void Inverse()
         {
-            Vector A = Vector.CrossProduct(YAxis, ZAxis);
-            Vector B = Vector.CrossProduct(ZAxis, XAxis);
-            Vector C = Vector.CrossProduct(XAxis, YAxis);
+            XAxis = Vector.CrossProduct(YAxis, ZAxis);
+            YAxis = Vector.CrossProduct(ZAxis, XAxis);
+            ZAxis = Vector.CrossProduct(XAxis, YAxis);
 
-            return new Matrix(A, B, C).Transpose().Multiply(1 / Determinant());
+            Transpose();
+            Multiply(1 / Determinant());
         }
-
-        public Matrix OppositeRotationMatrix()
-        {
-            return Transpose();
-        }
+        
         
         public bool IsEqual(Matrix m)
         {
-            return m == this || Vector.IsEqual(XAxis, m.XAxis) && Vector.IsEqual(YAxis, m.YAxis) && Vector.IsEqual(ZAxis, m.ZAxis);
+            return m == this || XAxis.IsEqual(m.XAxis) && YAxis.IsEqual(m.YAxis) && ZAxis.IsEqual(m.ZAxis);
         }
 
         public override string ToString()
         {
             return String.Format("[{0}, {1}, {2}]\n[{3}, {4}, {5}]\n[{6}, {7}, {8}]",
-                XAxis.X, YAxis.Y, ZAxis.Z,
-                XAxis.Y, YAxis.Y, ZAxis.Y,
-                XAxis.Z, YAxis.Z, ZAxis.Z);
+                Math.Round(XAxis.X, 3), Math.Round(YAxis.X, 3), Math.Round(ZAxis.X, 3),
+                Math.Round(XAxis.Y, 3), Math.Round(YAxis.Y, 3), Math.Round(ZAxis.Y, 3),
+                Math.Round(XAxis.Z, 3), Math.Round(YAxis.Z, 3), Math.Round(ZAxis.Z, 3));
         }
     }
 }
