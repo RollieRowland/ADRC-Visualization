@@ -11,19 +11,34 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public Vector XAxis { get; set; }
         public Vector YAxis { get; set; }
         public Vector ZAxis { get; set; }
+
+        private Vector InitialVector;
+        private bool didRotate = false;
         
         public Matrix(Vector axes)
         {
             XAxis = new Vector(axes.X, axes.X, axes.X);
             YAxis = new Vector(axes.Y, axes.Y, axes.Y);
             ZAxis = new Vector(axes.Z, axes.Z, axes.Z);
+
+            InitialVector = axes;
         }
 
         public Vector ConvertCoordinateToVector()
         {
-            return new Vector((XAxis.X + YAxis.X + ZAxis.X), (XAxis.Y + YAxis.Y + ZAxis.Y), (XAxis.Z + YAxis.Z + ZAxis.Z));
+            if (didRotate)
+            {
+                return new Vector((XAxis.X + YAxis.X + ZAxis.X), (XAxis.Y + YAxis.Y + ZAxis.Y), (XAxis.Z + YAxis.Z + ZAxis.Z));
+            }
+            else
+            {
+                return InitialVector;
+            }
         }
 
+        /// <summary>
+        /// Run between individual rotations to prevent gimbal lock
+        /// </summary>
         public void ReadjustMatrix()
         {
             double X = (XAxis.X + YAxis.X + ZAxis.X);
@@ -33,13 +48,6 @@ namespace ADRCVisualization.Class_Files.Mathematics
             XAxis = new Vector(X, X, X);
             YAxis = new Vector(Y, Y, Y);
             ZAxis = new Vector(Z, Z, Z);
-        }
-
-        public Matrix(Vector XAxis, Vector YAxis, Vector ZAxis)
-        {
-            this.XAxis = XAxis;
-            this.YAxis = YAxis;
-            this.ZAxis = ZAxis;
         }
         
         /// <summary>
@@ -211,6 +219,18 @@ namespace ADRCVisualization.Class_Files.Mathematics
                 Math.Round(XAxis.X, 3), Math.Round(YAxis.X, 3), Math.Round(ZAxis.X, 3),
                 Math.Round(XAxis.Y, 3), Math.Round(YAxis.Y, 3), Math.Round(ZAxis.Y, 3),
                 Math.Round(XAxis.Z, 3), Math.Round(YAxis.Z, 3), Math.Round(ZAxis.Z, 3));
+        }
+
+        public void TestRotationMatrix()
+        {
+            Vector point = new Vector(110, -50, 60);
+            Matrix rotation = new Matrix(point);
+
+            rotation.Rotate(new Vector(60, 60, 30));
+
+            Console.WriteLine(rotation.ToString());
+
+            Console.WriteLine(rotation.ConvertCoordinateToVector().ToString());
         }
     }
 }

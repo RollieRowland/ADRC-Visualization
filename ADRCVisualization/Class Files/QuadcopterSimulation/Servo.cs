@@ -8,5 +8,16 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
 {
     class Servo
     {
+        private double SetPoint;
+
+        public void SetAngle(double SetPoint)
+        {
+            this.SetPoint = SetPoint;
+        }
+
+        public double GetAngle()
+        {
+            return SetPoint;
+        }
     }
 }

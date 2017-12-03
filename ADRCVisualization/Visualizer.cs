@@ -57,37 +57,34 @@ namespace ADRCVisualization
             //StartTimers();
             //StopTimers();
 
-            Vector point = new Vector(110, -50, 60);
-            Matrix rotation = new Matrix(point);
+            Vector gravity = new Vector(0, -9.81, 0);
+            Quadcopter quad = new Quadcopter(100, 45);
 
-            //rotation.ReadjustMatrix();
+            //Set current
+            quad.SetCurrent(new Vector(0, 0, 0), new Vector(0, 0, 0));
 
-            rotation.Rotate(new Vector(60, 60, 30));
+            //Set target
+            quad.SetTarget(new Vector(1, 1, 1), new Vector(0, 0, 0));
 
-            /*
-
-            rotation.RotateX(60);// single axis rotation works, multiple axis rotation does not
             
-            Console.WriteLine(rotation.ToString());
+            for (int i = 0; i < 500; i++)
+            {
+                //Calculate
+                quad.Calculate();
 
-            Console.WriteLine(rotation.ConvertCoordinateToVector().ToString());
+                Vector currentForce = quad.EstimateAcceleration(gravity);//force acting on quadcopter w/ quadcopter force
+                Vector currentAcceleration = quad.AccelerationNoGravity();//force from quadcopter
+                Vector currentPosition = quad.EstimatePosition();
 
-            rotation.ReadjustMatrix();
+                quad.SetCurrent(currentPosition, new Vector(0, 0, 0));
 
-            rotation.RotateY(60);
+                Console.Write("Quad Position: " + currentPosition.ToString() + " ");
+                Console.Write("Force: " + currentAcceleration + " ");
+                Console.WriteLine();
 
-            Console.WriteLine(rotation.ToString());
-
-            Console.WriteLine(rotation.ConvertCoordinateToVector().ToString());
-
-            rotation.ReadjustMatrix();
-
-            rotation.RotateZ(30);
-            */
-
-            Console.WriteLine(rotation.ToString());
-
-            Console.WriteLine(rotation.ConvertCoordinateToVector().ToString());
+                Thread.Sleep(40);
+            }
+            
         }
         
 
