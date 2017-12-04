@@ -89,6 +89,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             if (rotation.X != 0)
             {
                 RotateX(rotation.X);
+                didRotate = true;
 
                 if (rotation.Y != 0 || rotation.Z != 0)
                 {
@@ -99,7 +100,8 @@ namespace ADRCVisualization.Class_Files.Mathematics
             if (rotation.Y != 0)
             {
                 RotateY(rotation.Y);
-                
+                didRotate = true;
+
                 if (rotation.Z != 0)
                 {
                     ReadjustMatrix();
@@ -109,6 +111,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             if (rotation.Z != 0)
             {
                 RotateZ(rotation.Z);
+                didRotate = true;
             }
         }
 
@@ -221,7 +224,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
                 Math.Round(XAxis.Z, 3), Math.Round(YAxis.Z, 3), Math.Round(ZAxis.Z, 3));
         }
 
-        public void TestRotationMatrix()
+        public static void TestRotationMatrix()
         {
             Vector point = new Vector(110, -50, 60);
             Matrix rotation = new Matrix(point);

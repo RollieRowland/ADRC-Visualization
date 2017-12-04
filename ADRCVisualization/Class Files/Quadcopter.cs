@@ -37,6 +37,9 @@ namespace ADRCVisualization.Class_Files
         private Vector currentVelocity;
         private Vector currentAngularVelocity;
         private Vector currentAcceleration;
+
+        private VectorKalmanFilter accelerationKF;
+        private VectorKalmanFilter velocityKF;
         //private IMU imu;
 
         public Quadcopter(double ArmLength, double ArmAngle)
@@ -47,6 +50,9 @@ namespace ADRCVisualization.Class_Files
             currentPosition = new Vector(0, 0, 0);
             targetPosition = new Vector(0, 0, 0);
             currentVelocity = new Vector(0, 0, 0);
+
+            accelerationKF = new VectorKalmanFilter(0.5, 10);
+            velocityKF = new VectorKalmanFilter(0.5, 10);
         }
 
         private void CalculateArmPositions(double ArmLength, double ArmAngle)
@@ -116,11 +122,6 @@ namespace ADRCVisualization.Class_Files
 
         public Vector EstimateAcceleration(Vector externalForce)
         {
-            //ThrusterB.GetOutputs(out double propellorB, out double primaryJointB, out double secondaryJointB);
-            //ThrusterC.GetOutputs(out double propellorC, out double primaryJointC, out double secondaryJointC);
-            //ThrusterD.GetOutputs(out double propellorD, out double primaryJointD, out double secondaryJointD);
-            //ThrusterE.GetOutputs(out double propellorE, out double primaryJointE, out double secondaryJointE);
-
             //determine reduction in thrust due to angle changes, the radius from the center point
             Vector TB = ThrusterB.ReturnThrustVector();
             Vector TC = ThrusterC.ReturnThrustVector();
@@ -129,18 +130,13 @@ namespace ADRCVisualization.Class_Files
 
             //Add components to find direction of quad
 
-            currentAcceleration = TB.Add(TC).Add(TD).Add(TE).Add(externalForce);
+            currentAcceleration = accelerationKF.Filter(TB.Add(TC).Add(TD).Add(TE).Add(externalForce));
 
             return currentAcceleration;
         }
 
         public Vector AccelerationNoGravity()
         {
-            //ThrusterB.GetOutputs(out double propellorB, out double primaryJointB, out double secondaryJointB);
-            //ThrusterC.GetOutputs(out double propellorC, out double primaryJointC, out double secondaryJointC);
-            //ThrusterD.GetOutputs(out double propellorD, out double primaryJointD, out double secondaryJointD);
-            //ThrusterE.GetOutputs(out double propellorE, out double primaryJointE, out double secondaryJointE);
-
             //determine reduction in thrust due to angle changes, the radius from the center point
             Vector TB = ThrusterB.ReturnThrustVector();
             Vector TC = ThrusterC.ReturnThrustVector();
@@ -151,36 +147,51 @@ namespace ADRCVisualization.Class_Files
             
             return TB.Add(TC).Add(TD).Add(TE);
         }
-
-
-
-        public Vector EstimatePosition()
+        
+        public Vector EstimatePosition(double dT)
         {
             //use force to estimate the position given dT
-            
-            double dT = DateTime.Now.Subtract(lastMeasurementTime).TotalSeconds;
 
-            //velocity is initially 0
-            //calculate velocity: finalVelocity(vf) = vi + at
+            //dT = DateTime.Now.Subtract(lastMeasurementTime).TotalSeconds;
+            if (dT > 0)
+            {
+                //velocity is initially 0
+                //calculate velocity: finalVelocity(vf) = vi + at
 
-            currentVelocity.X = currentVelocity.X + currentAcceleration.X * dT;
-            currentVelocity.Y = currentVelocity.Y + currentAcceleration.Y * dT;
-            currentVelocity.Z = currentVelocity.Z + currentAcceleration.Z * dT;
+                currentVelocity.X = currentVelocity.X + currentAcceleration.X * dT;
+                currentVelocity.Y = currentVelocity.Y + currentAcceleration.Y * dT;
+                currentVelocity.Z = currentVelocity.Z + currentAcceleration.Z * dT;
 
-            //calculate position: displacement(s) = vi*t + 1/2 * at^2
-
-            currentPosition.X = currentVelocity.X * dT + (1 / 2) * currentAcceleration.X * Math.Pow(dT, 2);
-            currentPosition.Y = currentVelocity.Y * dT + (1 / 2) * currentAcceleration.Y * Math.Pow(dT, 2);
-            currentPosition.Z = currentVelocity.Z * dT + (1 / 2) * currentAcceleration.Z * Math.Pow(dT, 2);
-
-            lastMeasurementTime = DateTime.Now;
+                //calculate position: displacement(s) = vi*t + 1/2 * at^2
+                
+                currentPosition.X = currentVelocity.X * dT + (1 / 2) * currentAcceleration.X * Math.Pow(dT, 2);
+                currentPosition.Y = currentVelocity.Y * dT + (1 / 2) * currentAcceleration.Y * Math.Pow(dT, 2);
+                currentPosition.Z = currentVelocity.Z * dT + (1 / 2) * currentAcceleration.Z * Math.Pow(dT, 2);
+                
+                lastMeasurementTime = DateTime.Now;
+            }
 
             return currentPosition;
         }
 
-        public Vector EstimateRotation(Vector force)
+        public Tuple<Vector, Vector, Vector, Vector> GetMotorPositions()
         {
-            throw new NotImplementedException();
+            Vector TB = ThrusterB.GetCurrentPosition();
+            Vector TC = ThrusterC.GetCurrentPosition();
+            Vector TD = ThrusterD.GetCurrentPosition();
+            Vector TE = ThrusterE.GetCurrentPosition();
+
+            return new Tuple<Vector, Vector, Vector, Vector>(TB, TC, TD, TE);
+        }
+
+        public Tuple<Vector, Vector, Vector, Vector> GetMotorOrientations()
+        {
+            Vector TB = ThrusterB.GetOutputs();
+            Vector TC = ThrusterC.GetOutputs();
+            Vector TD = ThrusterD.GetOutputs();
+            Vector TE = ThrusterE.GetOutputs();
+
+            return new Tuple<Vector, Vector, Vector, Vector>(TB, TC, TD, TE);
         }
     }
 }

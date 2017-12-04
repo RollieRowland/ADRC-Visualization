@@ -41,11 +41,15 @@ namespace ADRCVisualization
         //Fourier Transforms
         private float FourierTolerance = 1f;
         
+        private Vector gravity = new Vector(0, -9.81, 0);
+        private Quadcopter quad = new Quadcopter(0.2, 45);
+
+        private Vector targetPosition = new Vector(1, 1, 1);
+        private Vector targetRotation = new Vector(0, 0, 0);
+
         public Visualizer()
         {
             InitializeComponent();
-
-            Hide();
             
             dateTime = DateTime.Now;
             correctionState = false;
@@ -54,40 +58,94 @@ namespace ADRCVisualization
             backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_CalculateFourierTransforms);
             backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker_ChangeFourierTransforms);
 
-            //StartTimers();
-            //StopTimers();
+            StartTimers();
+            StopTimers();
 
-            Vector gravity = new Vector(0, -9.81, 0);
-            Quadcopter quad = new Quadcopter(100, 45);
+            //Matrix.TestRotationMatrix();
+
+            /*
+
+            quad.SetCurrent(new Vector(0, 0, 0), new Vector(0, 0, 0));
+            Tuple<Vector, Vector, Vector, Vector> test = quad.GetMotorPositions();
+
+            Console.WriteLine(test.Item1.ToString());
+            Console.WriteLine(test.Item2.ToString());
+            Console.WriteLine(test.Item3.ToString());
+            Console.WriteLine(test.Item4.ToString());
+
+            Console.WriteLine();
+
+
+            quad.SetCurrent(new Vector(0, 0, 0), new Vector(45, 0, 0));
+
+            test = quad.GetMotorPositions();
+
+            Console.WriteLine(test.Item1.ToString());
+            Console.WriteLine(test.Item2.ToString());
+            Console.WriteLine(test.Item3.ToString());
+            Console.WriteLine(test.Item4.ToString());
+            */
 
             //Set current
             quad.SetCurrent(new Vector(0, 0, 0), new Vector(0, 0, 0));
 
             //Set target
-            quad.SetTarget(new Vector(1, 1, 1), new Vector(0, 0, 0));
+            quad.SetTarget(targetPosition, targetRotation);
 
+            SetTargets();
+        }
+
+        private async void SetTargets()
+        {
+            await Task.Delay(3000);
             
-            for (int i = 0; i < 500; i++)
-            {
-                //Calculate
-                quad.Calculate();
-
-                Vector currentForce = quad.EstimateAcceleration(gravity);//force acting on quadcopter w/ quadcopter force
-                Vector currentAcceleration = quad.AccelerationNoGravity();//force from quadcopter
-                Vector currentPosition = quad.EstimatePosition();
-
-                quad.SetCurrent(currentPosition, new Vector(0, 0, 0));
-
-                Console.Write("Quad Position: " + currentPosition.ToString() + " ");
-                Console.Write("Force: " + currentAcceleration + " ");
-                Console.WriteLine();
-
-                Thread.Sleep(40);
-            }
+            targetPosition = new Vector(-1, 0, 1);
+            targetRotation = new Vector(45, 0, 0);
+            Console.WriteLine("Target Set");
             
+            await Task.Delay(3000);
+            
+            targetPosition = new Vector(1, 2, -1);
+            targetRotation = new Vector(0, 45, 0);
+            Console.WriteLine("Target Set");
+
+            await Task.Delay(3000);
+
+            targetPosition = new Vector(-1, -1, -1);
+            targetRotation = new Vector(0, 0, 45);
+            Console.WriteLine("Target Set");
+        }
+
+
+        private void SetChartPositions(Tuple<Vector, Vector, Vector, Vector> positions, Vector centralPosition)
+        {
+
+            chart1.ChartAreas[0].AxisX.Maximum = 2;
+            chart1.ChartAreas[0].AxisX.Minimum = -2;
+            chart1.ChartAreas[0].AxisY.Maximum = 2;
+            chart1.ChartAreas[0].AxisY.Minimum = -2;
+
+            chart2.ChartAreas[0].AxisY.Maximum = 10;
+            chart2.ChartAreas[0].AxisY.Minimum = -10;
+
+            chart1.Series[0].Points.Clear();
+            chart1.Series[1].Points.Clear();
+            chart1.Series[2].Points.Clear();
+            chart1.Series[3].Points.Clear();
+            chart1.Series[4].Points.Clear();
+
+            chart1.Series[0].Points.AddXY(centralPosition.X, centralPosition.Z);
+            chart1.Series[1].Points.AddXY(positions.Item1.X, positions.Item1.Z);
+            chart1.Series[2].Points.AddXY(positions.Item2.X, positions.Item2.Z);
+            chart1.Series[3].Points.AddXY(positions.Item3.X, positions.Item3.Z);
+            chart1.Series[4].Points.AddXY(positions.Item4.X, positions.Item4.Z);
+
+            chart2.Series[0].Points.Clear();
+
+            chart2.Series[0].Points.Add(centralPosition.Y);
+            chart2.Series[0].Points.Add(targetPosition.Y);
         }
         
-
         /// <summary>
         /// Starts alternate threads for calculation of the inverted pendulum and updating the display of the user interface for the FFTWs, pendulum, and graphs.
         /// </summary>
@@ -100,11 +158,11 @@ namespace ADRCVisualization
 
                 t1 = new System.Timers.Timer
                 {
-                    Interval = 60, //In milliseconds here
+                    Interval = 30, //In milliseconds here
                     AutoReset = true //Stops it from repeating
                 };
-                t1.Elapsed += new ElapsedEventHandler(SetInvertedPendulumAngle);
-                //t1.Start();
+                t1.Elapsed += new ElapsedEventHandler(Calculate);
+                t1.Start();
             }));
         }
 
@@ -122,51 +180,37 @@ namespace ADRCVisualization
         }
         
         /// <summary>
-        /// Why FFT?
-        /// -Displays change of frequency of pendulum, slowing/speeding up
-        /// -Displays noise effectively from output
-        /// -Displays switching frequency of feedback controller
-        /// 
-        /// Updates the Fourier Transform charts and 2d memory displays.
+        /// Updates the diplay of the quadcopter and the charts.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void UpdateFourierTransforms(object sender, ElapsedEventArgs e)
+        public void Calculate(object sender, ElapsedEventArgs e)
         {
             if (!(DateTime.Now.Subtract(dateTime).TotalSeconds > RunTime))
             {
                 this.BeginInvoke((Action)(() =>
                 {
+                    //Calculate
+                    quad.Calculate();
 
-                }));
-            }
-        }
-        
-        /// <summary>
-        /// Changes the angle of the pendulums and calculates the corrections for the feedback controllers.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void ChangeAngle(object sender, ElapsedEventArgs e)
-        {
-            if (DateTime.Now.Subtract(dateTime).TotalSeconds > WaitTimeForCalculation)
-            {
+                    Vector currentForce = quad.EstimateAcceleration(gravity);//force acting on quadcopter w/ quadcopter force
+                    Vector currentAcceleration = quad.AccelerationNoGravity();//force from quadcopter
+                    Vector currentPosition = quad.EstimatePosition(0.1);//time frame between movements
 
-            }
-        }
-        
-        /// <summary>
-        /// Updates the diplay of the inverted pendulums and the charts.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void SetInvertedPendulumAngle(object sender, ElapsedEventArgs e)
-        {
-            if (!(DateTime.Now.Subtract(dateTime).TotalSeconds > RunTime))
-            {
-                this.BeginInvoke((Action)(() =>
-                {
+                    quad.SetTarget(targetPosition, targetRotation);
+                    quad.SetCurrent(currentPosition, new Vector(0, 0, 0));
 
+                    Console.Write("Target: " + targetRotation.ToString() + " ");
+                    //Console.Write("Quad Position: " + currentPosition.ToString() + " ");
+                    //Console.Write("Force: " + currentAcceleration + " ");
+
+                    Tuple<Vector, Vector, Vector, Vector> motorPositions = quad.GetMotorPositions();
+                    Tuple<Vector, Vector, Vector, Vector> motorOrientations = quad.GetMotorOrientations();
+
+                    SetChartPositions(motorPositions, currentPosition);
+
+                    Console.Write(motorPositions.Item1.ToString());
+                    Console.WriteLine();
                 }));
             }
         }

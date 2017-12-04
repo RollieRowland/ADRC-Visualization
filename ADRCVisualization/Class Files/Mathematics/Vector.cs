@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ADRCVisualization.Class_Files.Mathematics
 {
-    class Vector
+    public class Vector
     {
         public double X { get; set; }
         public double Y { get; set; }
