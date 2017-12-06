@@ -45,7 +45,7 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             primaryJoint = new Servo();
             secondaryJoint = new Servo();
 
-            thrustKF = new VectorKalmanFilter(0.5, 1);//Increase memory to decrease response time
+            thrustKF = new VectorKalmanFilter(0.5, 10);//Increase memory to decrease response time
 
             //Console.WriteLine("QuadCenter: " + QuadCenterOffset.ToString());
         }
@@ -119,7 +119,7 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
         public Vector GetOutputs()
         {
             //X, Y, Z
-            return new Vector(secondaryJoint.GetAngle(), primaryJoint.GetAngle(), propellor.GetOutput());
+            return new Vector(secondaryJoint.GetAngle(), propellor.GetOutput(), primaryJoint.GetAngle());
         }
 
         public Vector ReturnThrustVector()

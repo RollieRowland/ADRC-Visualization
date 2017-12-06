@@ -75,21 +75,23 @@ namespace ADRCVisualization
         private async void SetTargets()
         {
             await Task.Delay(3000);
-            
+
+            //gravity.X = -0.5;
+            //gravity.Z = 0.5;
+
             targetPosition = new Vector(-1, 0, 1.2);
-            targetRotation = new Vector(45, 0, 0);
+            targetRotation = new Vector(60, 0, 0);
             Console.WriteLine("Target Set");
             
             await Task.Delay(3000);
-
             targetPosition = new Vector(1, 1, -1.2);
-            targetRotation = new Vector(0, 45, 0);
+            targetRotation = new Vector(0, 60, 0);
             Console.WriteLine("Target Set");
 
-            await Task.Delay(3000);
+            await Task.Delay(4500);
 
             targetPosition = new Vector(-1, -1, -1.2);
-            targetRotation = new Vector(0, 0, 45);
+            targetRotation = new Vector(0, 0, 60);
             Console.WriteLine("Target Set");
         }
 

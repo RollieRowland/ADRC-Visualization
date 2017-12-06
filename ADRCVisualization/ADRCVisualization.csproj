@@ -64,6 +64,7 @@
     <Compile Include="Class Files\Mathematics\Matrix.cs" />
     <Compile Include="Class Files\Mathematics\Misc.cs" />
     <Compile Include="Class Files\Mathematics\Statistics.cs" />
+    <Compile Include="Class Files\Mathematics\Turbulence.cs" />
     <Compile Include="Class Files\Mathematics\Vector.cs" />
     <Compile Include="Class Files\Quadcopter.cs" />
     <Compile Include="Class Files\QuadcopterSimulation\IMU.cs" />
