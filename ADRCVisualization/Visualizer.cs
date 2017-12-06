@@ -26,7 +26,7 @@ namespace ADRCVisualization
         private double maxOutput = 1000;
         private bool initializeFeedbackControllers = false;
         private double WaitTimeForCalculation = 5;
-        private double RunTime = 20;
+        private double RunTime = 60;
 
         //Active Disturbance Rejection Control Parameters
         private ADRC_PD adrc;
@@ -40,12 +40,12 @@ namespace ADRCVisualization
 
         //Fourier Transforms
         private float FourierTolerance = 1f;
-        
-        private Vector gravity = new Vector(0, -9.81, 0);
-        private Quadcopter quad = new Quadcopter(0.2, 45);
 
-        private Vector targetPosition = new Vector(1, 1, 1);
-        private Vector targetRotation = new Vector(0, 0, 0);
+        private Vector gravity =  new Vector(0, -9.81, 0);
+        private Quadcopter quad = new Quadcopter(0.3, 45);
+
+        private Vector targetPosition;
+        private Vector targetRotation;
 
         public Visualizer()
         {
@@ -60,64 +60,41 @@ namespace ADRCVisualization
 
             StartTimers();
             StopTimers();
-
-            //Matrix.TestRotationMatrix();
-
-            /*
-
-            quad.SetCurrent(new Vector(0, 0, 0), new Vector(0, 0, 0));
-            Tuple<Vector, Vector, Vector, Vector> test = quad.GetMotorPositions();
-
-            Console.WriteLine(test.Item1.ToString());
-            Console.WriteLine(test.Item2.ToString());
-            Console.WriteLine(test.Item3.ToString());
-            Console.WriteLine(test.Item4.ToString());
-
-            Console.WriteLine();
-
-
-            quad.SetCurrent(new Vector(0, 0, 0), new Vector(45, 0, 0));
-
-            test = quad.GetMotorPositions();
-
-            Console.WriteLine(test.Item1.ToString());
-            Console.WriteLine(test.Item2.ToString());
-            Console.WriteLine(test.Item3.ToString());
-            Console.WriteLine(test.Item4.ToString());
-            */
-
+            
             //Set current
             quad.SetCurrent(new Vector(0, 0, 0), new Vector(0, 0, 0));
 
+            targetPosition = new Vector(1, 0, 1.2);
+            targetRotation = new Vector(0, 0, 0);
             //Set target
             quad.SetTarget(targetPosition, targetRotation);
 
-            SetTargets();
+            //SetTargets();
         }
 
         private async void SetTargets()
         {
-            await Task.Delay(3000);
+            await Task.Delay(10000);
             
-            targetPosition = new Vector(-1, 0, 1);
+            targetPosition = new Vector(-1, 0, 1.2);
             targetRotation = new Vector(45, 0, 0);
             Console.WriteLine("Target Set");
             
-            await Task.Delay(3000);
+            await Task.Delay(10000);
             
-            targetPosition = new Vector(1, 2, -1);
+            targetPosition = new Vector(1, 6, -1.2);
             targetRotation = new Vector(0, 45, 0);
             Console.WriteLine("Target Set");
 
-            await Task.Delay(3000);
+            await Task.Delay(10000);
 
-            targetPosition = new Vector(-1, -1, -1);
+            targetPosition = new Vector(-1, -1, -1.2);
             targetRotation = new Vector(0, 0, 45);
             Console.WriteLine("Target Set");
         }
 
 
-        private void SetChartPositions(Tuple<Vector, Vector, Vector, Vector> positions, Vector centralPosition)
+        private void SetChartPositions(Tuple<Vector, Vector, Vector, Vector> positions, Tuple<Vector, Vector, Vector,Vector> targetPositions, Vector centralPosition)
         {
 
             chart1.ChartAreas[0].AxisX.Maximum = 2;
@@ -133,12 +110,36 @@ namespace ADRCVisualization
             chart1.Series[2].Points.Clear();
             chart1.Series[3].Points.Clear();
             chart1.Series[4].Points.Clear();
+            chart1.Series[5].Points.Clear();
+            chart1.Series[6].Points.Clear();
+            chart1.Series[7].Points.Clear();
+            chart1.Series[8].Points.Clear();
+        
+            chart1.Series[1].MarkerColor = Color.BurlyWood;
+            chart1.Series[2].MarkerColor = Color.BlueViolet;
+            chart1.Series[3].MarkerColor = Color.ForestGreen;
+            chart1.Series[4].MarkerColor = Color.MediumAquamarine;
+            chart1.Series[5].MarkerColor = Color.BurlyWood;
+            chart1.Series[6].MarkerColor = Color.BlueViolet;
+            chart1.Series[7].MarkerColor = Color.ForestGreen;
+            chart1.Series[8].MarkerColor = Color.MediumAquamarine;
 
             chart1.Series[0].Points.AddXY(centralPosition.X, centralPosition.Z);
             chart1.Series[1].Points.AddXY(positions.Item1.X, positions.Item1.Z);
             chart1.Series[2].Points.AddXY(positions.Item2.X, positions.Item2.Z);
             chart1.Series[3].Points.AddXY(positions.Item3.X, positions.Item3.Z);
             chart1.Series[4].Points.AddXY(positions.Item4.X, positions.Item4.Z);
+
+            chart1.Series[0].MarkerSize = (int)centralPosition.Y + 5 * 2;
+            chart1.Series[1].MarkerSize = (int)positions.Item1.Y + 5 * 2;
+            chart1.Series[2].MarkerSize = (int)positions.Item2.Y + 5 * 2;
+            chart1.Series[3].MarkerSize = (int)positions.Item3.Y + 5 * 2;
+            chart1.Series[4].MarkerSize = (int)positions.Item4.Y + 5 * 2;
+
+            chart1.Series[5].Points.AddXY(targetPositions.Item1.X, targetPositions.Item1.Z);
+            chart1.Series[6].Points.AddXY(targetPositions.Item2.X, targetPositions.Item2.Z);
+            chart1.Series[7].Points.AddXY(targetPositions.Item3.X, targetPositions.Item3.Z);
+            chart1.Series[8].Points.AddXY(targetPositions.Item4.X, targetPositions.Item4.Z);
 
             chart2.Series[0].Points.Clear();
 
@@ -155,7 +156,6 @@ namespace ADRCVisualization
 
             this.BeginInvoke((Action)(() =>
             {
-
                 t1 = new System.Timers.Timer
                 {
                     Interval = 30, //In milliseconds here
@@ -194,23 +194,30 @@ namespace ADRCVisualization
                     quad.Calculate();
 
                     Vector currentForce = quad.EstimateAcceleration(gravity);//force acting on quadcopter w/ quadcopter force
-                    Vector currentAcceleration = quad.AccelerationNoGravity();//force from quadcopter
+                    //Vector currentAcceleration = quad.AccelerationNoGravity();//force from quadcopter
                     Vector currentPosition = quad.EstimatePosition(0.1);//time frame between movements
+                    Vector currentRotation = quad.EstimateRotation(0.1);
 
                     quad.SetTarget(targetPosition, targetRotation);
-                    quad.SetCurrent(currentPosition, new Vector(0, 0, 0));
+                    quad.SetCurrent(currentPosition, currentRotation);
 
-                    Console.Write("Target: " + targetRotation.ToString() + " ");
+                    //Console.Write("Target: " + targetRotation.ToString() + " ");
                     //Console.Write("Quad Position: " + currentPosition.ToString() + " ");
                     //Console.Write("Force: " + currentAcceleration + " ");
 
                     Tuple<Vector, Vector, Vector, Vector> motorPositions = quad.GetMotorPositions();
                     Tuple<Vector, Vector, Vector, Vector> motorOrientations = quad.GetMotorOrientations();
+                    Tuple<Vector, Vector, Vector, Vector> targetPositions = quad.GetMotorTargetPositions();
 
-                    SetChartPositions(motorPositions, currentPosition);
+                    SetChartPositions(motorPositions, targetPositions, currentPosition);
 
-                    Console.Write(motorPositions.Item1.ToString());
-                    Console.WriteLine();
+                    label1.Text = Vector.CalculateEuclideanDistance(motorPositions.Item1, targetPositions.Item1).ToString();
+                    label2.Text = Vector.CalculateEuclideanDistance(motorPositions.Item2, targetPositions.Item2).ToString();
+                    label3.Text = Vector.CalculateEuclideanDistance(motorPositions.Item3, targetPositions.Item3).ToString();
+                    label4.Text = Vector.CalculateEuclideanDistance(motorPositions.Item4, targetPositions.Item4).ToString();
+
+                    //Console.Write(motorPositions.Item1.ToString());
+                    //Console.WriteLine();
                 }));
             }
         }

@@ -14,7 +14,6 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
         private Servo secondaryJoint;
 
         private VectorKalmanFilter thrustKF;
-        //private IMU jointMotion;
 
         private ADRC_PD thrustADRC;
         private ADRC_PD primaryJointADRC;
@@ -34,19 +33,19 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
         {
             this.QuadCenterOffset = QuadCenterOffset;
 
-            thrustADRC = new ADRC_PD(1, 1, 1, 1, 1, 1, 100);
-            primaryJointADRC = new ADRC_PD(1, 1, 1, 1, 1, 1, 100);
-            secondaryJointADRC = new ADRC_PD(1, 1, 1, 1, 1, 1, 100);
+            thrustADRC = new ADRC_PD(20, 2000, 0.00085, 4, 3, 0.5, 100);
+            primaryJointADRC = new ADRC_PD(1, 1, 1, 1, 200, 0, 100);
+            secondaryJointADRC = new ADRC_PD(1, 1, 1, 1, 200, 0, 100);
 
-            thrustPID = new PID(4, 1, 0.75, 100);
-            primaryJointPID = new PID(200, 0, 0, 100);
-            secondaryJointPID = new PID(200, 0, 0, 100);
+            thrustPID = new PID(3, 0.5, 0.5, 100);
+            primaryJointPID = new PID(1000, 0, 600, 90);
+            secondaryJointPID = new PID(1000, 0, 600, 90);
 
             propellor = new Motor();
             primaryJoint = new Servo();
             secondaryJoint = new Servo();
 
-            thrustKF = new VectorKalmanFilter(0.5, 5);//Increase memory to decrease response time
+            thrustKF = new VectorKalmanFilter(0.5, 10);//Increase memory to decrease response time
 
             //Console.WriteLine("QuadCenter: " + QuadCenterOffset.ToString());
         }
@@ -70,6 +69,20 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             return currentPosition;
         }
 
+        public Vector GetTargetPosition()
+        {
+            return targetPosition;
+        }
+
+        public void SetOutputs(double primaryJointOutput, double secondaryJointOutput, double propellorOutput)
+        {
+            thrustKF.Filter(new Vector(primaryJointOutput, propellorOutput, secondaryJointOutput));
+
+            primaryJoint.SetAngle(thrustKF.GetFilteredValue().X);
+            propellor.SetOutput(thrustKF.GetFilteredValue().Y);
+            secondaryJoint.SetAngle(thrustKF.GetFilteredValue().Z);
+        }
+
         public void Calculate()
         {
             double propellorOutput = 0;
@@ -89,8 +102,6 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
                 primaryJointOutput = primaryJointPID.Calculate(targetPosition.Z, currentPosition.Z);
                 secondaryJointOutput = secondaryJointPID.Calculate(targetPosition.X, currentPosition.X);
             }
-
-            //Console.Write("Control Output: " + propellorOutput + " " + primaryJointOutput + " " + secondaryJointOutput + " ");
 
             thrustKF.Filter(new Vector(primaryJointOutput, propellorOutput, secondaryJointOutput));
 
@@ -126,6 +137,17 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             //Console.Write("Thrust Vector: " + X + " " + Y + " " + Z +" ");
 
             return new Vector(X, Y, Z);
+        }
+
+        public Vector ReturnRotationalForce()
+        {
+            Vector thrust = ReturnThrustVector();
+
+            double XY = 0;// thrust.X + thrust.Y;
+            double XZ = thrust.X + thrust.Z;
+            double YZ = 0;// thrust.Y + thrust.Z;
+            
+            return new Vector(XY, XZ, YZ);
         }
     }
 }

@@ -131,6 +131,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
         {
             return Math.Round(X, 3) + " " + Math.Round(Y, 3) + " " + Math.Round(Z, 3);
         }
+
+        public static double CalculateEuclideanDistance(Vector one, Vector two)
+        {
+            return Math.Sqrt(Math.Pow(one.X - two.X, 2) + Math.Pow(one.Y - two.Y, 2) + Math.Pow(one.Z - two.Z, 2));
+        }
     }
 }
 
