@@ -38,14 +38,14 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             secondaryJointADRC = new ADRC_PD(1, 1, 1, 1, 200, 0, 100);
 
             thrustPID = new PID(3, 0.5, 0.5, 100);
-            primaryJointPID = new PID(1000, 0, 600, 90);
-            secondaryJointPID = new PID(1000, 0, 600, 90);
+            primaryJointPID = new PID(1000, 0, 200, 90);
+            secondaryJointPID = new PID(1000, 0, 200, 90);
 
             propellor = new Motor();
             primaryJoint = new Servo();
             secondaryJoint = new Servo();
 
-            thrustKF = new VectorKalmanFilter(0.5, 10);//Increase memory to decrease response time
+            thrustKF = new VectorKalmanFilter(0.5, 1);//Increase memory to decrease response time
 
             //Console.WriteLine("QuadCenter: " + QuadCenterOffset.ToString());
         }
@@ -74,13 +74,13 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             return targetPosition;
         }
 
-        public void SetOutputs(double primaryJointOutput, double secondaryJointOutput, double propellorOutput)
+        public void SetOutputs(Vector outputs)
         {
-            thrustKF.Filter(new Vector(primaryJointOutput, propellorOutput, secondaryJointOutput));
+            thrustKF.Filter(outputs);
 
-            primaryJoint.SetAngle(thrustKF.GetFilteredValue().X);
+            secondaryJoint.SetAngle(thrustKF.GetFilteredValue().X);
             propellor.SetOutput(thrustKF.GetFilteredValue().Y);
-            secondaryJoint.SetAngle(thrustKF.GetFilteredValue().Z);
+            primaryJoint.SetAngle(thrustKF.GetFilteredValue().Z);
         }
 
         public void Calculate()
@@ -143,9 +143,9 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
         {
             Vector thrust = ReturnThrustVector();
 
-            double XY = 0;// thrust.X + thrust.Y;
+            double XY = thrust.X + thrust.Y;
             double XZ = thrust.X + thrust.Z;
-            double YZ = 0;// thrust.Y + thrust.Z;
+            double YZ = thrust.Y + thrust.Z;
             
             return new Vector(XY, XZ, YZ);
         }

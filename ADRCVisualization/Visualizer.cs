@@ -64,29 +64,29 @@ namespace ADRCVisualization
             //Set current
             quad.SetCurrent(new Vector(0, 0, 0), new Vector(0, 0, 0));
 
-            targetPosition = new Vector(1, 0, 1.2);
+            targetPosition = new Vector(1, -1, 1.2);
             targetRotation = new Vector(0, 0, 0);
             //Set target
             quad.SetTarget(targetPosition, targetRotation);
 
-            //SetTargets();
+            SetTargets();
         }
 
         private async void SetTargets()
         {
-            await Task.Delay(10000);
+            await Task.Delay(3000);
             
             targetPosition = new Vector(-1, 0, 1.2);
             targetRotation = new Vector(45, 0, 0);
             Console.WriteLine("Target Set");
             
-            await Task.Delay(10000);
-            
-            targetPosition = new Vector(1, 6, -1.2);
+            await Task.Delay(3000);
+
+            targetPosition = new Vector(1, 1, -1.2);
             targetRotation = new Vector(0, 45, 0);
             Console.WriteLine("Target Set");
 
-            await Task.Delay(10000);
+            await Task.Delay(3000);
 
             targetPosition = new Vector(-1, -1, -1.2);
             targetRotation = new Vector(0, 0, 45);
@@ -123,6 +123,7 @@ namespace ADRCVisualization
             chart1.Series[6].MarkerColor = Color.BlueViolet;
             chart1.Series[7].MarkerColor = Color.ForestGreen;
             chart1.Series[8].MarkerColor = Color.MediumAquamarine;
+
 
             chart1.Series[0].Points.AddXY(centralPosition.X, centralPosition.Z);
             chart1.Series[1].Points.AddXY(positions.Item1.X, positions.Item1.Z);
@@ -191,15 +192,18 @@ namespace ADRCVisualization
                 this.BeginInvoke((Action)(() =>
                 {
                     //Calculate
-                    quad.Calculate();
+                    //quad.CalculateIndividualThrustVectors();//Initial Solver
+                    quad.CalculateCombinedThrustVector();//Secondary Solver
 
-                    Vector currentForce = quad.EstimateAcceleration(gravity);//force acting on quadcopter w/ quadcopter force
-                    //Vector currentAcceleration = quad.AccelerationNoGravity();//force from quadcopter
+                    //Vector currentForce = quad.EstimateAcceleration(gravity);//force acting on quadcopter w/ quadcopter force
+                    Vector currentAcceleration = quad.AccelerationNoGravity();//force from quadcopter
                     Vector currentPosition = quad.EstimatePosition(0.1);//time frame between movements
-                    Vector currentRotation = quad.EstimateRotation(0.1);
+                    Vector currentRotation = quad.EstimateRotation(0.5);
+                    //Tuple<Vector, Vector> positionAndRotation = quad.EstimatePositionAndRotation(0.1);
 
                     quad.SetTarget(targetPosition, targetRotation);
                     quad.SetCurrent(currentPosition, currentRotation);
+                    //quad.SetCurrent(positionAndRotation.Item1, positionAndRotation.Item2);
 
                     //Console.Write("Target: " + targetRotation.ToString() + " ");
                     //Console.Write("Quad Position: " + currentPosition.ToString() + " ");
