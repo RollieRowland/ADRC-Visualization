@@ -97,14 +97,6 @@ namespace ADRCVisualization.Class_Files
             ThrusterD = new Thruster(new Vector( XLength, 0, -ZLength));
             ThrusterE = new Thruster(new Vector(-XLength, 0, -ZLength));
         }
-        
-        public void CalculateIndividualThrustVectors()
-        {
-            ThrusterB.Calculate();
-            ThrusterC.Calculate();
-            ThrusterD.Calculate();
-            ThrusterE.Calculate();
-        }
 
         public void CalculateCombinedThrustVector()
         {
@@ -262,7 +254,7 @@ namespace ADRCVisualization.Class_Files
             currentRotation.X = currentRotation.X + currentAngularVelocity.X * dT;
             currentRotation.Y = currentRotation.Y + currentAngularVelocity.Y * dT;
             currentRotation.Z = currentRotation.Z + currentAngularVelocity.Z * dT;
-
+            
             return currentRotation;
         }
 

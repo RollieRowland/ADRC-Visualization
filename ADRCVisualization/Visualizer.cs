@@ -18,31 +18,17 @@ namespace ADRCVisualization
 {
     public partial class Visualizer : Form
     {
-        private BackgroundWorker backgroundWorker;
         private DateTime dateTime;
-        private bool correctionState;
         
         //FeedbackControllers
-        private double maxOutput = 1000;
-        private bool initializeFeedbackControllers = false;
-        private double WaitTimeForCalculation = 5;
         private double RunTime = 60;
-
-        //Active Disturbance Rejection Control Parameters
-        private ADRC_PD adrc;
-        private double r = 2000;//80
-        private double c = 500;//500
-        private double b = 2.875;//0.5   smoothing
-        private double hModifier = 0.00085;//0005   overshoot
-
+        
         //Timers for alternate threads and asynchronous calculations
         private System.Timers.Timer t1;
 
-        //Fourier Transforms
-        private float FourierTolerance = 1f;
-
         private Vector gravity =  new Vector(0, -9.81, 0);
         private Quadcopter quad = new Quadcopter(0.3, 45);
+        private Turbulence turbulence = new Turbulence(10, 100);
 
         private Vector targetPosition;
         private Vector targetRotation;
@@ -52,11 +38,6 @@ namespace ADRCVisualization
             InitializeComponent();
             
             dateTime = DateTime.Now;
-            correctionState = false;
-            
-            backgroundWorker = new BackgroundWorker();
-            backgroundWorker.DoWork += new DoWorkEventHandler(BackgroundWorker_CalculateFourierTransforms);
-            backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker_ChangeFourierTransforms);
 
             StartTimers();
             StopTimers();
@@ -66,6 +47,7 @@ namespace ADRCVisualization
 
             targetPosition = new Vector(1, -1, 1.2);
             targetRotation = new Vector(0, 0, 0);
+
             //Set target
             quad.SetTarget(targetPosition, targetRotation);
 
@@ -75,9 +57,6 @@ namespace ADRCVisualization
         private async void SetTargets()
         {
             await Task.Delay(3000);
-
-            //gravity.X = -0.5;
-            //gravity.Z = 0.5;
 
             targetPosition = new Vector(-1, 0, 1.2);
             targetRotation = new Vector(60, 0, 0);
@@ -94,11 +73,9 @@ namespace ADRCVisualization
             targetRotation = new Vector(0, 0, 60);
             Console.WriteLine("Target Set");
         }
-
-
+        
         private void SetChartPositions(Tuple<Vector, Vector, Vector, Vector> positions, Tuple<Vector, Vector, Vector,Vector> targetPositions, Vector centralPosition)
         {
-
             chart1.ChartAreas[0].AxisX.Maximum = 2;
             chart1.ChartAreas[0].AxisX.Minimum = -2;
             chart1.ChartAreas[0].AxisY.Maximum = 2;
@@ -125,8 +102,7 @@ namespace ADRCVisualization
             chart1.Series[6].MarkerColor = Color.BlueViolet;
             chart1.Series[7].MarkerColor = Color.ForestGreen;
             chart1.Series[8].MarkerColor = Color.MediumAquamarine;
-
-
+            
             chart1.Series[0].Points.AddXY(centralPosition.X, centralPosition.Z);
             chart1.Series[1].Points.AddXY(positions.Item1.X, positions.Item1.Z);
             chart1.Series[2].Points.AddXY(positions.Item2.X, positions.Item2.Z);
@@ -226,34 +202,6 @@ namespace ADRCVisualization
                     //Console.WriteLine();
                 }));
             }
-        }
-
-        /// <summary>
-        /// Calculates the fourier transforms and updates the axis scales.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BackgroundWorker_CalculateFourierTransforms(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = (BackgroundWorker)sender;
-            
-
-            this.BeginInvoke((Action)(() =>
-            {
-
-            }));
-
-            //e.Result = new float[4][] { pidFFTW, adrcFFTW, pidAngleFFTW, adrcAngleFFTW };
-        }
-
-        /// <summary>
-        /// Updates the fourier transform charts and the 2d memory displays.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BackgroundWorker_ChangeFourierTransforms(object sender, RunWorkerCompletedEventArgs e)
-        {
-
         }
 
         private void Visualizer_FormClosing(object sender, FormClosingEventArgs e)

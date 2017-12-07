@@ -11,7 +11,6 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public double X { get; set; }
         public double Y { get; set; }
         public double Z { get; set; }
-        //public static readonly Vector ORIGIN = new Vector(0, 0, 0);
 
         public Vector(double X, double Y, double Z)
         {
@@ -39,11 +38,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
         public Vector Multiply(Vector vector)
         {
-            X = X * vector.X;
-            Y = Y * vector.Y;
-            Z = Z * vector.Z;
-
-            return this;
+            return new Vector((X * vector.X), (Y * vector.Y), (Z * vector.Z));
         }
 
         public Vector Divide(double k)
@@ -87,6 +82,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
             if (length == 1) return vector;
             if (length == 0) return new Vector(1, 0, 0);
+
             return new Vector(vector.X / length, vector.Y / length, vector.Z / length);
         }
 
