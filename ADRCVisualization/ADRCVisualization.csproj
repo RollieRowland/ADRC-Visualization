@@ -52,11 +52,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class Files\ADRC\AbstractMath.cs" />
-    <Compile Include="Class Files\ADRC\ADRC_TD.cs" />
-    <Compile Include="Class Files\ADRC\ADRC_PD.cs" />
+    <Compile Include="Class Files\FeedbackControl\ADRC\AbstractMath.cs" />
+    <Compile Include="Class Files\FeedbackControl\ADRC\ADRC_TD.cs" />
+    <Compile Include="Class Files\FeedbackControl\ADRC\ADRC_PD.cs" />
     <Compile Include="Class Files\BitmapModifier.cs" />
-    <Compile Include="Class Files\ADRC\ExtendedStateObserver.cs" />
+    <Compile Include="Class Files\FeedbackControl\ADRC\ExtendedStateObserver.cs" />
     <Compile Include="Class Files\Filters\VectorKalmanFilter.cs" />
     <Compile Include="Class Files\FourierTransforms\FourierBitmap.cs" />
     <Compile Include="Class Files\FourierTransforms\FourierTransform.cs" />
@@ -66,6 +66,7 @@
     <Compile Include="Class Files\Mathematics\Statistics.cs" />
     <Compile Include="Class Files\Mathematics\Turbulence.cs" />
     <Compile Include="Class Files\Mathematics\Vector.cs" />
+    <Compile Include="Class Files\FeedbackControl\VectorPID.cs" />
     <Compile Include="Class Files\Quadcopter.cs" />
     <Compile Include="Class Files\QuadcopterSimulation\IMU.cs" />
     <Compile Include="Class Files\QuadcopterSimulation\Motor.cs" />
@@ -73,10 +74,10 @@
     <Compile Include="Class Files\QuadcopterSimulation\Thruster.cs" />
     <Compile Include="Class Files\Solvers\GeneticAlgorithmSolver.cs" />
     <Compile Include="Class Files\Solvers\NeuralNetworkSolver.cs" />
-    <Compile Include="Class Files\ADRC\NonlinearCombiner.cs" />
-    <Compile Include="Class Files\PID.cs" />
+    <Compile Include="Class Files\FeedbackControl\ADRC\NonlinearCombiner.cs" />
+    <Compile Include="Class Files\FeedbackControl\PID.cs" />
     <Compile Include="Class Files\Solvers\SimulatedAnnealingSolver.cs" />
-    <Compile Include="Class Files\ADRC\TrackingDifferentiator.cs" />
+    <Compile Include="Class Files\FeedbackControl\ADRC\TrackingDifferentiator.cs" />
     <Compile Include="Class Files\Solvers\Solver.cs" />
     <Compile Include="Visualizer.cs">
       <SubType>Form</SubType>
@@ -97,9 +98,8 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram2.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -115,6 +115,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Class Files\TODO.txt" />
+    <None Include="Resources\asdfsdfs.png" />
+    <None Include="Resources\test12.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

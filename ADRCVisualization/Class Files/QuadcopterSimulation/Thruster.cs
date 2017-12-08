@@ -15,11 +15,16 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
 
         private VectorKalmanFilter thrustKF;
         
-        private Vector targetPosition;
-        private Vector currentPosition;
+        public Vector TargetPosition { get; set; }
+        public Vector CurrentPosition { get; set; }
+
+        public Vector TargetRotation { get; set; }
+        public Vector CurrentRotation { get; set; }
+
         public Vector QuadCenterOffset { get; }
 
-        private bool useADRC = false;
+        private VectorPID RotationPID;
+        private VectorKalmanFilter RotationVectorKalmanFilter;
 
         public Thruster(Vector QuadCenterOffset)
         {
@@ -31,33 +36,27 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
 
             thrustKF = new VectorKalmanFilter(0.5, 1);//Increase memory to decrease response time
 
+            RotationPID = new VectorPID(1, 0, 0.1, 180);
+            RotationVectorKalmanFilter = new VectorKalmanFilter(0.5, 5);
+
+            CurrentRotation = new Vector(0, 0, 0);
+
             //Console.WriteLine("QuadCenter: " + QuadCenterOffset.ToString());
         }
 
-        public void SetTargetPosition(Vector position)
+        public void CalculateRotation()
         {
-            targetPosition = position;
+            //Kalman Filter to simulate acceleration / delay in movement of servos
+            //CurrentRotation = RotationVectorKalmanFilter.Filter(RotationPID.Calculate(TargetRotation, CurrentRotation));
+            TargetRotation.Y = 0;
+            CurrentRotation.Y = 0;
 
-            //Console.WriteLine("Thruster Target: " + position.ToString());
-        }
+            CurrentRotation = RotationPID.Calculate(TargetRotation, RotationVectorKalmanFilter.Filter(CurrentRotation));//Assumes there are three rotational axes, when there are two
 
-        public void SetCurrentPosition(Vector position)
-        {
-            currentPosition = position;
-
-            //Console.WriteLine("Thruster Position: " + position.ToString());
+            Console.WriteLine(CurrentRotation.X + " " + secondaryJoint.GetAngle());
         }
         
-        public Vector GetCurrentPosition()
-        {
-            return currentPosition;
-        }
-
-        public Vector GetTargetPosition()
-        {
-            return targetPosition;
-        }
-
+        
         public void SetOutputs(Vector outputs)
         {
             thrustKF.Filter(outputs);
@@ -66,45 +65,15 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             propellor.SetOutput(thrustKF.GetFilteredValue().Y);
             primaryJoint.SetAngle(thrustKF.GetFilteredValue().Z);
         }
-        
-        /// <summary>
-        /// For simulation only
-        /// </summary>
-        /// <param name="propellor"></param>
-        /// <param name="primaryJoint"></param>
-        /// <param name="secondaryJoint"></param>
-        public Vector GetOutputs()
-        {
-            //X, Y, Z
-            return new Vector(secondaryJoint.GetAngle(), propellor.GetOutput(), primaryJoint.GetAngle());
-        }
 
         public Vector ReturnThrustVector()
-        {//Relative to Quad Force in each direction
-            // X = 
-            // Z = 
-            // Y(0 - 1 range) - X.Sin(thetaX) - Sin(thetaY)
-
-            //Console.Write("Joints: " + secondaryJoint.GetAngle() + " " + primaryJoint.GetAngle() + " " + propellor.GetOutput() + " ");
-
+        {
+            //Relative to Quad Force in each direction
             double X = Math.Sin(Misc.DegreesToRadians(secondaryJoint.GetAngle()));
             double Z = Math.Sin(Misc.DegreesToRadians(primaryJoint.GetAngle()));
             double Y = propellor.GetOutput() - X - Z;
 
-            //Console.Write("Thrust Vector: " + X + " " + Y + " " + Z +" ");
-
             return new Vector(X, Y, Z);
-        }
-
-        public Vector ReturnRotationalForce()
-        {
-            Vector thrust = ReturnThrustVector();
-
-            double XY = thrust.X + thrust.Y;
-            double XZ = thrust.X + thrust.Z;
-            double YZ = thrust.Y + thrust.Z;
-            
-            return new Vector(XY, XZ, YZ);
         }
     }
 }

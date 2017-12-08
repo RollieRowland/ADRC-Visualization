@@ -43,38 +43,72 @@ namespace ADRCVisualization
             StopTimers();
             
             //Set current
-            quad.SetCurrent(new Vector(0, 0, 0), new Vector(0, 0, 0));
-
-            targetPosition = new Vector(1, -1, 1.2);
-            targetRotation = new Vector(0, 0, 0);
-
-            //Set target
-            quad.SetTarget(targetPosition, targetRotation);
+            quad.CalculateCurrent();
 
             SetTargets();
+            //SetTargetCircle();
+        }
+
+        private async void SetTargetCircle()
+        {
+            targetPosition = new Vector(0, 0, 0);
+            targetRotation = new Vector(0, 0, 0);
+
+            quad.SetTarget(targetPosition, targetRotation);
+
+            while (true)
+            {
+                for (double i = 0; i < 360; i += 0.01)
+                {
+                    targetPosition = new Vector(Math.Sin(i), 0, Math.Cos(i));
+                    targetRotation = new Vector(i * 100, i * 100, -i * 100);
+
+                    await Task.Delay(5);
+                }
+            }
         }
 
         private async void SetTargets()
         {
-            await Task.Delay(3000);
+            targetPosition = new Vector(0, 0, 0);
+            targetRotation = new Vector(0, 0, 0);
 
-            targetPosition = new Vector(-1, 0, 1.2);
-            targetRotation = new Vector(60, 0, 0);
-            Console.WriteLine("Target Set");
-            
-            await Task.Delay(3000);
-            targetPosition = new Vector(1, 1, -1.2);
-            targetRotation = new Vector(0, 60, 0);
-            Console.WriteLine("Target Set");
+            quad.SetTarget(targetPosition, targetRotation);
 
-            await Task.Delay(4500);
+            while (true)
+            {
+                targetPosition = new Vector(1, -1, 1.2);
+                targetRotation = new Vector(0, 0, 0);
+                Console.WriteLine("Target Set");
 
-            targetPosition = new Vector(-1, -1, -1.2);
-            targetRotation = new Vector(0, 0, 60);
-            Console.WriteLine("Target Set");
+                await Task.Delay(3000);
+
+                targetPosition = new Vector(-1, 0, 1.2);
+                targetRotation = new Vector(60, 0, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3000);
+                targetPosition = new Vector(1, 1, -1.2);
+                targetRotation = new Vector(0, 60, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3500);
+
+                targetPosition = new Vector(-1, -1, -1.2);
+                targetRotation = new Vector(0, 0, 60);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3000);
+
+                targetPosition = new Vector(0, 0, 0);
+                targetRotation = new Vector(30, 60, 90);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3000);
+            }
         }
         
-        private void SetChartPositions(Tuple<Vector, Vector, Vector, Vector> positions, Tuple<Vector, Vector, Vector,Vector> targetPositions, Vector centralPosition)
+        private void SetChartPositions(Quadcopter quadcopter)
         {
             chart1.ChartAreas[0].AxisX.Maximum = 2;
             chart1.ChartAreas[0].AxisX.Minimum = -2;
@@ -103,27 +137,27 @@ namespace ADRCVisualization
             chart1.Series[7].MarkerColor = Color.ForestGreen;
             chart1.Series[8].MarkerColor = Color.MediumAquamarine;
             
-            chart1.Series[0].Points.AddXY(centralPosition.X, centralPosition.Z);
-            chart1.Series[1].Points.AddXY(positions.Item1.X, positions.Item1.Z);
-            chart1.Series[2].Points.AddXY(positions.Item2.X, positions.Item2.Z);
-            chart1.Series[3].Points.AddXY(positions.Item3.X, positions.Item3.Z);
-            chart1.Series[4].Points.AddXY(positions.Item4.X, positions.Item4.Z);
+            chart1.Series[0].Points.AddXY(quad.CurrentPosition.X, quad.CurrentPosition.Z);
+            chart1.Series[1].Points.AddXY(quad.ThrusterB.CurrentPosition.X, quad.ThrusterB.CurrentPosition.Z);
+            chart1.Series[2].Points.AddXY(quad.ThrusterC.CurrentPosition.X, quad.ThrusterC.CurrentPosition.Z);
+            chart1.Series[3].Points.AddXY(quad.ThrusterD.CurrentPosition.X, quad.ThrusterD.CurrentPosition.Z);
+            chart1.Series[4].Points.AddXY(quad.ThrusterE.CurrentPosition.X, quad.ThrusterE.CurrentPosition.Z);
 
-            chart1.Series[0].MarkerSize = (int)centralPosition.Y + 5 * 2;
-            chart1.Series[1].MarkerSize = (int)positions.Item1.Y + 5 * 2;
-            chart1.Series[2].MarkerSize = (int)positions.Item2.Y + 5 * 2;
-            chart1.Series[3].MarkerSize = (int)positions.Item3.Y + 5 * 2;
-            chart1.Series[4].MarkerSize = (int)positions.Item4.Y + 5 * 2;
+            chart1.Series[0].MarkerSize = (int)quad.CurrentPosition.Y + 5 * 2;
+            chart1.Series[1].MarkerSize = (int)quad.ThrusterB.CurrentPosition.Y + 5 * 2;
+            chart1.Series[2].MarkerSize = (int)quad.ThrusterC.CurrentPosition.Y + 5 * 2;
+            chart1.Series[3].MarkerSize = (int)quad.ThrusterD.CurrentPosition.Y + 5 * 2;
+            chart1.Series[4].MarkerSize = (int)quad.ThrusterE.CurrentPosition.Y + 5 * 2;
 
-            chart1.Series[5].Points.AddXY(targetPositions.Item1.X, targetPositions.Item1.Z);
-            chart1.Series[6].Points.AddXY(targetPositions.Item2.X, targetPositions.Item2.Z);
-            chart1.Series[7].Points.AddXY(targetPositions.Item3.X, targetPositions.Item3.Z);
-            chart1.Series[8].Points.AddXY(targetPositions.Item4.X, targetPositions.Item4.Z);
+            chart1.Series[5].Points.AddXY(quad.ThrusterB.TargetPosition.X, quad.ThrusterB.TargetPosition.Z);
+            chart1.Series[6].Points.AddXY(quad.ThrusterC.TargetPosition.X, quad.ThrusterC.TargetPosition.Z);
+            chart1.Series[7].Points.AddXY(quad.ThrusterD.TargetPosition.X, quad.ThrusterD.TargetPosition.Z);
+            chart1.Series[8].Points.AddXY(quad.ThrusterE.TargetPosition.X, quad.ThrusterE.TargetPosition.Z);
 
             chart2.Series[0].Points.Clear();
 
-            chart2.Series[0].Points.Add(centralPosition.Y);
-            chart2.Series[0].Points.Add(targetPosition.Y);
+            chart2.Series[0].Points.Add(quad.CurrentPosition.Y);
+            chart2.Series[0].Points.Add(quad.TargetPosition.Y);
         }
         
         /// <summary>
@@ -173,30 +207,17 @@ namespace ADRCVisualization
                     //quad.CalculateIndividualThrustVectors();//Initial Solver
                     quad.CalculateCombinedThrustVector();//Secondary Solver
 
-                    //Vector currentForce = quad.EstimateAcceleration(gravity);//force acting on quadcopter w/ quadcopter force
-                    Vector currentAcceleration = quad.AccelerationNoGravity();//force from quadcopter
-                    Vector currentPosition = quad.EstimatePosition(0.1);//time frame between movements
-                    Vector currentRotation = quad.EstimateRotation(0.5);
-                    //Tuple<Vector, Vector> positionAndRotation = quad.EstimatePositionAndRotation(0.1);
-
+                    quad.ApplyForce(gravity);
                     quad.SetTarget(targetPosition, targetRotation);
-                    quad.SetCurrent(currentPosition, currentRotation);
+                    quad.CalculateCurrent();
                     //quad.SetCurrent(positionAndRotation.Item1, positionAndRotation.Item2);
+                    
+                    SetChartPositions(quad);
 
-                    //Console.Write("Target: " + targetRotation.ToString() + " ");
-                    //Console.Write("Quad Position: " + currentPosition.ToString() + " ");
-                    //Console.Write("Force: " + currentAcceleration + " ");
-
-                    Tuple<Vector, Vector, Vector, Vector> motorPositions = quad.GetMotorPositions();
-                    Tuple<Vector, Vector, Vector, Vector> motorOrientations = quad.GetMotorOrientations();
-                    Tuple<Vector, Vector, Vector, Vector> targetPositions = quad.GetMotorTargetPositions();
-
-                    SetChartPositions(motorPositions, targetPositions, currentPosition);
-
-                    label1.Text = Vector.CalculateEuclideanDistance(motorPositions.Item1, targetPositions.Item1).ToString();
-                    label2.Text = Vector.CalculateEuclideanDistance(motorPositions.Item2, targetPositions.Item2).ToString();
-                    label3.Text = Vector.CalculateEuclideanDistance(motorPositions.Item3, targetPositions.Item3).ToString();
-                    label4.Text = Vector.CalculateEuclideanDistance(motorPositions.Item4, targetPositions.Item4).ToString();
+                    label1.Text = Vector.CalculateEuclideanDistance(quad.ThrusterB.CurrentPosition, quad.ThrusterB.TargetPosition).ToString();
+                    label2.Text = Vector.CalculateEuclideanDistance(quad.ThrusterC.CurrentPosition, quad.ThrusterC.TargetPosition).ToString();
+                    label3.Text = Vector.CalculateEuclideanDistance(quad.ThrusterD.CurrentPosition, quad.ThrusterD.TargetPosition).ToString();
+                    label4.Text = Vector.CalculateEuclideanDistance(quad.ThrusterE.CurrentPosition, quad.ThrusterE.TargetPosition).ToString();
 
                     //Console.Write(motorPositions.Item1.ToString());
                     //Console.WriteLine();

@@ -23,6 +23,16 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
             InitialVector = axes;
         }
+        
+        public static Vector RotateVector(Vector Rotate, Vector Coordinates)
+        {
+            //calculate rotation matrix
+            Matrix matrix = new Matrix(Coordinates);
+
+            matrix.Rotate(Rotate);
+
+            return matrix.ConvertCoordinateToVector();
+        }
 
         public Vector ConvertCoordinateToVector()
         {

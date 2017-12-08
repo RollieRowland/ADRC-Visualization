@@ -9,9 +9,7 @@ namespace ADRCVisualization.Class_Files
 {
     public class VectorKalmanFilter
     {
-        private double gain;
         private Vector filteredValue;
-        private double memory;
 
         private KalmanFilter X;
         private KalmanFilter Y;
