@@ -6,7 +6,7 @@
              xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
              xmlns:local="clr-namespace:ADRCVisualization"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600" Width="600" Height="600">
+             d:DesignHeight="300" d:DesignWidth="300" Width="600" Height="600">
     <Grid>
         <!-- The HelixViewport3D supports camera manipulation, and can be used just like the Viewport3D -->
         <HelixToolkit:HelixViewport3D x:Name="viewPort3D" ZoomExtentsWhenLoaded="True">
@@ -19,7 +19,7 @@
             <!-- <ModelVisual3D Content="{Binding Model}"/> -->
 
             <!-- You can also add elements here in the xaml -->
-            <HelixToolkit:GridLinesVisual3D Width="16" Length="16" MinorDistance="1" MajorDistance="1" Thickness="0.01"/>
+            <HelixToolkit:GridLinesVisual3D Width="160" Length="160" MinorDistance="10" MajorDistance="10" Thickness="0.025"/>
 
         </HelixToolkit:HelixViewport3D>
     </Grid>

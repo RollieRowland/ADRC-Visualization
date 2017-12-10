@@ -30,16 +30,29 @@ namespace ADRCVisualization
 
         private Timer t1;
 
-        private ModelVisual3D main;
+        private ModelVisual3D mainX;
+        private ModelVisual3D mainY;
+        private ModelVisual3D mainZ;
+
         private ModelVisual3D innerB;
         private ModelVisual3D outerB;
 
-        private Vector innerBPrevious;
-        private Vector innerBPrevious2;
-        
-        private Model3DGroup modelGroup;
+        private ModelVisual3D innerC;
+        private ModelVisual3D outerC;
 
-        private ModelVisual3D testV3D;
+        private ModelVisual3D innerD;
+        private ModelVisual3D outerD;
+
+        private ModelVisual3D innerE;
+        private ModelVisual3D outerE;
+
+        private Vector mainPrevious;
+
+        private Vector bPrevious;
+        private Vector cPrevious;
+        private Vector dPrevious;
+        private Vector ePrevious;
+
 
         public QuadViewer()
         {
@@ -47,26 +60,74 @@ namespace ADRCVisualization
 
             ModelImporter import = new ModelImporter();
 
-            Model3D model = import.Load(@"..\..\Resources\Inner.stl");
+            string directory = @"C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\Resources\";
+            //directory = @"..\..\Resources\";
+
+            Model3D mainModel = import.Load(directory + "Main.stl");
+
+            Model3D innerBModel = import.Load(directory + "InnerB.stl");
+            Model3D outerBModel = import.Load(directory + "OuterB.stl");
+
+            Model3D innerCModel = import.Load(directory + "InnerC.stl");
+            Model3D outerCModel = import.Load(directory + "OuterC.stl");
+
+            Model3D innerDModel = import.Load(directory + "InnerD.stl");
+            Model3D outerDModel = import.Load(directory + "OuterD.stl");
+
+            Model3D innerEModel = import.Load(directory + "InnerE.stl");
+            Model3D outerEModel = import.Load(directory + "OuterE.stl");
+
+            mainX = new ModelVisual3D();
+            mainY = new ModelVisual3D();
+            mainZ = new ModelVisual3D();
+
             innerB = new ModelVisual3D();
-            innerB.Content = model;
-
-            Model3D model2 = import.Load(@"..\..\Resources\Outer.stl");
             outerB = new ModelVisual3D();
-            outerB.Content = model2;
 
-            viewPort3D.Children.Add(innerB);
-            viewPort3D.Children.Add(outerB);
+            innerC = new ModelVisual3D();
+            outerC = new ModelVisual3D();
+
+            innerD = new ModelVisual3D();
+            outerD = new ModelVisual3D();
+
+            innerE = new ModelVisual3D();
+            outerE = new ModelVisual3D();
+
+            mainX.Content = mainModel;
+
+            innerB.Content = innerBModel;
+            outerB.Content = outerBModel;
+
+            innerC.Content = innerCModel;
+            outerC.Content = outerCModel;
+
+            innerD.Content = innerDModel;
+            outerD.Content = outerDModel;
             
-            innerBPrevious = new Vector(0, 0, 0);
+            innerE.Content = innerEModel;
+            outerE.Content = outerEModel;
 
-            modelGroup = new Model3DGroup();
+            outerB.Children.Add(innerB);
+            outerC.Children.Add(innerC);
+            outerD.Children.Add(innerD);
+            outerE.Children.Add(innerE);
 
+            mainX.Children.Add(outerB);
+            mainX.Children.Add(outerC);
+            mainX.Children.Add(outerD);
+            mainX.Children.Add(outerE);
 
-            testV3D = new ModelVisual3D();
+            mainY.Children.Add(mainX);
+            mainZ.Children.Add(mainY);
+
+            viewPort3D.Children.Add(mainZ);
             
+            mainPrevious = new Vector(0, 0, 0);
 
-            viewPort3D.Children.Add(testV3D);
+            bPrevious = new Vector(0, 0, 0);
+            cPrevious = new Vector(0, 0, 0);
+            dPrevious = new Vector(0, 0, 0);
+            ePrevious = new Vector(0, 0, 0);
 
             StartTimers();
             //StopTimers();
@@ -75,8 +136,10 @@ namespace ADRCVisualization
         /// <summary>
         /// Starts alternate threads for calculation of the inverted pendulum and updating the display of the user interface for the FFTWs, pendulum, and graphs.
         /// </summary>
-        private void StartTimers()
+        private async void StartTimers()
         {
+            await Task.Delay(250);
+
             t1 = new Timer
             {
                 Interval = 30, //In milliseconds here
@@ -103,62 +166,106 @@ namespace ADRCVisualization
             //rotate inner rotations
             //rotate outer rotations
             //transform entire quad
-            Vector rotation = quadcopter.ThrusterB.CurrentRotation;
 
-            Vector test = rotation.Subtract(innerBPrevious);
+            Vector mainRotation = quadcopter.CurrentRotation;
+
+            Vector bRotation = quadcopter.ThrusterB.CurrentRotation;
+            Vector cRotation = quadcopter.ThrusterC.CurrentRotation;
+            Vector dRotation = quadcopter.ThrusterD.CurrentRotation;
+            Vector eRotation = quadcopter.ThrusterE.CurrentRotation;
+
+            Vector mainRotationRelative = mainRotation.Subtract(mainPrevious);
+
+            Vector bRelativeRotation = bRotation.Subtract(bPrevious);
+            Vector cRelativeRotation = cRotation.Subtract(cPrevious);
+            Vector dRelativeRotation = dRotation.Subtract(dPrevious);
+            Vector eRelativeRotation = eRotation.Subtract(ePrevious);
 
             Dispatcher.BeginInvoke((Action)(() =>
             {
-                var matrix = innerB.Transform.Value;
-                matrix.Translate(new Vector3D(1638, -1638, -28));
-                matrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), test.X));
-                matrix.Rotate(new Quaternion(new Vector3D(0, Math.Sin(Misc.DegreesToRadians(rotation.X)) + Math.Cos(Misc.DegreesToRadians(rotation.X)),
-                                                             Math.Cos(Misc.DegreesToRadians(rotation.X)) - Math.Sin(Misc.DegreesToRadians(rotation.X))), test.Z));
-                matrix.Translate(new Vector3D(-1638, 1638, 28));
+                Matrix3D mainXMatrix = mainX.Transform.Value;
+                Matrix3D mainYMatrix = mainY.Transform.Value;
+                Matrix3D mainZMatrix = mainZ.Transform.Value;
 
-                innerB.Transform = new MatrixTransform3D(matrix);
+                Matrix3D innerBMatrix = innerB.Transform.Value;
+                Matrix3D outerBMatrix = outerB.Transform.Value;
+
+                Matrix3D innerCMatrix = innerC.Transform.Value;
+                Matrix3D outerCMatrix = outerC.Transform.Value;
+
+                Matrix3D innerDMatrix = innerD.Transform.Value;
+                Matrix3D outerDMatrix = outerD.Transform.Value;
+
+                Matrix3D innerEMatrix = innerE.Transform.Value;
+                Matrix3D outerEMatrix = outerE.Transform.Value;
+
+                /// B ROTATION
+
+                innerBMatrix.Translate(new Vector3D(-1638, 1638, -28));
+                innerBMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), bRelativeRotation.Z));
+                innerBMatrix.Translate(new Vector3D(1638, -1638, 28));
+                innerB.Transform = new MatrixTransform3D(innerBMatrix);
+
+                outerBMatrix.Translate(new Vector3D(1638, -1638, -28));
+                outerBMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), bRelativeRotation.X));
+                outerBMatrix.Translate(new Vector3D(-1638, 1638, 28));
+                outerB.Transform = new MatrixTransform3D(outerBMatrix);
+
+                /// C ROTATION
+
+                innerCMatrix.Translate(new Vector3D(1638, -1638, -28));
+                innerCMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), cRelativeRotation.Z));
+                innerCMatrix.Translate(new Vector3D(-1638, 1638, 28));
+                innerC.Transform = new MatrixTransform3D(innerCMatrix);
+
+                outerCMatrix.Translate(new Vector3D(1638, -1638, -28));
+                outerCMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), cRelativeRotation.X));
+                outerCMatrix.Translate(new Vector3D(-1638, 1638, 28));
+                outerC.Transform = new MatrixTransform3D(outerCMatrix);
+
+                /// D ROTATION
                 
-                
-                var matrix2 = modelGroup.Transform.Value;
-                matrix2.Translate(new Vector3D(1638, -1638, -28));
-                matrix2.Rotate(new Quaternion(new Vector3D(0, 1, 0), test.Z));
-                matrix2.Translate(new Vector3D(-1638, 1638, 28));
+                innerDMatrix.Translate(new Vector3D(-1638, -1638, -28));
+                innerDMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), dRelativeRotation.Z));
+                innerDMatrix.Translate(new Vector3D(1638, 1638, 28));
+                innerD.Transform = new MatrixTransform3D(innerDMatrix);
 
-                outerB.Transform = new MatrixTransform3D(matrix2);
+                outerDMatrix.Translate(new Vector3D(-1638, -1638, -28));
+                outerDMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), dRelativeRotation.X));
+                outerDMatrix.Translate(new Vector3D(1638, 1638, 28));
+                outerD.Transform = new MatrixTransform3D(outerDMatrix);
 
-                //innerB.Transform.Value.
+                /// E ROTATION
 
-                //TransformModel(ref innerB, new Vector(test.X, 0, 0), new Vector(-1638, 28, 1638), new Vector(0, 0, 0));
-                //TransformModel(ref innerB, new Vector(0, 0, test.Z), new Vector(-1638, 28, 1638), new Vector(0, 0, 0));
-                //TransformModel(ref outerB, new Vector(0, 0, test.Z), new Vector(-1638, 28, 1638), new Vector(0, 0, 0));
+                innerEMatrix.Translate(new Vector3D(1638, 1638, -28));
+                innerEMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), eRelativeRotation.Z));
+                innerEMatrix.Translate(new Vector3D(-1638, -1638, 28));
+                innerE.Transform = new MatrixTransform3D(innerEMatrix);
+
+                outerEMatrix.Translate(new Vector3D(-1638, -1638, -28));
+                outerEMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), eRelativeRotation.X));
+                outerEMatrix.Translate(new Vector3D(1638, 1638, 28));
+                outerE.Transform = new MatrixTransform3D(outerEMatrix);
+
+                /// MAIN ROTATION
+
+                mainXMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), mainRotationRelative.X));
+                mainX.Transform = new MatrixTransform3D(mainXMatrix);
+
+                mainYMatrix.Rotate(new Quaternion(new Vector3D(0, 0, 1), mainRotationRelative.Y));
+                mainY.Transform = new MatrixTransform3D(mainYMatrix);
+
+                mainZMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), mainRotationRelative.Z));
+                mainZ.Transform = new MatrixTransform3D(mainZMatrix);
             }));
 
             //innerBPrevious2 = innerBPrevious;
-            innerBPrevious = new Vector(rotation.X, rotation.Y, rotation.Z);
-        }
+            mainPrevious = new Vector(mainRotation.X, mainRotation.Y, mainRotation.Z);
 
-        private void TransformModel(ref ModelVisual3D model, Vector rotation, Vector pointOfRotation, Vector translation)
-        {
-            TranslateTransform3D translate = new TranslateTransform3D(translation.X, translation.Z, translation.Y);
-
-            //left hand rule, y and z are flipped
-            RotateTransform3D rotateX, rotateY, rotateZ;
-
-            Point3D point = new Point3D(pointOfRotation.X, pointOfRotation.Z, pointOfRotation.Y);
-
-            //Console.WriteLine(test.ToString());
-
-            rotateX = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), rotation.X), point);
-            rotateY = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), rotation.Y), point);
-            rotateZ = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), rotation.Z), point);
-
-            Transform3D transform;
-
-            transform = Transform3DHelper.CombineTransform(translate, rotateX);
-            transform = Transform3DHelper.CombineTransform(transform, rotateY);
-            transform = Transform3DHelper.CombineTransform(transform, rotateZ);
-
-            model.Transform = Transform3DHelper.CombineTransform(model.Transform, transform);
+            bPrevious = new Vector(bRotation.X, bRotation.Y, bRotation.Z);
+            cPrevious = new Vector(cRotation.X, cRotation.Y, cRotation.Z);
+            dPrevious = new Vector(dRotation.X, dRotation.Y, dRotation.Z);
+            ePrevious = new Vector(eRotation.X, eRotation.Y, eRotation.Z);
         }
     }
 }

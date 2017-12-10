@@ -8,6 +8,10 @@ C:\Users\steve\source\repos\ADRCVisualization\ADRCVisualization\obj\Debug\ADRCVi
 C:\Users\steve\source\repos\ADRCVisualization\ADRCVisualization\obj\Debug\ADRCVisualization.csproj.CoreCompileInputs.cache
 C:\Users\steve\source\repos\ADRCVisualization\ADRCVisualization\obj\Debug\ADRCVisualization.exe
 C:\Users\steve\source\repos\ADRCVisualization\ADRCVisualization\obj\Debug\ADRCVisualization.pdb
+C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\QuadViewer.g.cs
+C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization_Content.g.cs
+C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization_MarkupCompile.cache
+C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization_MarkupCompile.lref
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\bin\Debug\ADRCVisualization.exe.config
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\bin\Debug\ADRCVisualization.exe
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\bin\Debug\ADRCVisualization.pdb
@@ -18,10 +22,6 @@ C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\bin\Debug\Helix
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\bin\Debug\HelixToolkit.xml
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\bin\Debug\HelixToolkit.Wpf.pdb
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\bin\Debug\HelixToolkit.Wpf.xml
-C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\QuadViewer.g.cs
-C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization_Content.g.cs
-C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization_MarkupCompile.cache
-C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization_MarkupCompile.lref
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\QuadViewer.baml
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization.g.resources
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization.Visualizer.resources
@@ -30,4 +30,3 @@ C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCV
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization.csproj.CoreCompileInputs.cache
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization.exe
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization.pdb
-C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization.csprojResolveAssemblyReference.cache

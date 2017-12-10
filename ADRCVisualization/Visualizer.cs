@@ -27,7 +27,7 @@ namespace ADRCVisualization
         private System.Timers.Timer t1;
 
         private Vector gravity =  new Vector(0, -9.81, 0);
-        private Quadcopter quad = new Quadcopter(0.3, 45);
+        private Quadcopter quad;
         private Turbulence turbulence = new Turbulence(10, 100);
 
         private Vector targetPosition;
@@ -35,9 +35,11 @@ namespace ADRCVisualization
 
         public Visualizer()
         {
+            quad = new Quadcopter(0.3, 45);
+
             InitializeComponent();
 
-            Start3DViewer();
+            //Start3DViewer();
             //Opacity = 0;
 
             dateTime = DateTime.Now;
@@ -59,9 +61,14 @@ namespace ADRCVisualization
             {
                 System.Windows.Window window = new System.Windows.Window
                 {
-                    Title = "test",
+                    Title = "Quadcopter 3D Visualizer",
                     Content = new QuadViewer()
                 };
+
+                window.Height = 600;
+                window.Width = 600;
+
+                window.Icon = null;
 
                 window.ShowDialog();
 
@@ -112,24 +119,24 @@ namespace ADRCVisualization
                 await Task.Delay(4500);
 
                 targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new Vector(90, 0, 0);
+                targetRotation = new Vector(10, 0, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(4500);
                 targetPosition = new Vector(1, 1, -1.2);
-                targetRotation = new Vector(90, 90, 0);
+                targetRotation = new Vector(0, 10, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(4500);
 
                 targetPosition = new Vector(-1, -1, -1.2);
-                targetRotation = new Vector(90, 90, 90);
+                targetRotation = new Vector(0, 0, 10);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(4500);
 
                 targetPosition = new Vector(0, 0, 0);
-                targetRotation = new Vector(0, 90, 90);
+                targetRotation = new Vector(0, 10, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(4500);
@@ -229,16 +236,16 @@ namespace ADRCVisualization
                     //quad.CalculateIndividualThrustVectors();//Initial Solver
                     quad.CalculateCombinedThrustVector();//Secondary Solver
 
-                    //quad.ApplyForce(gravity);
+                    quad.ApplyForce(gravity);
                     quad.SetTarget(targetPosition, targetRotation);
                     quad.CalculateCurrent();
                     
                     SetChartPositions(quad);
 
-                    label1.Text = Vector.CalculateEuclideanDistance(quad.ThrusterB.CurrentPosition, quad.ThrusterB.TargetPosition).ToString();
-                    label2.Text = Vector.CalculateEuclideanDistance(quad.ThrusterC.CurrentPosition, quad.ThrusterC.TargetPosition).ToString();
-                    label3.Text = Vector.CalculateEuclideanDistance(quad.ThrusterD.CurrentPosition, quad.ThrusterD.TargetPosition).ToString();
-                    label4.Text = Vector.CalculateEuclideanDistance(quad.ThrusterE.CurrentPosition, quad.ThrusterE.TargetPosition).ToString();
+                    //label1.Text = Vector.CalculateEuclideanDistance(quad.ThrusterB.CurrentPosition, quad.ThrusterB.TargetPosition).ToString();
+                    //label2.Text = Vector.CalculateEuclideanDistance(quad.ThrusterC.CurrentPosition, quad.ThrusterC.TargetPosition).ToString();
+                    //label3.Text = Vector.CalculateEuclideanDistance(quad.ThrusterD.CurrentPosition, quad.ThrusterD.TargetPosition).ToString();
+                    //label4.Text = Vector.CalculateEuclideanDistance(quad.ThrusterE.CurrentPosition, quad.ThrusterE.TargetPosition).ToString();
                 }));
             }
         }
