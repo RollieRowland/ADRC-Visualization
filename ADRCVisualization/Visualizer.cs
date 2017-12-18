@@ -21,7 +21,7 @@ namespace ADRCVisualization
         private DateTime dateTime;
         
         //FeedbackControllers
-        private double RunTime = 60;
+        //private double RunTime = 60;
         
         //Timers for alternate threads and asynchronous calculations
         private System.Timers.Timer t1;
@@ -35,7 +35,7 @@ namespace ADRCVisualization
 
         public Visualizer()
         {
-            quad = new Quadcopter(0.3, 45);
+            quad = new Quadcopter(0.3, 50);
 
             InitializeComponent();
 
@@ -45,12 +45,20 @@ namespace ADRCVisualization
             dateTime = DateTime.Now;
 
             StartTimers();
-            StopTimers();
+            //StopTimers();
             
             //Set current
             quad.CalculateCurrent();
+            
+            targetPosition = new Vector(0, 0, 0);
+            targetRotation = new Vector(0, 0, 0);
+
+            quad.SetTarget(targetPosition, targetRotation);
 
             SetTargets();
+            //SetTargetsTrack();
+            //SetTargetPositions();
+            //SetTargetRotations();
             //SetTargetCircle();
         }
 
@@ -86,9 +94,6 @@ namespace ADRCVisualization
 
         private async void SetTargetCircle()
         {
-            targetPosition = new Vector(0, 0, 0);
-            targetRotation = new Vector(0, 0, 0);
-
             quad.SetTarget(targetPosition, targetRotation);
 
             while (true)
@@ -105,9 +110,6 @@ namespace ADRCVisualization
 
         private async void SetTargets()
         {
-            targetPosition = new Vector(0, 0, 0);
-            targetRotation = new Vector(0, 0, 0);
-
             quad.SetTarget(targetPosition, targetRotation);
 
             while (true)
@@ -119,30 +121,108 @@ namespace ADRCVisualization
                 await Task.Delay(4500);
 
                 targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new Vector(10, 0, 0);
+                targetRotation = new Vector(20, 0, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(4500);
                 targetPosition = new Vector(1, 1, -1.2);
-                targetRotation = new Vector(0, 10, 0);
+                targetRotation = new Vector(0, 20, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(4500);
 
                 targetPosition = new Vector(-1, -1, -1.2);
-                targetRotation = new Vector(0, 0, 10);
+                targetRotation = new Vector(0, 0, 20);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(4500);
 
                 targetPosition = new Vector(0, 0, 0);
-                targetRotation = new Vector(0, 10, 0);
+                targetRotation = new Vector(0, 20, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(4500);
             }
         }
-        
+
+        private async void SetTargetPositions()
+        {
+            quad.SetTarget(targetPosition, targetRotation);
+
+            while (true)
+            {
+                targetPosition = new Vector(1, 0, 1.2);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(4500);
+
+                targetPosition = new Vector(-1, 0, 1.2);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(4500);
+                targetPosition = new Vector(1, 0, -1.2);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(4500);
+
+                targetPosition = new Vector(-1, 0, -1.2);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(4500);
+            }
+        }
+
+        private async void SetTargetsTrack()
+        {
+            quad.SetTarget(targetPosition, targetRotation);
+
+            while (true)
+            {
+                targetPosition = new Vector(1, 0, 1.2);
+                targetRotation = new Vector(0, 45, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(4500);
+
+                targetPosition = new Vector(-1, 0, 1.2);
+                targetRotation = new Vector(0, 135, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(4500);
+                targetPosition = new Vector(-1, 0, -1.2);
+                targetRotation = new Vector(0, 225, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(4500);
+
+                targetPosition = new Vector(1, 0, -1.2);
+                targetRotation = new Vector(0, 315, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(4500);
+            }
+        }
+
+        private async void SetTargetRotations()
+        {
+            quad.SetTarget(targetPosition, targetRotation);
+
+            while (true)
+            {
+                targetRotation = new Vector(0, 90, 0);
+                targetPosition = new Vector(0, 0, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(10000);
+
+                targetRotation = new Vector(0, 0, 0);
+                targetPosition = new Vector(0, 0, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(10000);
+            }
+        }
+
         private void SetChartPositions(Quadcopter quadcopter)
         {
             chart1.ChartAreas[0].AxisX.Maximum = 2;
@@ -178,11 +258,11 @@ namespace ADRCVisualization
             chart1.Series[3].Points.AddXY(quadcopter.ThrusterD.CurrentPosition.X, quadcopter.ThrusterD.CurrentPosition.Z);
             chart1.Series[4].Points.AddXY(quadcopter.ThrusterE.CurrentPosition.X, quadcopter.ThrusterE.CurrentPosition.Z);
 
-            chart1.Series[0].MarkerSize = (int)quadcopter.CurrentPosition.Y + 5 * 2;
-            chart1.Series[1].MarkerSize = (int)quadcopter.ThrusterB.CurrentPosition.Y + 5 * 2;
-            chart1.Series[2].MarkerSize = (int)quadcopter.ThrusterC.CurrentPosition.Y + 5 * 2;
-            chart1.Series[3].MarkerSize = (int)quadcopter.ThrusterD.CurrentPosition.Y + 5 * 2;
-            chart1.Series[4].MarkerSize = (int)quadcopter.ThrusterE.CurrentPosition.Y + 5 * 2;
+            chart1.Series[0].MarkerSize = (int)quadcopter.CurrentPosition.Y + 10;
+            chart1.Series[1].MarkerSize = (int)quadcopter.ThrusterB.CurrentPosition.Y + 10;
+            chart1.Series[2].MarkerSize = (int)quadcopter.ThrusterC.CurrentPosition.Y + 10;
+            chart1.Series[3].MarkerSize = (int)quadcopter.ThrusterD.CurrentPosition.Y + 10;
+            chart1.Series[4].MarkerSize = (int)quadcopter.ThrusterE.CurrentPosition.Y + 10;
 
             chart1.Series[5].Points.AddXY(quadcopter.ThrusterB.TargetPosition.X, quadcopter.ThrusterB.TargetPosition.Z);
             chart1.Series[6].Points.AddXY(quadcopter.ThrusterC.TargetPosition.X, quadcopter.ThrusterC.TargetPosition.Z);
@@ -216,7 +296,7 @@ namespace ADRCVisualization
         /// </summary>
         private async void StopTimers()
         {
-            await Task.Delay((int)RunTime * 1000);
+            await Task.Delay(60000);
             
             t1.Stop();
         }
@@ -228,31 +308,46 @@ namespace ADRCVisualization
         /// <param name="e"></param>
         public void Calculate(object sender, ElapsedEventArgs e)
         {
-            if (!(DateTime.Now.Subtract(dateTime).TotalSeconds > RunTime))
+            this.BeginInvoke((Action)(() =>
             {
-                this.BeginInvoke((Action)(() =>
-                {
-                    //Calculate
-                    //quad.CalculateIndividualThrustVectors();//Initial Solver
-                    quad.CalculateCombinedThrustVector();//Secondary Solver
+                //Calculate
+                //quad.CalculateIndividualThrustVectors();//Initial Solver
+                quad.CalculateCombinedThrustVector();//Secondary Solver
 
-                    quad.ApplyForce(gravity);
-                    quad.SetTarget(targetPosition, targetRotation);
-                    quad.CalculateCurrent();
+                quad.ApplyForce(gravity);
+                quad.SetTarget(targetPosition, targetRotation);
+                quad.CalculateCurrent();
                     
-                    SetChartPositions(quad);
+                SetChartPositions(quad);
 
-                    //label1.Text = Vector.CalculateEuclideanDistance(quad.ThrusterB.CurrentPosition, quad.ThrusterB.TargetPosition).ToString();
-                    //label2.Text = Vector.CalculateEuclideanDistance(quad.ThrusterC.CurrentPosition, quad.ThrusterC.TargetPosition).ToString();
-                    //label3.Text = Vector.CalculateEuclideanDistance(quad.ThrusterD.CurrentPosition, quad.ThrusterD.TargetPosition).ToString();
-                    //label4.Text = Vector.CalculateEuclideanDistance(quad.ThrusterE.CurrentPosition, quad.ThrusterE.TargetPosition).ToString();
-                }));
-            }
+                //label1.Text = Vector.CalculateEuclideanDistance(quad.ThrusterB.CurrentPosition, quad.ThrusterB.TargetPosition).ToString();
+                //label2.Text = Vector.CalculateEuclideanDistance(quad.ThrusterC.CurrentPosition, quad.ThrusterC.TargetPosition).ToString();
+                //label3.Text = Vector.CalculateEuclideanDistance(quad.ThrusterD.CurrentPosition, quad.ThrusterD.TargetPosition).ToString();
+                //label4.Text = Vector.CalculateEuclideanDistance(quad.ThrusterE.CurrentPosition, quad.ThrusterE.TargetPosition).ToString();
+            }));
         }
 
         private void Visualizer_FormClosing(object sender, FormClosingEventArgs e)
         {
             t1.Stop();
+        }
+
+        private void sendXYZ_Click(object sender, EventArgs e)
+        {
+            Double.TryParse(xPositionTB.Text, out double x);
+            Double.TryParse(yPositionTB.Text, out double y);
+            Double.TryParse(zPositionTB.Text, out double z);
+
+            targetPosition = new Vector(x, y, z);
+        }
+
+        private void sendHPB_Click(object sender, EventArgs e)
+        {
+            Double.TryParse(xRotationTB.Text, out double x);
+            Double.TryParse(yRotationTB.Text, out double y);
+            Double.TryParse(zRotationTB.Text, out double z);
+
+            targetRotation = new Vector(x, y, z);
         }
     }
 }

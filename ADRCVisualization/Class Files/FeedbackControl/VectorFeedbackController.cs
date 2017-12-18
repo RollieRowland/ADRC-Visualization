@@ -3,30 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ADRCVisualization.Class_Files.Mathematics;
 
-namespace ADRCVisualization.Class_Files.Mathematics
+namespace ADRCVisualization.Class_Files.FeedbackControl
 {
-    class VectorPID
+    class VectorFeedbackController
     {
-        private PID X;
-        private PID Y;
-        private PID Z;
+        public FeedbackController X { get; set; }
+        public FeedbackController Y { get; set; }
+        public FeedbackController Z { get; set; }
         private Vector output;
 
-        public VectorPID(double kP, double kI, double kD, double maxOutput)
+        public VectorFeedbackController()
         {
-            X = new PID(kP, kI, kD, maxOutput);
-            Y = new PID(kP, kI, kD, maxOutput);
-            Z = new PID(kP, kI, kD, maxOutput);
-
             output = new Vector(0, 0, 0);
         }
-        
-        public VectorPID(Vector kP, Vector kI, Vector kD, Vector maxOutput)
+
+        public VectorFeedbackController(FeedbackController X, FeedbackController Y, FeedbackController Z)
         {
-            X = new PID(kP.X, kI.X, kD.X, maxOutput.X);
-            Y = new PID(kP.Y, kI.Y, kD.Y, maxOutput.Y);
-            Z = new PID(kP.Z, kI.Z, kD.Z, maxOutput.Z);
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
 
             output = new Vector(0, 0, 0);
         }

@@ -42,11 +42,19 @@
             System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.quadViewer1 = new ADRCVisualization.QuadViewer();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.xPositionTB = new System.Windows.Forms.TextBox();
+            this.yPositionTB = new System.Windows.Forms.TextBox();
+            this.zPositionTB = new System.Windows.Forms.TextBox();
+            this.xRotationTB = new System.Windows.Forms.TextBox();
+            this.yRotationTB = new System.Windows.Forms.TextBox();
+            this.zRotationTB = new System.Windows.Forms.TextBox();
+            this.sendXYZ = new System.Windows.Forms.Button();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.quadViewer1 = new ADRCVisualization.QuadViewer();
+            this.sendHPB = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.SuspendLayout();
@@ -135,15 +143,6 @@
             this.chart2.TabIndex = 1;
             this.chart2.Text = "chart2";
             // 
-            // elementHost1
-            // 
-            this.elementHost1.Location = new System.Drawing.Point(726, 13);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(502, 486);
-            this.elementHost1.TabIndex = 2;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.quadViewer1;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -171,12 +170,91 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "3D View";
             // 
+            // xPositionTB
+            // 
+            this.xPositionTB.Location = new System.Drawing.Point(12, 519);
+            this.xPositionTB.Name = "xPositionTB";
+            this.xPositionTB.Size = new System.Drawing.Size(100, 20);
+            this.xPositionTB.TabIndex = 6;
+            // 
+            // yPositionTB
+            // 
+            this.yPositionTB.Location = new System.Drawing.Point(118, 519);
+            this.yPositionTB.Name = "yPositionTB";
+            this.yPositionTB.Size = new System.Drawing.Size(100, 20);
+            this.yPositionTB.TabIndex = 7;
+            // 
+            // zPositionTB
+            // 
+            this.zPositionTB.Location = new System.Drawing.Point(224, 519);
+            this.zPositionTB.Name = "zPositionTB";
+            this.zPositionTB.Size = new System.Drawing.Size(100, 20);
+            this.zPositionTB.TabIndex = 8;
+            // 
+            // xRotationTB
+            // 
+            this.xRotationTB.Location = new System.Drawing.Point(520, 519);
+            this.xRotationTB.Name = "xRotationTB";
+            this.xRotationTB.Size = new System.Drawing.Size(100, 20);
+            this.xRotationTB.TabIndex = 9;
+            // 
+            // yRotationTB
+            // 
+            this.yRotationTB.Location = new System.Drawing.Point(626, 519);
+            this.yRotationTB.Name = "yRotationTB";
+            this.yRotationTB.Size = new System.Drawing.Size(100, 20);
+            this.yRotationTB.TabIndex = 10;
+            // 
+            // zRotationTB
+            // 
+            this.zRotationTB.Location = new System.Drawing.Point(732, 519);
+            this.zRotationTB.Name = "zRotationTB";
+            this.zRotationTB.Size = new System.Drawing.Size(100, 20);
+            this.zRotationTB.TabIndex = 11;
+            // 
+            // sendXYZ
+            // 
+            this.sendXYZ.Location = new System.Drawing.Point(330, 519);
+            this.sendXYZ.Name = "sendXYZ";
+            this.sendXYZ.Size = new System.Drawing.Size(183, 20);
+            this.sendXYZ.TabIndex = 12;
+            this.sendXYZ.Text = "Send XYZ Coordinates";
+            this.sendXYZ.UseVisualStyleBackColor = true;
+            this.sendXYZ.Click += new System.EventHandler(this.sendXYZ_Click);
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Location = new System.Drawing.Point(726, 13);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(502, 486);
+            this.elementHost1.TabIndex = 2;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.quadViewer1;
+            // 
+            // sendHPB
+            // 
+            this.sendHPB.Location = new System.Drawing.Point(838, 519);
+            this.sendHPB.Name = "sendHPB";
+            this.sendHPB.Size = new System.Drawing.Size(183, 20);
+            this.sendHPB.TabIndex = 13;
+            this.sendHPB.Text = "Send XYZ Rotation";
+            this.sendHPB.UseVisualStyleBackColor = true;
+            this.sendHPB.Click += new System.EventHandler(this.sendHPB_Click);
+            // 
             // Visualizer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(1240, 511);
+            this.ClientSize = new System.Drawing.Size(1240, 549);
+            this.Controls.Add(this.sendHPB);
+            this.Controls.Add(this.sendXYZ);
+            this.Controls.Add(this.zRotationTB);
+            this.Controls.Add(this.yRotationTB);
+            this.Controls.Add(this.xRotationTB);
+            this.Controls.Add(this.zPositionTB);
+            this.Controls.Add(this.yPositionTB);
+            this.Controls.Add(this.xPositionTB);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -206,6 +284,14 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox xPositionTB;
+        private System.Windows.Forms.TextBox yPositionTB;
+        private System.Windows.Forms.TextBox zPositionTB;
+        private System.Windows.Forms.TextBox xRotationTB;
+        private System.Windows.Forms.TextBox yRotationTB;
+        private System.Windows.Forms.TextBox zRotationTB;
+        private System.Windows.Forms.Button sendXYZ;
+        private System.Windows.Forms.Button sendHPB;
     }
 }
 

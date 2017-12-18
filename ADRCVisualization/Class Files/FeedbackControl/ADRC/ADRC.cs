@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ADRCVisualization.Class_Files.Mathematics;
+using ADRCVisualization.Class_Files.FeedbackControl;
 
 namespace ADRCVisualization.Class_Files
 {
-    class ADRC_PD
+    class ADRC : FeedbackController
     {
-        private PID pid;
+        public PID PID { get; set; }
         private ExtendedStateObserver ExtendedStateObserver;
         private NonlinearCombiner NonlinearCombiner;
 
@@ -35,7 +36,7 @@ namespace ADRCVisualization.Class_Files
         /// <param name="kp">P Gain</param>
         /// <param name="kd">D Gain</param>
         /// <param name="maxOutput">Constrained maximum output</param>
-        public ADRC_PD(double amplificationCoefficient, double dampingCoefficient, double plantCoefficient, double precisionModifier, double kp, double kd, double maxOutput)
+        public ADRC(double amplificationCoefficient, double dampingCoefficient, double plantCoefficient, double precisionModifier, double maxOutput)
         {
             this.amplificationCoefficient = amplificationCoefficient;
             this.dampingCoefficient = dampingCoefficient;
@@ -43,7 +44,31 @@ namespace ADRCVisualization.Class_Files
             this.precisionModifier = precisionModifier;
             this.maxOutput = maxOutput;
 
-            pid = new PID(kp, 0, kd, maxOutput);
+            ExtendedStateObserver = new ExtendedStateObserver(false);
+            NonlinearCombiner = new NonlinearCombiner(amplificationCoefficient, dampingCoefficient);
+
+            dateTime = DateTime.Now;
+        }
+
+        /// <summary>
+        /// ADRC implementation utilizing a PD controller in place of a tracking differentiator.
+        /// </summary>
+        /// <param name="amplificationCoefficient">R</param>
+        /// <param name="dampingCoefficient">C</param>
+        /// <param name="plantCoefficient">B</param>
+        /// <param name="precisionModifier">H0</param>
+        /// <param name="kp">P Gain</param>
+        /// <param name="kd">D Gain</param>
+        /// <param name="maxOutput">Constrained maximum output</param>
+        public ADRC(double amplificationCoefficient, double dampingCoefficient, double plantCoefficient, double precisionModifier, PID pid, double maxOutput)
+        {
+            this.amplificationCoefficient = amplificationCoefficient;
+            this.dampingCoefficient = dampingCoefficient;
+            this.plantCoefficient = plantCoefficient;
+            this.precisionModifier = precisionModifier;
+            this.maxOutput = maxOutput;
+            this.PID = pid;
+
             ExtendedStateObserver = new ExtendedStateObserver(false);
             NonlinearCombiner = new NonlinearCombiner(amplificationCoefficient, dampingCoefficient);
 
@@ -56,15 +81,17 @@ namespace ADRCVisualization.Class_Files
         /// <param name="setpoint">Target</param>
         /// <param name="processVariable">Actual</param>
         /// <returns></returns>
-        public double Calculate(double setpoint, double processVariable)
+        public override double Calculate(double setpoint, double processVariable)
         {
-            samplingPeriod = DateTime.Now.Subtract(dateTime).TotalSeconds;
+            //samplingPeriod = DateTime.Now.Subtract(dateTime).TotalSeconds;
+
+            samplingPeriod = 0.05;
 
             if (samplingPeriod > 0)
             {
                 precisionCoefficient = samplingPeriod * precisionModifier;
                 
-                double pdValue = pid.Calculate(setpoint, processVariable, samplingPeriod);
+                double pdValue = PID.Calculate(setpoint, processVariable, samplingPeriod);
 
                 Tuple<double, double> pd = new Tuple<double, double>(pdValue, previousPD);
                 Tuple<double, double, double> eso = ExtendedStateObserver.ObserveState(samplingPeriod, output, plantCoefficient, processVariable);//double u, double y, double b0

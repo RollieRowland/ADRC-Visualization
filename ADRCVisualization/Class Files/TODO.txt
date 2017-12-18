@@ -28,3 +28,4 @@ calculate force vectors needed to reach rotation and position: acceleration in t
 
  ////////////////////////////////////
  Count in gyroscopic precession
+

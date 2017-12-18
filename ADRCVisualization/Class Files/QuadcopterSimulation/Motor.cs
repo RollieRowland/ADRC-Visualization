@@ -10,6 +10,11 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
     {
         private double SetPoint;
 
+        public Motor()
+        {
+            SetPoint = 0;
+        }
+
         public void SetOutput(double SetPoint)
         {
             this.SetPoint = SetPoint;

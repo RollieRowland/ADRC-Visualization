@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ADRCVisualization.Class_Files.FeedbackControl
 {
-    class VectorADRC
+    abstract class FeedbackController
     {
+        public abstract double Calculate(double setpoint, double processVariable);
     }
 }

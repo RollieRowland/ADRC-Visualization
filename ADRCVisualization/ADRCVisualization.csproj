@@ -65,11 +65,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class Files\FeedbackControl\ADRC\AbstractMath.cs" />
-    <Compile Include="Class Files\FeedbackControl\ADRC\ADRC_TD.cs" />
-    <Compile Include="Class Files\FeedbackControl\ADRC\ADRC_PD.cs" />
+    <Compile Include="Class Files\FeedbackControl\ADRC\ADRC.cs" />
     <Compile Include="Class Files\BitmapModifier.cs" />
     <Compile Include="Class Files\FeedbackControl\ADRC\ExtendedStateObserver.cs" />
-    <Compile Include="Class Files\FeedbackControl\VectorADRC.cs" />
+    <Compile Include="Class Files\FeedbackControl\FeedbackController.cs" />
+    <Compile Include="Class Files\FeedbackControl\VectorFeedbackController.cs" />
     <Compile Include="Class Files\Filters\VectorKalmanFilter.cs" />
     <Compile Include="Class Files\FourierTransforms\FourierBitmap.cs" />
     <Compile Include="Class Files\FourierTransforms\FourierTransform.cs" />
@@ -79,7 +79,6 @@
     <Compile Include="Class Files\Mathematics\Statistics.cs" />
     <Compile Include="Class Files\Mathematics\Turbulence.cs" />
     <Compile Include="Class Files\Mathematics\Vector.cs" />
-    <Compile Include="Class Files\FeedbackControl\VectorPID.cs" />
     <Compile Include="Class Files\Quadcopter.cs" />
     <Compile Include="Class Files\QuadcopterSimulation\IMU.cs" />
     <Compile Include="Class Files\QuadcopterSimulation\Motor.cs" />

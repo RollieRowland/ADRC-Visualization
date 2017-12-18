@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ADRCVisualization.Class_Files.Mathematics;
+using ADRCVisualization.Class_Files.FeedbackControl;
 
 namespace ADRCVisualization.Class_Files
 {
-    class PID
+    class PID : FeedbackController
     {
         private double maxOutput;
         private double kp;
@@ -42,7 +43,7 @@ namespace ADRCVisualization.Class_Files
         /// <param name="setpoint">Target</param>
         /// <param name="processVariable">Actual</param>
         /// <returns>Returns output of PID</returns>
-        public double Calculate(double setpoint, double processVariable)
+        public override double Calculate(double setpoint, double processVariable)
         {
             double POut, IOut, DOut, dt;
             

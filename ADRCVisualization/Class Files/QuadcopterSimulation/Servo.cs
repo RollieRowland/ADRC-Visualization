@@ -10,6 +10,11 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
     {
         private double SetPoint;
 
+        public Servo()
+        {
+            SetPoint = 0;
+        }
+
         public void SetAngle(double SetPoint)
         {
             this.SetPoint = SetPoint;
