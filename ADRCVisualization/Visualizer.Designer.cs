@@ -28,264 +28,248 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Visualizer));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.chart3 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.chart4 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.pidPictureBox = new System.Windows.Forms.PictureBox();
-            this.adrcPictureBox = new System.Windows.Forms.PictureBox();
-            this.pidScale = new System.Windows.Forms.Label();
-            this.adrcScale = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.xPositionTB = new System.Windows.Forms.TextBox();
+            this.yPositionTB = new System.Windows.Forms.TextBox();
+            this.zPositionTB = new System.Windows.Forms.TextBox();
+            this.xRotationTB = new System.Windows.Forms.TextBox();
+            this.yRotationTB = new System.Windows.Forms.TextBox();
+            this.zRotationTB = new System.Windows.Forms.TextBox();
+            this.sendXYZ = new System.Windows.Forms.Button();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.quadViewer1 = new ADRCVisualization.QuadViewer();
+            this.sendHPB = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pidPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.adrcPictureBox)).BeginInit();
             this.SuspendLayout();
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Location = new System.Drawing.Point(12, 12);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(540, 540);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
             // 
             // chart1
             // 
+            chartArea1.Area3DStyle.IsClustered = true;
+            chartArea1.Area3DStyle.LightStyle = System.Windows.Forms.DataVisualization.Charting.LightStyle.Realistic;
             chartArea1.AxisX.LabelStyle.Enabled = false;
-            chartArea1.AxisX2.LabelStyle.Enabled = false;
+            chartArea1.AxisY.LabelStyle.Enabled = false;
             chartArea1.Name = "ChartArea1";
             this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(524, 12);
+            this.chart1.Location = new System.Drawing.Point(13, 13);
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Legend = "Legend1";
-            series1.Name = "PID Angle";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
+            series1.IsVisibleInLegend = false;
+            series1.MarkerSize = 15;
+            series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Diamond;
+            series1.Name = "Series1";
             series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Legend = "Legend1";
-            series2.Name = "ADRC Angle";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
+            series2.MarkerSize = 10;
+            series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+            series2.Name = "Series2";
             series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series3.Legend = "Legend1";
-            series3.Name = "Target 1";
-            series3.YValuesPerPoint = 3;
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
+            series3.MarkerSize = 10;
+            series3.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+            series3.Name = "Series3";
             series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series4.Legend = "Legend1";
-            series4.Name = "Target 2";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
+            series4.MarkerSize = 10;
+            series4.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+            series4.Name = "Series4";
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastPoint;
+            series5.MarkerSize = 10;
+            series5.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+            series5.Name = "Series5";
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series6.MarkerSize = 10;
+            series6.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star4;
+            series6.Name = "Series6";
+            series7.ChartArea = "ChartArea1";
+            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series7.MarkerSize = 10;
+            series7.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star4;
+            series7.Name = "Series7";
+            series8.ChartArea = "ChartArea1";
+            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series8.MarkerSize = 10;
+            series8.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star4;
+            series8.Name = "Series8";
+            series9.ChartArea = "ChartArea1";
+            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series9.MarkerSize = 10;
+            series9.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star4;
+            series9.Name = "Series9";
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
             this.chart1.Series.Add(series3);
             this.chart1.Series.Add(series4);
-            this.chart1.Size = new System.Drawing.Size(559, 270);
-            this.chart1.TabIndex = 1;
+            this.chart1.Series.Add(series5);
+            this.chart1.Series.Add(series6);
+            this.chart1.Series.Add(series7);
+            this.chart1.Series.Add(series8);
+            this.chart1.Series.Add(series9);
+            this.chart1.Size = new System.Drawing.Size(500, 500);
+            this.chart1.TabIndex = 0;
             this.chart1.Text = "chart1";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(89, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Correction State: ";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 29);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(60, 13);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Green: PID";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 46);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(63, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Red: ADRC";
             // 
             // chart2
             // 
             chartArea2.AxisX.LabelStyle.Enabled = false;
-            chartArea2.AxisX2.LabelStyle.Enabled = false;
+            chartArea2.AxisY.LabelStyle.Enabled = false;
             chartArea2.Name = "ChartArea1";
             this.chart2.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chart2.Legends.Add(legend2);
-            this.chart2.Location = new System.Drawing.Point(524, 282);
+            this.chart2.Location = new System.Drawing.Point(520, 13);
             this.chart2.Name = "chart2";
-            series5.ChartArea = "ChartArea1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series5.Legend = "Legend1";
-            series5.Name = "PID Output";
-            series6.ChartArea = "ChartArea1";
-            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series6.Legend = "Legend1";
-            series6.Name = "ADRC Output";
-            this.chart2.Series.Add(series5);
-            this.chart2.Series.Add(series6);
-            this.chart2.Size = new System.Drawing.Size(559, 270);
-            this.chart2.TabIndex = 5;
+            series10.ChartArea = "ChartArea1";
+            series10.Name = "Series1";
+            this.chart2.Series.Add(series10);
+            this.chart2.Size = new System.Drawing.Size(190, 486);
+            this.chart2.TabIndex = 1;
             this.chart2.Text = "chart2";
             // 
-            // chart3
+            // label1
             // 
-            chartArea3.AxisX.LabelStyle.Enabled = false;
-            chartArea3.AxisX2.LabelStyle.Enabled = false;
-            chartArea3.AxisY.LabelStyle.Enabled = false;
-            chartArea3.AxisY2.LabelStyle.Enabled = false;
-            chartArea3.Name = "ChartArea1";
-            this.chart3.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.chart3.Legends.Add(legend3);
-            this.chart3.Location = new System.Drawing.Point(1057, 12);
-            this.chart3.Name = "chart3";
-            series7.ChartArea = "ChartArea1";
-            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series7.Legend = "Legend1";
-            series7.Name = "FFTW PID";
-            series8.ChartArea = "ChartArea1";
-            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series8.Legend = "Legend1";
-            series8.Name = "FFTW Angle";
-            this.chart3.Series.Add(series7);
-            this.chart3.Series.Add(series8);
-            this.chart3.Size = new System.Drawing.Size(421, 270);
-            this.chart3.TabIndex = 6;
-            this.chart3.Text = "chart3";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(125, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "X/Z Coordinate Positions";
             // 
-            // chart4
+            // label2
             // 
-            chartArea4.AxisX.LabelStyle.Enabled = false;
-            chartArea4.AxisX2.LabelStyle.Enabled = false;
-            chartArea4.AxisY.Enabled = System.Windows.Forms.DataVisualization.Charting.AxisEnabled.True;
-            chartArea4.AxisY.LabelStyle.Enabled = false;
-            chartArea4.AxisY2.LabelStyle.Enabled = false;
-            chartArea4.Name = "ChartArea1";
-            this.chart4.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            this.chart4.Legends.Add(legend4);
-            this.chart4.Location = new System.Drawing.Point(1057, 282);
-            this.chart4.Name = "chart4";
-            series9.ChartArea = "ChartArea1";
-            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series9.Legend = "Legend1";
-            series9.Name = "FFTW ADRC";
-            series10.ChartArea = "ChartArea1";
-            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series10.Legend = "Legend1";
-            series10.Name = "FFTW Angle";
-            this.chart4.Series.Add(series9);
-            this.chart4.Series.Add(series10);
-            this.chart4.Size = new System.Drawing.Size(421, 270);
-            this.chart4.TabIndex = 7;
-            this.chart4.Text = "chart4";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(530, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(108, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Y Coordinate Position";
             // 
-            // pidPictureBox
+            // label3
             // 
-            this.pidPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pidPictureBox.Location = new System.Drawing.Point(12, 559);
-            this.pidPictureBox.Name = "pidPictureBox";
-            this.pidPictureBox.Size = new System.Drawing.Size(710, 350);
-            this.pidPictureBox.TabIndex = 8;
-            this.pidPictureBox.TabStop = false;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(723, 9);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(47, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "3D View";
             // 
-            // adrcPictureBox
+            // xPositionTB
             // 
-            this.adrcPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.adrcPictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.adrcPictureBox.Location = new System.Drawing.Point(735, 559);
-            this.adrcPictureBox.Name = "adrcPictureBox";
-            this.adrcPictureBox.Size = new System.Drawing.Size(710, 350);
-            this.adrcPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.adrcPictureBox.TabIndex = 9;
-            this.adrcPictureBox.TabStop = false;
+            this.xPositionTB.Location = new System.Drawing.Point(12, 519);
+            this.xPositionTB.Name = "xPositionTB";
+            this.xPositionTB.Size = new System.Drawing.Size(100, 20);
+            this.xPositionTB.TabIndex = 6;
             // 
-            // pidScale
+            // yPositionTB
             // 
-            this.pidScale.AutoSize = true;
-            this.pidScale.Location = new System.Drawing.Point(1072, 276);
-            this.pidScale.Name = "pidScale";
-            this.pidScale.Size = new System.Drawing.Size(58, 13);
-            this.pidScale.TabIndex = 10;
-            this.pidScale.Text = "PID Scale:";
+            this.yPositionTB.Location = new System.Drawing.Point(118, 519);
+            this.yPositionTB.Name = "yPositionTB";
+            this.yPositionTB.Size = new System.Drawing.Size(100, 20);
+            this.yPositionTB.TabIndex = 7;
             // 
-            // adrcScale
+            // zPositionTB
             // 
-            this.adrcScale.AutoSize = true;
-            this.adrcScale.Location = new System.Drawing.Point(1071, 543);
-            this.adrcScale.Name = "adrcScale";
-            this.adrcScale.Size = new System.Drawing.Size(70, 13);
-            this.adrcScale.TabIndex = 11;
-            this.adrcScale.Text = "ADRC Scale:";
+            this.zPositionTB.Location = new System.Drawing.Point(224, 519);
+            this.zPositionTB.Name = "zPositionTB";
+            this.zPositionTB.Size = new System.Drawing.Size(100, 20);
+            this.zPositionTB.TabIndex = 8;
+            // 
+            // xRotationTB
+            // 
+            this.xRotationTB.Location = new System.Drawing.Point(520, 519);
+            this.xRotationTB.Name = "xRotationTB";
+            this.xRotationTB.Size = new System.Drawing.Size(100, 20);
+            this.xRotationTB.TabIndex = 9;
+            // 
+            // yRotationTB
+            // 
+            this.yRotationTB.Location = new System.Drawing.Point(626, 519);
+            this.yRotationTB.Name = "yRotationTB";
+            this.yRotationTB.Size = new System.Drawing.Size(100, 20);
+            this.yRotationTB.TabIndex = 10;
+            // 
+            // zRotationTB
+            // 
+            this.zRotationTB.Location = new System.Drawing.Point(732, 519);
+            this.zRotationTB.Name = "zRotationTB";
+            this.zRotationTB.Size = new System.Drawing.Size(100, 20);
+            this.zRotationTB.TabIndex = 11;
+            // 
+            // sendXYZ
+            // 
+            this.sendXYZ.Location = new System.Drawing.Point(330, 519);
+            this.sendXYZ.Name = "sendXYZ";
+            this.sendXYZ.Size = new System.Drawing.Size(183, 20);
+            this.sendXYZ.TabIndex = 12;
+            this.sendXYZ.Text = "Send XYZ Coordinates";
+            this.sendXYZ.UseVisualStyleBackColor = true;
+            this.sendXYZ.Click += new System.EventHandler(this.sendXYZ_Click);
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Location = new System.Drawing.Point(726, 13);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(502, 486);
+            this.elementHost1.TabIndex = 2;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.quadViewer1;
+            // 
+            // sendHPB
+            // 
+            this.sendHPB.Location = new System.Drawing.Point(838, 519);
+            this.sendHPB.Name = "sendHPB";
+            this.sendHPB.Size = new System.Drawing.Size(183, 20);
+            this.sendHPB.TabIndex = 13;
+            this.sendHPB.Text = "Send XYZ Rotation";
+            this.sendHPB.UseVisualStyleBackColor = true;
+            this.sendHPB.Click += new System.EventHandler(this.sendHPB_Click);
             // 
             // Visualizer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(1457, 918);
-            this.Controls.Add(this.adrcScale);
-            this.Controls.Add(this.pidScale);
-            this.Controls.Add(this.chart4);
-            this.Controls.Add(this.chart3);
+            this.ClientSize = new System.Drawing.Size(1240, 549);
+            this.Controls.Add(this.sendHPB);
+            this.Controls.Add(this.sendXYZ);
+            this.Controls.Add(this.zRotationTB);
+            this.Controls.Add(this.yRotationTB);
+            this.Controls.Add(this.xRotationTB);
+            this.Controls.Add(this.zPositionTB);
+            this.Controls.Add(this.yPositionTB);
+            this.Controls.Add(this.xPositionTB);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.adrcPictureBox);
-            this.Controls.Add(this.pidPictureBox);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.chart1);
+            this.Controls.Add(this.elementHost1);
             this.Controls.Add(this.chart2);
+            this.Controls.Add(this.chart1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Visualizer";
             this.ShowIcon = false;
-            this.Text = "PID and ADRC Analyser";
+            this.Text = "Quadcopter Analyser";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Visualizer_FormClosing);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chart4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pidPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.adrcPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -293,18 +277,21 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private QuadViewer quadViewer1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart3;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart4;
-        private System.Windows.Forms.PictureBox pidPictureBox;
-        private System.Windows.Forms.PictureBox adrcPictureBox;
-        private System.Windows.Forms.Label pidScale;
-        private System.Windows.Forms.Label adrcScale;
+        private System.Windows.Forms.TextBox xPositionTB;
+        private System.Windows.Forms.TextBox yPositionTB;
+        private System.Windows.Forms.TextBox zPositionTB;
+        private System.Windows.Forms.TextBox xRotationTB;
+        private System.Windows.Forms.TextBox yRotationTB;
+        private System.Windows.Forms.TextBox zRotationTB;
+        private System.Windows.Forms.Button sendXYZ;
+        private System.Windows.Forms.Button sendHPB;
     }
 }
 

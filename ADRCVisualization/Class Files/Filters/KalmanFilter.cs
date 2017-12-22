@@ -45,7 +45,7 @@ namespace ADRCVisualization.Class_Files
 
             avg = sum / i;
 
-            filteredValue = (gain * filteredValue) + (gainInverse * avg);
+            filteredValue = (gain * input) + (gainInverse * avg);
 
             if (valueList.ToArray().Length > memory)
             {

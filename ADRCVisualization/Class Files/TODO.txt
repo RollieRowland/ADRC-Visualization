@@ -1,19 +1,31 @@
-﻿Research parameter optimization with neural network
+﻿Estimate appropriate force and directionality for each thruster for the quad to reach a position and orientation
+- as opposed to setting individual targets for each thruster: simply doesn't work
 
-u:  
-u0: 
-r:  ramp up, acceleration to target setpoint, speeds up or slows down the transient, maximum slope for acceleration
-r0: controller parameter, is equal to r
-h:	sampling period
-h0: controller parameter, is equal to h
-h1: precision coefficient, typically a 4x multiple of h
-v1: desired target
-v2: derivative of the target
-z1: 
-z2: 
-z3: 
-b:  
-b0: 
-d:  h * r^2, time period * the maximum acceleration that can be used squard
-y:  the input from the sensor, process variable = pv = y
-v:  setpoint or target 
+Should be able to rotate position without moving the quad, simplifies the structure. Get this working, then factor position back in.
+
+Determine total force required to moved object to a position and to rotate to a position
+
+calculate force vectors needed to reach rotation and position: acceleration in the x, y, z and angular acceleration about the x, y, z axes
+ -> divide vector to sub positional force to reach rotation and position: force split across 4 different thrust vectors
+ -> divide vector to provide individual directionality and force separately: force split into angular direction in the x and y, then force in the z
+
+ mass = 0.04kg - without integrating surface, guess 0.01kg for where it matters
+ radius = 9.75cm = 0.0975m
+
+ kv = rpm per volt: 12* 2500 = 30000 rpm
+
+ inertia = mass * r^2 = 0.00038025  | 0.0000950625
+ angular velocity: 30,000 rpm = 3141.59265 rads/second     |     5000rpm = 523.59877
+ Angular momentum = inertia * angular velocity = 1.19459 kgm^2 / sec   |   0.29864765	|	0.04977
+
+ torque = 60 rad/s * 1.19459
+
+ torque = 1.0472 rad/s * 0.2986476 = 17.9188 kg/m * 9.81 = 175.723 ozin MAX -> 0.31724/3.11212 nm
+ torque = 1.0472 rad/s * 0.0497746 =  2.9865 kg/m * 9.81 =  29.287 ozin MIN -> 0.05212/0.51134 nm
+
+ torque = swiveling rate * angular momentum
+
+
+ ////////////////////////////////////
+ Count in gyroscopic precession
+
