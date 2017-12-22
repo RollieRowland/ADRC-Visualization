@@ -35,35 +35,28 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
 
             ThrustController = new VectorFeedbackController()
             {
-                X = new ADRC(2000, 2.5, 0.75, 0.005, 45)
-                {
-                    PID = new PID(20, 0, 0, 90)
-                },
-                Y = new ADRC(2000, 2.5, 5, 0.01, 100)
-                {
-                    PID = new PID(25, 0, 0.75, 100)
-                },
-                Z = new ADRC(2000, 2.5, 0.75, 0.005, 45)
-                {
-                    PID = new PID(20, 0, 0, 90)
-                }
+                X = new PID(5, 0, 5.5, 45),
+                Y = new PID(0.5, 0, 2.75, 100),
+                Z = new PID(5, 0, 5.5, 45)
             };
             
             ThrustController = new VectorFeedbackController()
             {
-                X = new PID(20, 0, 0, 45),
-                Y = new PID(5, 0, 0.75, 100),
-                Z = new PID(20, 0, 0, 45)
+                X = new ADRC(400, 1, 2, 0.01, 45)
+                {
+                    PID = new PID(5, 0, 5, 45)
+                },
+                Y = new ADRC(400, 1, 2, 0.01, 100)
+                {
+                    PID = new PID(5, 0, 5, 100)
+                },
+                Z = new ADRC(400, 1, 2, 0.01, 45)
+                {
+                    PID = new PID(5, 0, 5, 45)
+                }
             };
 
-            ThrustController = new VectorFeedbackController()
-            {
-                X = new PID(20, 0, 5, 45),
-                Y = new PID(5, 0, 0.75, 100),
-                Z = new PID(20, 0, 5, 45)
-            };
-
-            thrustKF = new VectorKalmanFilter(new Vector(0.125, 0.875, 0.125), new Vector(20, 3, 20));//Increase memory to decrease response time
+            thrustKF = new VectorKalmanFilter(new Vector(0.5, 0.5, 0.5), new Vector(10, 10, 10));//Increase memory to decrease response time
 
             CurrentRotation = new Vector(0, 0, 0);
             TargetRotation = new Vector(0, 0, 0);
@@ -71,30 +64,27 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             TargetPosition = new Vector(0, 0, 0);
         }
 
-        public Vector Calculate()
+        public Vector Calculate(Vector Rotation, Vector Offset)
         {
-            Vector thrust = ThrustController.Calculate(TargetPosition, CurrentPosition);
+            Rotation = Rotation.Multiply(new Vector(1, 1, 1));
+
+            //Thrust compensated for the change required when rotating in the xyz dimensions
+            Vector thrust = ThrustController.Calculate(Matrix.RotateVector(Rotation, TargetPosition), Matrix.RotateVector(Rotation, CurrentPosition));
+            //Vector thrust = ThrustController.Calculate(TargetPosition, CurrentPosition);
+
+            thrust = thrust.Add(Offset);
 
             thrust.Y = thrust.Y < 0 ? 0 : thrust.Y;
 
-            //thrustKF.Filter(thrust);
+            thrustKF.Filter(thrust);
 
-            return thrust;
-
-            //secondaryJoint.SetAngle(thrustKF.GetFilteredValue().X);
-            //propellor.SetOutput(thrustKF.GetFilteredValue().Y);
-            //primaryJoint.SetAngle(thrustKF.GetFilteredValue().Z);
-        }
-
-        public void SetOutputs(Vector outputs)
-        {
-            thrustKF.Filter(outputs);
-
-            thrustKF.GetFilteredValue();
+            CurrentRotation = new Vector(thrustKF.GetFilteredValue().Z, 0, thrustKF.GetFilteredValue().X);
 
             secondaryJoint.SetAngle(thrustKF.GetFilteredValue().X);
             propellor.SetOutput(thrustKF.GetFilteredValue().Y);
             primaryJoint.SetAngle(thrustKF.GetFilteredValue().Z);
+
+            return thrust;
         }
 
         public Vector ReturnThrustVector()

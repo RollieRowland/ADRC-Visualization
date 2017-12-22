@@ -64,6 +64,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class Files\FeedbackControl\AdaptivePID.cs" />
     <Compile Include="Class Files\FeedbackControl\ADRC\AbstractMath.cs" />
     <Compile Include="Class Files\FeedbackControl\ADRC\ADRC.cs" />
     <Compile Include="Class Files\BitmapModifier.cs" />

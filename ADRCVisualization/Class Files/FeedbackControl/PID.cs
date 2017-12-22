@@ -10,10 +10,11 @@ namespace ADRCVisualization.Class_Files
 {
     class PID : FeedbackController
     {
+        public double KP { get; set; }
+        public double KI { get; set; }
+        public double KD { get; set; }
+
         private double maxOutput;
-        private double kp;
-        private double ki;
-        private double kd;
         private double integral;
         private double error;
         private double previousError;
@@ -29,9 +30,9 @@ namespace ADRCVisualization.Class_Files
         /// <param name="maxOutput">Maximum output for constraint</param>
         public PID(double kp, double ki, double kd, double maxOutput)
         {
-            this.kp = kp;
-            this.ki = ki;
-            this.kd = kd;
+            KP = kp;
+            KI = ki;
+            KD = kd;
             this.maxOutput = maxOutput;
 
             time = DateTime.Now;
@@ -54,12 +55,12 @@ namespace ADRCVisualization.Class_Files
             {
                 error = setpoint - processVariable;
 
-                POut = kp * error;
+                POut = KP * error;
 
                 integral += error * dt;
-                IOut = ki * integral;
+                IOut = KI * integral;
 
-                DOut = kd * ((error - previousError) / dt);
+                DOut = KD * ((error - previousError) / dt);
 
                 output = Misc.Constrain(POut + IOut + DOut, -maxOutput, maxOutput);
 
@@ -85,12 +86,12 @@ namespace ADRCVisualization.Class_Files
             {
                 error = setpoint - processVariable;
 
-                POut = kp * error;
+                POut = KP * error;
 
                 integral += error * samplingPeriod;
-                IOut = ki * integral;
+                IOut = KI * integral;
 
-                DOut = kd * ((error - previousError) / samplingPeriod);
+                DOut = KD * ((error - previousError) / samplingPeriod);
 
                 output = Misc.Constrain(POut + IOut + DOut, -maxOutput, maxOutput);
                 

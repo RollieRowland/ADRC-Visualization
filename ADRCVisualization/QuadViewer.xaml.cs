@@ -207,7 +207,7 @@ namespace ADRCVisualization
                 innerB.Transform = new MatrixTransform3D(innerBMatrix);
 
                 outerBMatrix.Translate(new Vector3D(1638, -1638, -28));
-                outerBMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), -bRelativeRotation.Z));
+                outerBMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), bRelativeRotation.Z));
                 outerBMatrix.Translate(new Vector3D(-1638, 1638, 28));
                 outerB.Transform = new MatrixTransform3D(outerBMatrix);
 
@@ -219,7 +219,7 @@ namespace ADRCVisualization
                 innerC.Transform = new MatrixTransform3D(innerCMatrix);
 
                 outerCMatrix.Translate(new Vector3D(1638, -1638, -28));
-                outerCMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), -cRelativeRotation.Z));
+                outerCMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), cRelativeRotation.Z));
                 outerCMatrix.Translate(new Vector3D(-1638, 1638, 28));
                 outerC.Transform = new MatrixTransform3D(outerCMatrix);
 
@@ -231,7 +231,7 @@ namespace ADRCVisualization
                 innerD.Transform = new MatrixTransform3D(innerDMatrix);
 
                 outerDMatrix.Translate(new Vector3D(-1638, -1638, -28));
-                outerDMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), -dRelativeRotation.Z));
+                outerDMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), dRelativeRotation.Z));
                 outerDMatrix.Translate(new Vector3D(1638, 1638, 28));
                 outerD.Transform = new MatrixTransform3D(outerDMatrix);
 
@@ -243,7 +243,7 @@ namespace ADRCVisualization
                 innerE.Transform = new MatrixTransform3D(innerEMatrix);
 
                 outerEMatrix.Translate(new Vector3D(-1638, -1638, -28));
-                outerEMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), -eRelativeRotation.Z));
+                outerEMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), eRelativeRotation.Z));
                 outerEMatrix.Translate(new Vector3D(1638, 1638, 28));
                 outerE.Transform = new MatrixTransform3D(outerEMatrix);
 

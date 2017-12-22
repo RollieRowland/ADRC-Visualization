@@ -35,7 +35,7 @@ namespace ADRCVisualization
 
         public Visualizer()
         {
-            quad = new Quadcopter(0.3, 50);
+            quad = new Quadcopter(0.3, 40);
 
             InitializeComponent();
 
@@ -114,34 +114,30 @@ namespace ADRCVisualization
 
             while (true)
             {
-                targetPosition = new Vector(1, -1, 1.2);
+                targetPosition = new Vector(1, 0, 1.2);
                 targetRotation = new Vector(0, 0, 0);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(4500);
+                await Task.Delay(10000);
 
                 targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new Vector(20, 0, 0);
+                targetRotation = new Vector(0, 90, 0);
+                Console.WriteLine("Target Set");
+                
+                await Task.Delay(10000);
+                /*
+                //targetPosition = new Vector(1, 0, -1.2);
+                targetRotation = new Vector(10, 0, 0);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(4500);
-                targetPosition = new Vector(1, 1, -1.2);
-                targetRotation = new Vector(0, 20, 0);
+                await Task.Delay(7500);
+
+                //targetPosition = new Vector(-1, 0, -1.2);
+                targetRotation = new Vector(0, 0, 10);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(4500);
-
-                targetPosition = new Vector(-1, -1, -1.2);
-                targetRotation = new Vector(0, 0, 20);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(4500);
-
-                targetPosition = new Vector(0, 0, 0);
-                targetRotation = new Vector(0, 20, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(4500);
+                await Task.Delay(7500);
+                */
             }
         }
 

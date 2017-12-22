@@ -20,8 +20,8 @@ calculate force vectors needed to reach rotation and position: acceleration in t
 
  torque = 60 rad/s * 1.19459
 
- torque = 1.0472 rad/s * 0.2986476 = 17.9188 kg/m * 9.81 = 175.723 nm MAX -> 0.31724/3.11212nm
- torque = 1.0472 rad/s * 0.0497746 =  2.9865 kg/m * 9.81 =  29.287 nm MIN -> 0.05212/0.51134nm
+ torque = 1.0472 rad/s * 0.2986476 = 17.9188 kg/m * 9.81 = 175.723 ozin MAX -> 0.31724/3.11212 nm
+ torque = 1.0472 rad/s * 0.0497746 =  2.9865 kg/m * 9.81 =  29.287 ozin MIN -> 0.05212/0.51134 nm
 
  torque = swiveling rate * angular momentum
 
