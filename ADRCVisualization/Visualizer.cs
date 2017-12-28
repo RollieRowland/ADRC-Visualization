@@ -35,7 +35,7 @@ namespace ADRCVisualization
 
         public Visualizer()
         {
-            quad = new Quadcopter(0.3, 40);
+            quad = new Quadcopter(0.3, 55);
 
             InitializeComponent();
 
@@ -112,6 +112,8 @@ namespace ADRCVisualization
         {
             quad.SetTarget(targetPosition, targetRotation);
 
+            double angle = 45;
+
             while (true)
             {
                 targetPosition = new Vector(1, 0, 1.2);
@@ -119,25 +121,24 @@ namespace ADRCVisualization
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(10000);
-
+                
                 targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new Vector(0, 90, 0);
+                targetRotation = new Vector(angle, 0, 0);
                 Console.WriteLine("Target Set");
                 
                 await Task.Delay(10000);
-                /*
-                //targetPosition = new Vector(1, 0, -1.2);
-                targetRotation = new Vector(10, 0, 0);
+                
+                targetPosition = new Vector(1, 0, -1.2);
+                targetRotation = new Vector(0, 0, angle);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(7500);
-
-                //targetPosition = new Vector(-1, 0, -1.2);
-                targetRotation = new Vector(0, 0, 10);
+                await Task.Delay(10000);
+                
+                targetPosition = new Vector(-1, 0, -1.2);
+                targetRotation = new Vector(0, angle, 0);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(7500);
-                */
+                await Task.Delay(10000);
             }
         }
 
@@ -238,7 +239,8 @@ namespace ADRCVisualization
             chart1.Series[6].Points.Clear();
             chart1.Series[7].Points.Clear();
             chart1.Series[8].Points.Clear();
-        
+
+            chart1.Series[0].MarkerColor = Color.MediumSlateBlue;
             chart1.Series[1].MarkerColor = Color.BurlyWood;
             chart1.Series[2].MarkerColor = Color.BlueViolet;
             chart1.Series[3].MarkerColor = Color.ForestGreen;

@@ -33,30 +33,24 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             primaryJoint = new Servo();
             secondaryJoint = new Servo();
 
-            ThrustController = new VectorFeedbackController()
-            {
-                X = new PID(5, 0, 5.5, 45),
-                Y = new PID(0.5, 0, 2.75, 100),
-                Z = new PID(5, 0, 5.5, 45)
-            };
             
             ThrustController = new VectorFeedbackController()
             {
-                X = new ADRC(400, 1, 2, 0.01, 45)
+                X = new ADRC(100, 0.001, 0.25, 0.01, 90)
                 {
-                    PID = new PID(5, 0, 5, 45)
+                    PID = new PID(5, 0, 5.5, 180)
                 },
-                Y = new ADRC(400, 1, 2, 0.01, 100)
+                Y = new ADRC(1000, 0.001, 0.75, 0.01, 100)
                 {
-                    PID = new PID(5, 0, 5, 100)
+                    PID = new PID(10, 0, 5, 100)
                 },
-                Z = new ADRC(400, 1, 2, 0.01, 45)
+                Z = new ADRC(100, 0.001, 0.25, 0.01, 90)
                 {
-                    PID = new PID(5, 0, 5, 45)
+                    PID = new PID(5, 0, 5.5, 180)
                 }
             };
 
-            thrustKF = new VectorKalmanFilter(new Vector(0.5, 0.5, 0.5), new Vector(10, 10, 10));//Increase memory to decrease response time
+            thrustKF = new VectorKalmanFilter(new Vector(0.2, 0.2, 0.2), new Vector(25, 25, 25));//Increase memory to decrease response time
 
             CurrentRotation = new Vector(0, 0, 0);
             TargetRotation = new Vector(0, 0, 0);
@@ -64,21 +58,22 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             TargetPosition = new Vector(0, 0, 0);
         }
 
-        public Vector Calculate(Vector Rotation, Vector Offset)
+        public Vector Calculate(Vector rotation, Vector offset)
         {
-            Rotation = Rotation.Multiply(new Vector(1, 1, 1));
+            rotation = rotation.Multiply(new Vector(1, 1, 1));
 
             //Thrust compensated for the change required when rotating in the xyz dimensions
-            Vector thrust = ThrustController.Calculate(Matrix.RotateVector(Rotation, TargetPosition), Matrix.RotateVector(Rotation, CurrentPosition));
-            //Vector thrust = ThrustController.Calculate(TargetPosition, CurrentPosition);
+            Vector thrust = ThrustController.Calculate(TargetPosition, CurrentPosition);
+            
+            offset.Y = offset.Y < 0 ? 0 : offset.Y;
 
-            thrust = thrust.Add(Offset);
+            thrust = thrust.Add(offset);
 
             thrust.Y = thrust.Y < 0 ? 0 : thrust.Y;
 
             thrustKF.Filter(thrust);
 
-            CurrentRotation = new Vector(thrustKF.GetFilteredValue().Z, 0, thrustKF.GetFilteredValue().X);
+            CurrentRotation = new Vector(thrustKF.GetFilteredValue().Z, 0, -thrustKF.GetFilteredValue().X);//for display purposes
 
             secondaryJoint.SetAngle(thrustKF.GetFilteredValue().X);
             propellor.SetOutput(thrustKF.GetFilteredValue().Y);
@@ -93,6 +88,8 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             Vector rotationVector = new Vector(-primaryJoint.GetAngle(), 0, secondaryJoint.GetAngle());
 
             thrustVector = Matrix.RotateVector(rotationVector, thrustVector);
+
+            //thrustVector = new Vector(secondaryJoint.GetAngle() * 0.1, propellor.GetOutput(), primaryJoint.GetAngle() * 0.1);//old method assumes no thrust loss in Y dimension, calibrate pids
 
             return thrustVector;
         }

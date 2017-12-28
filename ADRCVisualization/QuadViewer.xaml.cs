@@ -63,16 +63,26 @@ namespace ADRCVisualization
             string directory = @"C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\Resources\";
             //directory = @"..\..\Resources\";
 
+            import.DefaultMaterial = new DiffuseMaterial(new SolidColorBrush(Colors.MediumSlateBlue));
+
             Model3D mainModel = import.Load(directory + "Main.stl");
+            
+            import.DefaultMaterial = new DiffuseMaterial(new SolidColorBrush(Colors.BurlyWood));
 
             Model3D innerBModel = import.Load(directory + "InnerB.stl");
             Model3D outerBModel = import.Load(directory + "OuterB.stl");
 
+            import.DefaultMaterial = new DiffuseMaterial(new SolidColorBrush(Colors.BlueViolet));
+
             Model3D innerCModel = import.Load(directory + "InnerC.stl");
             Model3D outerCModel = import.Load(directory + "OuterC.stl");
 
+            import.DefaultMaterial = new DiffuseMaterial(new SolidColorBrush(Colors.ForestGreen));
+
             Model3D innerDModel = import.Load(directory + "InnerD.stl");
             Model3D outerDModel = import.Load(directory + "OuterD.stl");
+
+            import.DefaultMaterial = new DiffuseMaterial(new SolidColorBrush(Colors.MediumAquamarine));
 
             Model3D innerEModel = import.Load(directory + "InnerE.stl");
             Model3D outerEModel = import.Load(directory + "OuterE.stl");
@@ -202,60 +212,60 @@ namespace ADRCVisualization
                 /// B ROTATION
 
                 innerBMatrix.Translate(new Vector3D(-1638, 1638, -28));
-                innerBMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), -bRelativeRotation.X));
+                innerBMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), bRelativeRotation.Z));
                 innerBMatrix.Translate(new Vector3D(1638, -1638, 28));
                 innerB.Transform = new MatrixTransform3D(innerBMatrix);
 
                 outerBMatrix.Translate(new Vector3D(1638, -1638, -28));
-                outerBMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), bRelativeRotation.Z));
+                outerBMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), bRelativeRotation.X));
                 outerBMatrix.Translate(new Vector3D(-1638, 1638, 28));
                 outerB.Transform = new MatrixTransform3D(outerBMatrix);
 
                 /// C ROTATION
 
                 innerCMatrix.Translate(new Vector3D(1638, -1638, -28));
-                innerCMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), -cRelativeRotation.X));
+                innerCMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), cRelativeRotation.Z));
                 innerCMatrix.Translate(new Vector3D(-1638, 1638, 28));
                 innerC.Transform = new MatrixTransform3D(innerCMatrix);
 
                 outerCMatrix.Translate(new Vector3D(1638, -1638, -28));
-                outerCMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), cRelativeRotation.Z));
+                outerCMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), cRelativeRotation.X));
                 outerCMatrix.Translate(new Vector3D(-1638, 1638, 28));
                 outerC.Transform = new MatrixTransform3D(outerCMatrix);
 
                 /// D ROTATION
                 
                 innerDMatrix.Translate(new Vector3D(-1638, -1638, -28));
-                innerDMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), -dRelativeRotation.X));
+                innerDMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), dRelativeRotation.Z));
                 innerDMatrix.Translate(new Vector3D(1638, 1638, 28));
                 innerD.Transform = new MatrixTransform3D(innerDMatrix);
 
                 outerDMatrix.Translate(new Vector3D(-1638, -1638, -28));
-                outerDMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), dRelativeRotation.Z));
+                outerDMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), dRelativeRotation.X));
                 outerDMatrix.Translate(new Vector3D(1638, 1638, 28));
                 outerD.Transform = new MatrixTransform3D(outerDMatrix);
 
                 /// E ROTATION
 
                 innerEMatrix.Translate(new Vector3D(1638, 1638, -28));
-                innerEMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), -eRelativeRotation.X));
+                innerEMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), eRelativeRotation.Z));
                 innerEMatrix.Translate(new Vector3D(-1638, -1638, 28));
                 innerE.Transform = new MatrixTransform3D(innerEMatrix);
 
                 outerEMatrix.Translate(new Vector3D(-1638, -1638, -28));
-                outerEMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), eRelativeRotation.Z));
+                outerEMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), eRelativeRotation.X));
                 outerEMatrix.Translate(new Vector3D(1638, 1638, 28));
                 outerE.Transform = new MatrixTransform3D(outerEMatrix);
 
                 /// MAIN ROTATION
 
-                mainXMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), mainRotationRelative.X));
+                mainXMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), mainRotationRelative.Z));
                 mainX.Transform = new MatrixTransform3D(mainXMatrix);
 
                 mainYMatrix.Rotate(new Quaternion(new Vector3D(0, 0, 1), mainRotationRelative.Y));
                 mainY.Transform = new MatrixTransform3D(mainYMatrix);
 
-                mainZMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), mainRotationRelative.Z));
+                mainZMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), mainRotationRelative.X));
                 mainZ.Transform = new MatrixTransform3D(mainZMatrix);
             }));
 
