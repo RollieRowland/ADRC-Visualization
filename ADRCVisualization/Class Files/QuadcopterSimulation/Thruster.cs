@@ -63,8 +63,10 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             rotation = rotation.Multiply(new Vector(1, 1, 1));
 
             //Thrust compensated for the change required when rotating in the xyz dimensions
-            Vector thrust = ThrustController.Calculate(TargetPosition, CurrentPosition);
-            
+            Vector thrust = ThrustController.Calculate(TargetPosition, CurrentPosition);//thrust output in XYZ dimension
+
+            thrust = Matrix.RotateVector(new Vector(0, rotation.Y, 0), thrust);//adjust thruster output to quad frame, only Y dimension
+
             offset.Y = offset.Y < 0 ? 0 : offset.Y;
 
             thrust = thrust.Add(offset);

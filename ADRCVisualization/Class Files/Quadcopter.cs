@@ -113,10 +113,10 @@ namespace ADRCVisualization.Class_Files
             Vector rotationOutputD = new Vector( rotationOutput.Y / 2,  rotationOutput.X - rotationOutput.Z,  rotationOutput.Y / 2);
             Vector rotationOutputE = new Vector( rotationOutput.Y / 2,  rotationOutput.X + rotationOutput.Z, -rotationOutput.Y / 2);
 
-            rotationOutputB = Matrix.RotateVector(CurrentRotation, rotationOutputB);//Thruster output relative to quad origin
-            rotationOutputC = Matrix.RotateVector(CurrentRotation, rotationOutputC);
-            rotationOutputD = Matrix.RotateVector(CurrentRotation, rotationOutputD);
-            rotationOutputE = Matrix.RotateVector(CurrentRotation, rotationOutputE);
+            rotationOutputB = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), rotationOutputB);//Thruster output relative to quad origin
+            rotationOutputC = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), rotationOutputC);
+            rotationOutputD = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), rotationOutputD);
+            rotationOutputE = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), rotationOutputE);
             
             ThrusterB.Calculate(CurrentRotation, rotationOutputB);
             ThrusterC.Calculate(CurrentRotation, rotationOutputC);
