@@ -125,7 +125,15 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
         public override string ToString()
         {
-            return Math.Round(X, 3) + " " + Math.Round(Y, 3) + " " + Math.Round(Z, 3);
+            string x = String.Format("{0:0.00}", X);
+            string y = String.Format("{0:0.00}", Y);
+            string z = String.Format("{0:0.00}", Z);
+
+            x = x.PadLeft(7);
+            y = y.PadLeft(7);
+            z = z.PadLeft(7);
+
+            return x + " " + y + " " + z;
         }
 
         public static double CalculateEuclideanDistance(Vector one, Vector two)

@@ -177,7 +177,7 @@ namespace ADRCVisualization
             //rotate outer rotations
             //transform entire quad
 
-            Vector mainRotation = quadcopter.CurrentRotation;
+            Vector mainRotation = quadcopter.CurrentRotation.Multiply(new Vector(-1, 1, 1));
 
             Vector bRotation = quadcopter.ThrusterB.CurrentRotation;
             Vector cRotation = quadcopter.ThrusterC.CurrentRotation;

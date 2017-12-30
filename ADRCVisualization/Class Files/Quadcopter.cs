@@ -44,6 +44,8 @@ namespace ADRCVisualization.Class_Files
 
         private VectorKalmanFilter positionMomentumKF;
         private VectorKalmanFilter angularMomentumKF;
+
+        private VectorKalmanFilter rotationFCOutput;
         
         private VectorFeedbackController RotationFeedbackController;
 
@@ -71,17 +73,19 @@ namespace ADRCVisualization.Class_Files
             {
                 X = new ADRC(2000, 2.5, 1.5, 0.01, 45)
                 {
-                    PID = new PID(10, 0, 20, 180)
+                    PID = new PID(10, 0, 20, 1000)
                 },
-                Y = new ADRC(2000, 0.001, 0.75, 0.01, 90)
+                Y = new ADRC(2000, 0.001, 0.75, 0.01, 45)
                 {
-                    PID = new PID(100, 0, 500, 180)
+                    PID = new PID(100, 0, 400, 1000)
                 },
                 Z = new ADRC(2000, 2.5, 1.5, 0.01, 45)
                 {
-                    PID = new PID(10, 0, 20, 180)
+                    PID = new PID(10, 0, 20, 1000)
                 }
             };
+
+            rotationFCOutput = new VectorKalmanFilter(new Vector(0.2, 0.2, 0.2), new Vector(5, 5, 5));//Increase memory to decrease response time
 
             positionMomentumKF = new VectorKalmanFilter(1, 0);
             angularMomentumKF = new VectorKalmanFilter(1, 0);
@@ -97,21 +101,23 @@ namespace ADRCVisualization.Class_Files
 
             Console.WriteLine("Quad Arm Length X:" + XLength + " Z:" + ZLength);
 
-            ThrusterB = new Thruster(new Vector(-XLength, 0,  ZLength));
-            ThrusterC = new Thruster(new Vector( XLength, 0,  ZLength));
-            ThrusterD = new Thruster(new Vector( XLength, 0, -ZLength));
-            ThrusterE = new Thruster(new Vector(-XLength, 0, -ZLength));
+            ThrusterB = new Thruster(new Vector(-XLength, 0,  ZLength), "TB");
+            ThrusterC = new Thruster(new Vector( XLength, 0,  ZLength), "TC");
+            ThrusterD = new Thruster(new Vector( XLength, 0, -ZLength), "TD");
+            ThrusterE = new Thruster(new Vector(-XLength, 0, -ZLength), "TE");
         }
 
         public void CalculateCombinedThrustVector()
         {
             //Vector positionOutput = PositionFeedbackController.Calculate(TargetPosition, CurrentPosition);//.Multiply(new Vector(-1, 1, -1));
-            Vector rotationOutput = RotationFeedbackController.Calculate(TargetRotation, CurrentRotation).Multiply(new Vector(-1, -1, -1));
+            Vector rotationOutput = RotationFeedbackController.Calculate(TargetRotation, CurrentRotation).Multiply(-1);
 
-            Vector rotationOutputB = new Vector(-rotationOutput.Y / 2, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y / 2);//Thruster output relative to environment origin
-            Vector rotationOutputC = new Vector(-rotationOutput.Y / 2, -rotationOutput.X - rotationOutput.Z,  rotationOutput.Y / 2);
-            Vector rotationOutputD = new Vector( rotationOutput.Y / 2,  rotationOutput.X - rotationOutput.Z,  rotationOutput.Y / 2);
-            Vector rotationOutputE = new Vector( rotationOutput.Y / 2,  rotationOutput.X + rotationOutput.Z, -rotationOutput.Y / 2);
+            rotationOutput = rotationFCOutput.Filter(rotationOutput);
+
+            Vector rotationOutputB = new Vector(-rotationOutput.Y, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);//Thruster output relative to environment origin
+            Vector rotationOutputC = new Vector(-rotationOutput.Y, -rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
+            Vector rotationOutputD = new Vector( rotationOutput.Y,  rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
+            Vector rotationOutputE = new Vector( rotationOutput.Y,  rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);
 
             rotationOutputB = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), rotationOutputB);//Thruster output relative to quad origin
             rotationOutputC = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), rotationOutputC);
@@ -185,12 +191,14 @@ namespace ADRCVisualization.Class_Files
             Vector TD = ThrusterD.ReturnThrustVector();
             Vector TE = ThrusterE.ReturnThrustVector();
 
+            //Console.WriteLine(TB + " " + CurrentRotation);
+
             TB = Matrix.RotateVector(CurrentRotation.Multiply(-1), TB);//Thrust relative to environment origin
             TC = Matrix.RotateVector(CurrentRotation.Multiply(-1), TC);
             TD = Matrix.RotateVector(CurrentRotation.Multiply(-1), TD);
             TE = Matrix.RotateVector(CurrentRotation.Multiply(-1), TE);
 
-            double torque  = armLength * Math.Sin(Misc.DegreesToRadians(180 - armAngle)) * 1.5;
+            double torque  = armLength * Math.Sin(Misc.DegreesToRadians(180 - armAngle)) * 5;
 
             currentAngularAcceleration = new Vector(0, 0, 0)
             {

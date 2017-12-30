@@ -11,20 +11,22 @@ namespace ADRCVisualization.Class_Files
     class ADRC : FeedbackController
     {
         public PID PID { get; set; }
+        public double MaxOutput { get; set; }
         private ExtendedStateObserver ExtendedStateObserver;
         private NonlinearCombiner NonlinearCombiner;
 
         private DateTime dateTime;
-
+        
         private double amplificationCoefficient;
         private double dampingCoefficient;
         private double precisionCoefficient;//0.2
         private double samplingPeriod;//0.05
         private double plantCoefficient;//b0 approximation
         private double precisionModifier;
-        private double maxOutput;
         private double previousPD;
         private double output;
+        private double min;
+        private double max;
 
         /// <summary>
         /// ADRC implementation utilizing a PD controller in place of a tracking differentiator.
@@ -42,12 +44,14 @@ namespace ADRCVisualization.Class_Files
             this.dampingCoefficient = dampingCoefficient;
             this.plantCoefficient = plantCoefficient;
             this.precisionModifier = precisionModifier;
-            this.maxOutput = maxOutput;
+            this.MaxOutput = maxOutput;
 
             ExtendedStateObserver = new ExtendedStateObserver(false);
             NonlinearCombiner = new NonlinearCombiner(amplificationCoefficient, dampingCoefficient);
 
             dateTime = DateTime.Now;
+
+            SetOffset(0);
         }
 
         /// <summary>
@@ -66,13 +70,15 @@ namespace ADRCVisualization.Class_Files
             this.dampingCoefficient = dampingCoefficient;
             this.plantCoefficient = plantCoefficient;
             this.precisionModifier = precisionModifier;
-            this.maxOutput = maxOutput;
+            this.MaxOutput = maxOutput;
             this.PID = pid;
 
             ExtendedStateObserver = new ExtendedStateObserver(false);
             NonlinearCombiner = new NonlinearCombiner(amplificationCoefficient, dampingCoefficient);
 
             dateTime = DateTime.Now;
+
+            SetOffset(0);
         }
 
         /// <summary>
@@ -102,7 +108,15 @@ namespace ADRCVisualization.Class_Files
                 dateTime = DateTime.Now;
             }
 
-            return Misc.Constrain(output, -maxOutput, maxOutput);
+            return Misc.Constrain(output, min, max);
+        }
+
+        public string SetOffset(double offset)
+        {
+            min = -MaxOutput + offset;
+            max =  MaxOutput + offset;
+
+            return min + " " + max;
         }
     }
 }

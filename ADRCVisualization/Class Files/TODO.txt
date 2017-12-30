@@ -39,3 +39,7 @@ calculate force vectors needed to reach rotation and position: acceleration in t
  -Moving to a position on one axis while at a different rotation about the Y axis is done through moving two joints
  -Modify thrust vector computation
 
+ X Allow rotations up to and past 90 degrees about X and Z axes
+
+ Set up feedback controllers such that they understand that when one other value changes it directly affects the other with a constant relationship
+ -rotating the X arm affects what will happen to the Y and the value can be known
