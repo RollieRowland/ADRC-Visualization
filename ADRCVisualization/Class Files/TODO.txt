@@ -43,3 +43,11 @@ calculate force vectors needed to reach rotation and position: acceleration in t
 
  Set up feedback controllers such that they understand that when one other value changes it directly affects the other with a constant relationship
  -rotating the X arm affects what will happen to the Y and the value can be known
+
+ X Thruster
+ -Feedback controller for determining the output in each individual dimension (TargetPosition, CurrentPosition)
+ -Second feedback controller layer for determining how much a change with the X or Z rotations will affect the Y output and automatically compensate
+	- this prevents the initial feedback controller from going haywire by automatically smoothing the output
+ -Drawing on desktop
+
+ Add more delay to thruster movement and calibrate rotational/positional ADRCs

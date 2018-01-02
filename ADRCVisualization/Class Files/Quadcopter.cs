@@ -71,15 +71,15 @@ namespace ADRCVisualization.Class_Files
             
             RotationFeedbackController = new VectorFeedbackController()
             {
-                X = new ADRC(2000, 2.5, 1.5, 0.01, 45)
+                X = new ADRC(2000, 2.5, 1.5, 0.01, 30)
                 {
                     PID = new PID(10, 0, 20, 1000)
                 },
-                Y = new ADRC(2000, 0.001, 0.75, 0.01, 45)
+                Y = new ADRC(5000, 1, 0.5, 0.01, 30)
                 {
-                    PID = new PID(100, 0, 400, 1000)
+                    PID = new PID(10, 0, 20, 1000)
                 },
-                Z = new ADRC(2000, 2.5, 1.5, 0.01, 45)
+                Z = new ADRC(2000, 2.5, 1.5, 0.01, 30)
                 {
                     PID = new PID(10, 0, 20, 1000)
                 }
@@ -113,6 +113,8 @@ namespace ADRCVisualization.Class_Files
             Vector rotationOutput = RotationFeedbackController.Calculate(TargetRotation, CurrentRotation).Multiply(-1);
 
             rotationOutput = rotationFCOutput.Filter(rotationOutput);
+
+            //rotationOutput = Matrix.RotateVector(new Vector(0, -CurrentRotation.Y, 0), rotationOutput);
 
             Vector rotationOutputB = new Vector(-rotationOutput.Y, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);//Thruster output relative to environment origin
             Vector rotationOutputC = new Vector(-rotationOutput.Y, -rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
@@ -161,27 +163,22 @@ namespace ADRCVisualization.Class_Files
         
         public void EstimatePosition(double dT)
         {
-            if (dT > 0)
-            {
-                Vector TB = ThrusterB.ReturnThrustVector();
-                Vector TC = ThrusterC.ReturnThrustVector();
-                Vector TD = ThrusterD.ReturnThrustVector();
-                Vector TE = ThrusterE.ReturnThrustVector();
+            Vector TB = ThrusterB.ReturnThrustVector();
+            Vector TC = ThrusterC.ReturnThrustVector();
+            Vector TD = ThrusterD.ReturnThrustVector();
+            Vector TE = ThrusterE.ReturnThrustVector();
 
-                Vector thrustSum = TB.Add(TC).Add(TD).Add(TE);
+            Vector thrustSum = TB.Add(TC).Add(TD).Add(TE);
 
-                thrustSum = Matrix.RotateVector(CurrentRotation.Multiply(-1), thrustSum);
+            thrustSum = Matrix.RotateVector(CurrentRotation.Multiply(-1), thrustSum);
 
-                CurrentAcceleration = positionMomentumKF.Filter(thrustSum).Add(externalAcceleration);
+            CurrentAcceleration = positionMomentumKF.Filter(thrustSum).Add(externalAcceleration);
 
-                //calculate velocity: finalVelocity(vf) = vi + at
-                CurrentVelocity = CurrentVelocity.Add(CurrentAcceleration.Multiply(dT)).Multiply(airResistance);
+            //calculate velocity: finalVelocity(vf) = vi + at
+            CurrentVelocity = CurrentVelocity.Add(CurrentAcceleration.Multiply(dT)).Multiply(airResistance);
 
-                //calculate position: displacement(s) = si + vt
-                CurrentPosition = CurrentPosition.Add(CurrentVelocity.Multiply(dT));
-
-                lastMeasurementTime = DateTime.Now;
-            }
+            //calculate position: displacement(s) = si + vt
+            CurrentPosition = CurrentPosition.Add(CurrentVelocity.Multiply(dT));
         }
         
         public void EstimateRotation(double dT)
