@@ -75,11 +75,13 @@
     <Compile Include="Class Files\FourierTransforms\FourierBitmap.cs" />
     <Compile Include="Class Files\FourierTransforms\FourierTransform.cs" />
     <Compile Include="Class Files\Filters\KalmanFilter.cs" />
+    <Compile Include="Class Files\Mathematics\Acceleration.cs" />
     <Compile Include="Class Files\Mathematics\Matrix.cs" />
     <Compile Include="Class Files\Mathematics\Misc.cs" />
     <Compile Include="Class Files\Mathematics\Statistics.cs" />
     <Compile Include="Class Files\Mathematics\Turbulence.cs" />
     <Compile Include="Class Files\Mathematics\Vector.cs" />
+    <Compile Include="Class Files\Mathematics\VectorAcceleration.cs" />
     <Compile Include="Class Files\Quadcopter.cs" />
     <Compile Include="Class Files\QuadcopterSimulation\IMU.cs" />
     <Compile Include="Class Files\QuadcopterSimulation\Motor.cs" />
