@@ -35,12 +35,11 @@ namespace ADRCVisualization
 
         public Visualizer()
         {
-            quad = new Quadcopter(0.3, 55);
+            quad = new Quadcopter(0.3, 55, 0.05);
 
             InitializeComponent();
 
             //Start3DViewer();
-            //Opacity = 0;
 
             dateTime = DateTime.Now;
 
@@ -121,7 +120,7 @@ namespace ADRCVisualization
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(6000);
-
+                
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(-1, 0, 1.2);
                 targetRotation = new Vector(angle, 0, 0);
@@ -329,8 +328,6 @@ namespace ADRCVisualization
         {
             this.BeginInvoke((Action)(() =>
             {
-                //Calculate
-                //quad.CalculateIndividualThrustVectors();//Initial Solver
                 quad.CalculateCombinedThrustVector();//Secondary Solver
 
                 quad.ApplyForce(gravity);
@@ -351,7 +348,7 @@ namespace ADRCVisualization
             t1.Stop();
         }
 
-        private void sendXYZ_Click(object sender, EventArgs e)
+        private void SendXYZ_Click(object sender, EventArgs e)
         {
             Double.TryParse(xPositionTB.Text, out double x);
             Double.TryParse(yPositionTB.Text, out double y);
@@ -360,7 +357,7 @@ namespace ADRCVisualization
             targetPosition = new Vector(x, y, z);
         }
 
-        private void sendHPB_Click(object sender, EventArgs e)
+        private void SendHPB_Click(object sender, EventArgs e)
         {
             Double.TryParse(xRotationTB.Text, out double x);
             Double.TryParse(yRotationTB.Text, out double y);

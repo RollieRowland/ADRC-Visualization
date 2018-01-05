@@ -89,10 +89,8 @@ namespace ADRCVisualization.Class_Files
         /// <returns></returns>
         public override double Calculate(double setpoint, double processVariable)
         {
-            //samplingPeriod = DateTime.Now.Subtract(dateTime).TotalSeconds;
-
-            samplingPeriod = 0.05;
-
+            samplingPeriod = DateTime.Now.Subtract(dateTime).TotalSeconds;
+            
             if (samplingPeriod > 0)
             {
                 precisionCoefficient = samplingPeriod * precisionModifier;
@@ -111,7 +109,33 @@ namespace ADRCVisualization.Class_Files
             return Misc.Constrain(output, min, max);
         }
 
-        public string SetOffset(double offset)
+        /// <summary>
+        /// Calculates the output given the target value and actual value.
+        /// </summary>
+        /// <param name="setpoint">Target</param>
+        /// <param name="processVariable">Actual</param>
+        /// <returns></returns>
+        public override double Calculate(double setpoint, double processVariable, double samplingPeriod)
+        {
+            if (samplingPeriod > 0)
+            {
+                precisionCoefficient = samplingPeriod * precisionModifier;
+
+                double pdValue = PID.Calculate(setpoint, processVariable, samplingPeriod);
+
+                Tuple<double, double> pd = new Tuple<double, double>(pdValue, previousPD);
+                Tuple<double, double, double> eso = ExtendedStateObserver.ObserveState(samplingPeriod, output, plantCoefficient, processVariable);//double u, double y, double b0
+
+                output = NonlinearCombiner.Combine(pd, plantCoefficient, eso, precisionCoefficient);
+
+                previousPD = pdValue;
+                dateTime = DateTime.Now;
+            }
+
+            return Misc.Constrain(output, min, max);
+        }
+
+        public override string SetOffset(double offset)
         {
             min = -MaxOutput + offset;
             max =  MaxOutput + offset;

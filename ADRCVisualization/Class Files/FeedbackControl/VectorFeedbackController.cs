@@ -36,5 +36,14 @@ namespace ADRCVisualization.Class_Files.FeedbackControl
 
             return output;
         }
+
+        public Vector Calculate(Vector setPoint, Vector processVariable, double samplingPeriod)
+        {
+            output.X = X.Calculate(setPoint.X, processVariable.X, samplingPeriod);
+            output.Y = Y.Calculate(setPoint.Y, processVariable.Y, samplingPeriod);
+            output.Z = Z.Calculate(setPoint.Z, processVariable.Z, samplingPeriod);
+
+            return output;
+        }
     }
 }

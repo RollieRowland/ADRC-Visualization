@@ -9,5 +9,8 @@ namespace ADRCVisualization.Class_Files.FeedbackControl
     abstract class FeedbackController
     {
         public abstract double Calculate(double setpoint, double processVariable);
+        public abstract double Calculate(double setpoint, double processVariable, double samplingPeriod);
+
+        public abstract string SetOffset(double offset);
     }
 }

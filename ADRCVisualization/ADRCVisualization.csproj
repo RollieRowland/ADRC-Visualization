@@ -94,7 +94,6 @@
     <Compile Include="Class Files\Solvers\SimulatedAnnealingSolver.cs" />
     <Compile Include="Class Files\FeedbackControl\ADRC\TrackingDifferentiator.cs" />
     <Compile Include="Class Files\Solvers\Solver.cs" />
-    <Compile Include="QuadModel.cs" />
     <Compile Include="QuadViewer.xaml.cs">
       <DependentUpon>QuadViewer.xaml</DependentUpon>
     </Compile>

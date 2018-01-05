@@ -17,7 +17,9 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
 
         public IMU()
         {
+            rotation = new Vector(0, 0, 0);
 
+            throw new NotImplementedException();
         }
 
         //given 3 axis acceleration

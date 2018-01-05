@@ -220,7 +220,7 @@
             this.sendXYZ.TabIndex = 12;
             this.sendXYZ.Text = "Send XYZ Coordinates";
             this.sendXYZ.UseVisualStyleBackColor = true;
-            this.sendXYZ.Click += new System.EventHandler(this.sendXYZ_Click);
+            this.sendXYZ.Click += new System.EventHandler(this.SendXYZ_Click);
             // 
             // elementHost1
             // 
@@ -239,7 +239,7 @@
             this.sendHPB.TabIndex = 13;
             this.sendHPB.Text = "Send XYZ Rotation";
             this.sendHPB.UseVisualStyleBackColor = true;
-            this.sendHPB.Click += new System.EventHandler(this.sendHPB_Click);
+            this.sendHPB.Click += new System.EventHandler(this.SendHPB_Click);
             // 
             // Visualizer
             // 

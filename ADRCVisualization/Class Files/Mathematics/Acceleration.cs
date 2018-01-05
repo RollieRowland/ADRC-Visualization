@@ -21,7 +21,8 @@ namespace ADRCVisualization.Class_Files.Mathematics
             this.springConstant = springConstant;
             this.mass = mass;
         }
-        
+
+        //http://hyperphysics.phy-astr.gsu.edu/hbase/oscda.html
         public double Accelerate(double target)
         {
             double currentToTarget = target - currentPosition;

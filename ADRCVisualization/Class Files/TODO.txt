@@ -50,4 +50,11 @@ calculate force vectors needed to reach rotation and position: acceleration in t
 	- this prevents the initial feedback controller from going haywire by automatically smoothing the output
  -Drawing on desktop
 
- Add more delay to thruster movement and calibrate rotational/positional ADRCs
+ X Add more delay to thruster movement and calibrate rotational/positional ADRCs
+
+ Fix quad display
+ -Rotation about Y axis is inverted
+	- Quad rotates opposite as to how it should 
+
+Set up failsafes for dying engines
+-when one fails, kill the opposite engine

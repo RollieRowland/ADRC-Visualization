@@ -14,13 +14,16 @@ namespace ADRCVisualization.Class_Files
         public double KI { get; set; }
         public double KD { get; set; }
 
-        private double maxOutput;
+        private double MaxOutput;
         private double integral;
         private double error;
         private double previousError;
         private double output;
         private DateTime time;
 
+        private double min;
+        private double max;
+        
         /// <summary>
         /// Initializes the PID.
         /// </summary>
@@ -33,7 +36,7 @@ namespace ADRCVisualization.Class_Files
             KP = kp;
             KI = ki;
             KD = kd;
-            this.maxOutput = maxOutput;
+            this.MaxOutput = maxOutput;
 
             time = DateTime.Now;
         }
@@ -62,7 +65,7 @@ namespace ADRCVisualization.Class_Files
 
                 DOut = KD * ((error - previousError) / dt);
 
-                output = Misc.Constrain(POut + IOut + DOut, -maxOutput, maxOutput);
+                output = Misc.Constrain(POut + IOut + DOut, -MaxOutput, MaxOutput);
 
                 time = currentTime;
                 previousError = error;
@@ -78,7 +81,7 @@ namespace ADRCVisualization.Class_Files
         /// <param name="processVariable">Actual</param>
         /// <param name="samplingPeriod">Period between calculations</param>
         /// <returns>Returns output of PID</returns>
-        public double Calculate(double setpoint, double processVariable, double samplingPeriod)
+        public override double Calculate(double setpoint, double processVariable, double samplingPeriod)
         {
             double POut, IOut, DOut;
 
@@ -93,12 +96,20 @@ namespace ADRCVisualization.Class_Files
 
                 DOut = KD * ((error - previousError) / samplingPeriod);
 
-                output = Misc.Constrain(POut + IOut + DOut, -maxOutput, maxOutput);
+                output = Misc.Constrain(POut + IOut + DOut, -MaxOutput, MaxOutput);
                 
                 previousError = error;
             }
 
             return output;
+        }
+        
+        public override string SetOffset(double offset)
+        {
+            min = -MaxOutput + offset;
+            max = MaxOutput + offset;
+
+            return min + " " + max;
         }
     }
 }

@@ -16,6 +16,10 @@ namespace ADRCVisualization.Class_Files.FeedbackControl
         private KalmanFilter proportionalKalmanFilter;
         private KalmanFilter derivativeKalmanFilter;
 
+        private double min;
+        private double max;
+        private double maxOutput;
+
         public AdaptivePID(double P, double I, double D, double maxOutput)
         {
             pid          = new PID(0, 0, 0, 45);
@@ -40,9 +44,19 @@ namespace ADRCVisualization.Class_Files.FeedbackControl
 
             proportionalKalmanFilter = new KalmanFilter(0.125, 20);
             derivativeKalmanFilter = new KalmanFilter(0.5, 10);
+
+            this.maxOutput = maxOutput;
         }
 
         public override double Calculate(double setPoint, double processVariable)
+        {
+            pid.KP = EstimateProportionalOffset(setPoint, processVariable);
+            //pid.KI = EstimateIntegralOffset(setPoint, processVariable);
+            //pid.KD = EstimateProportionalOffset(setPoint, processVariable);
+
+            return pid.Calculate(setPoint, processVariable);
+        }
+        public override double Calculate(double setPoint, double processVariable, double samplingPeriod)
         {
             pid.KP = EstimateProportionalOffset(setPoint, processVariable);
             //pid.KI = EstimateIntegralOffset(setPoint, processVariable);
@@ -77,6 +91,14 @@ namespace ADRCVisualization.Class_Files.FeedbackControl
             double oscillation = derivativeKalmanFilter.Filter(setPoint - processVariable);
 
             return derivative.Calculate(0, oscillation);
+        }
+
+        public override string SetOffset(double offset)
+        {
+            min = -maxOutput + offset;
+            max = maxOutput + offset;
+
+            return min + " " + max;
         }
     }
 }
