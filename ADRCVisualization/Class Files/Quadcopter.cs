@@ -86,21 +86,18 @@ namespace ADRCVisualization.Class_Files
 
             RotationFeedbackController = new VectorFeedbackController()
             {
-                /*X = new ADRC(50, 200, 4, 10, 30)
+                X = new ADRC(20, 200, 4, 10, 30)
                 {
-                    PID = new PID(0.05, 0, 0.75, 1000)
+                    PID = new PID(0.5, 0, 0.75, 1000)
                 },
-                Y = new ADRC(10, 10, 1.5, 0.05, 100)
+                Y = new ADRC(10, 10, 1.5, 64, 30)
                 {
                     PID = new PID(1, 0, 2.5, 1000)
                 },
-                Z = new ADRC(50, 200, 4, 10, 30)
+                Z = new ADRC(20, 200, 4, 10, 30)
                 {
-                    PID = new PID(0.05, 0, 0.75, 1000)
-                }*/
-                X = new PID(0.1, 0, 0.75, 30),
-                Y = new PID(1, 0, 2.5, 30),
-                Z = new PID(0.1, 0, 0.75, 30)
+                    PID = new PID(0.5, 0, 0.75, 1000)
+                }
             };
         }
 
@@ -125,13 +122,14 @@ namespace ADRCVisualization.Class_Files
             Vector rotationOutput = RotationFeedbackController.Calculate(new Vector(0, 0, 0), CurrentRotation.Subtract(TargetRotation), samplingPeriod).Multiply(-1);
             Vector positionOutput = PositionFeedbackController.Calculate(new Vector(0, 0, 0), CurrentPosition.Subtract(TargetPosition), samplingPeriod);
 
+            positionOutput.X = positionOutput.X + CurrentRotation.Z;
+
             positionOutput = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
 
-            Console.WriteLine(CurrentPosition.Subtract(TargetPosition) + " |" + positionOutput + " |");
-
-            positionOutput.X = positionOutput.X + CurrentRotation.Z;
             positionOutput.Z = positionOutput.Z - CurrentRotation.X;
 
+            Console.WriteLine(CurrentPosition.Subtract(TargetPosition) + " |" + positionOutput + " |");
+            
             Vector rotationOutputB = new Vector(-rotationOutput.Y, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);//Thruster output relative to environment origin
             Vector rotationOutputC = new Vector(-rotationOutput.Y, -rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
             Vector rotationOutputD = new Vector( rotationOutput.Y,  rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);

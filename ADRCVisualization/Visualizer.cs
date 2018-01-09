@@ -57,9 +57,9 @@ namespace ADRCVisualization
             //SetTargets();
             //SetTargetsTrack();
             //SetTargetPositions();
-            SetTargetRotations();
+            //SetTargetRotations();
             //SetTargetCircle();
-            //SetMultiple();
+            SetMultiple();
 
             //DisableMotor();
         }
@@ -115,43 +115,55 @@ namespace ADRCVisualization
 
                 //await Task.Delay(1000);
 
-                for (double i = 0; i < 720; i += 1)
+
+                for (double i = 0; i < 360; i += 1)
                 {
                     targetPosition = new Vector(Math.Sin(Misc.DegreesToRadians(i)) * 1.5, 0, Math.Cos(Misc.DegreesToRadians(i)) * 1.5);
+                    targetRotation = new Vector(i/8, 0, 0);
+
+                    await Task.Delay(1);
+                }
+
+                //targetRotation = new Vector(0, 0, 0);
+
+                for (double i = 0; i < 360; i += 1)
+                {
+                    targetPosition = new Vector(Math.Sin(Misc.DegreesToRadians(i)) * 1.5, 0, Math.Cos(Misc.DegreesToRadians(i)) * 1.5);
+                    targetRotation = new Vector(45 - i/8, 0, 0);
 
                     await Task.Delay(1);
                 }
 
                 targetPosition = new Vector(1, 0, 1.2);
-                //targetRotation = new Vector(angle, 0, 0);
+                targetRotation = new Vector(0, 0, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(3000);
 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(-1, 0, 1.2);
-                //targetRotation = new Vector(0, angle, 0);
+                targetRotation = new Vector(45, 0, 0);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(3000);
+                await Task.Delay(7500);
                 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(-1, 0, -1.2);
-                //targetRotation = new Vector(0, 0, angle);
+                targetRotation = new Vector(0, 45, 0);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(3000);
+                await Task.Delay(7500);
                 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(1, 0, -1.2);
-                //targetRotation = new Vector(0, 0, 0);
+                targetRotation = new Vector(0, 0, 45);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(3000);
+                await Task.Delay(7500);
 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(1, 0, 1.2);
-                //targetRotation = new Vector(0, 0, 0);
+                targetRotation = new Vector(0, 0, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(3000);
@@ -306,8 +318,6 @@ namespace ADRCVisualization
         {
             quad.SetTarget(targetPosition, targetRotation);
 
-            double angle = 30;
-
             targetRotation = new Vector(0, 0, 0);
             Console.WriteLine("Target Set");
 
@@ -316,28 +326,22 @@ namespace ADRCVisualization
             while (true)
             {
                 //////////////////////////////////////////////////
-                targetRotation = new Vector(angle, 0, 0);
+                targetRotation = new Vector(30, 0, 0);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(10000);
-
+                await Task.Delay(7500);
+                
                 //////////////////////////////////////////////////
-                targetRotation = new Vector(0, 0, angle);
+                targetRotation = new Vector(0, 0, 30);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(10000);
+                await Task.Delay(7500);
                 
                 //////////////////////////////////////////////////
                 targetRotation = new Vector(0, 90, 0);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(10000);
-
-                //////////////////////////////////////////////////
-                targetRotation = new Vector(0, 0, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(10000);
+                await Task.Delay(7500);
             }
         }
 
