@@ -43,6 +43,7 @@ namespace ADRCVisualization.Class_Files
         private Vector externalAcceleration;
         
         private VectorFeedbackController RotationFeedbackController;
+        private VectorFeedbackController PositionFeedbackController;
 
         private double armLength;
         private double armAngle;
@@ -66,21 +67,40 @@ namespace ADRCVisualization.Class_Files
             currentAngularAcceleration = new Vector(0, 0, 0);
             CurrentAcceleration = new Vector(0, 0, 0);
             externalAcceleration = new Vector(0, 0, 0);
-            
+
+            PositionFeedbackController = new VectorFeedbackController()
+            {
+                X = new ADRC(50, 200, 4, 10, 30)
+                {
+                    PID = new PID(10, 0, 12.5, 1000)
+                },
+                Y = new ADRC(10, 10, 1.5, 0.05, 100)
+                {
+                    PID = new PID(1, 0, 0.2, 1000)
+                },
+                Z = new ADRC(50, 200, 4, 10, 30)
+                {
+                    PID = new PID(10, 0, 12.5, 1000)
+                }
+            };
+
             RotationFeedbackController = new VectorFeedbackController()
             {
-                X = new ADRC(10000, 3250, 7.5, 0.01, 15)
+                /*X = new ADRC(50, 200, 4, 10, 30)
                 {
-                    PID = new PID(10, 0, 13, 1000)
+                    PID = new PID(0.05, 0, 0.75, 1000)
                 },
-                Y = new ADRC(5000, 10000, 10, 0.01, 15)
+                Y = new ADRC(10, 10, 1.5, 0.05, 100)
                 {
-                    PID = new PID(20, 0, 50, 1000)
+                    PID = new PID(1, 0, 2.5, 1000)
                 },
-                Z = new ADRC(10000, 3250, 7.5, 0.01, 15)
+                Z = new ADRC(50, 200, 4, 10, 30)
                 {
-                    PID = new PID(10, 0, 13, 1000)
-                }
+                    PID = new PID(0.05, 0, 0.75, 1000)
+                }*/
+                X = new PID(0.1, 0, 0.75, 30),
+                Y = new PID(1, 0, 2.5, 30),
+                Z = new PID(0.1, 0, 0.75, 30)
             };
         }
 
@@ -99,17 +119,28 @@ namespace ADRCVisualization.Class_Files
 
         public void CalculateCombinedThrustVector()
         {
-            Vector rotationOutput = RotationFeedbackController.Calculate(TargetRotation, CurrentRotation, samplingPeriod).Multiply(-1);
+            //string test =  ((ADRC)PositionFeedbackController.X).SetOffset(CurrentRotation.Z);
+            //string test2 = ((ADRC)PositionFeedbackController.Z).SetOffset(-CurrentRotation.X);
+
+            Vector rotationOutput = RotationFeedbackController.Calculate(new Vector(0, 0, 0), CurrentRotation.Subtract(TargetRotation), samplingPeriod).Multiply(-1);
+            Vector positionOutput = PositionFeedbackController.Calculate(new Vector(0, 0, 0), CurrentPosition.Subtract(TargetPosition), samplingPeriod);
+
+            positionOutput = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
+
+            Console.WriteLine(CurrentPosition.Subtract(TargetPosition) + " |" + positionOutput + " |");
+
+            positionOutput.X = positionOutput.X + CurrentRotation.Z;
+            positionOutput.Z = positionOutput.Z - CurrentRotation.X;
 
             Vector rotationOutputB = new Vector(-rotationOutput.Y, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);//Thruster output relative to environment origin
             Vector rotationOutputC = new Vector(-rotationOutput.Y, -rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
             Vector rotationOutputD = new Vector( rotationOutput.Y,  rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
             Vector rotationOutputE = new Vector( rotationOutput.Y,  rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);
             
-            ThrusterB.Calculate(CurrentRotation, rotationOutputB);
-            ThrusterC.Calculate(CurrentRotation, rotationOutputC);
-            ThrusterD.Calculate(CurrentRotation, rotationOutputD);
-            ThrusterE.Calculate(CurrentRotation, rotationOutputE);
+            ThrusterB.Calculate(CurrentRotation, rotationOutputB.Add(positionOutput));
+            ThrusterC.Calculate(CurrentRotation, rotationOutputC.Add(positionOutput));
+            ThrusterD.Calculate(CurrentRotation, rotationOutputD.Add(positionOutput));
+            ThrusterE.Calculate(CurrentRotation, rotationOutputE.Add(positionOutput));
         }
         
         public void CalculateCurrent()
@@ -168,10 +199,10 @@ namespace ADRCVisualization.Class_Files
             Vector TD = ThrusterD.ReturnThrustVector();
             Vector TE = ThrusterE.ReturnThrustVector();
 
-            TB = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TB).Add(externalAcceleration);//Thrust relative to environment origin
-            TC = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TC).Add(externalAcceleration);
-            TD = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TD).Add(externalAcceleration);
-            TE = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TE).Add(externalAcceleration);
+            TB = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TB);//Thrust relative to environment origin
+            TC = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TC);
+            TD = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TD);
+            TE = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TE);
 
             TB = Matrix.RotateVector(new Vector(0, -CurrentRotation.Y, 0), TB);
             TC = Matrix.RotateVector(new Vector(0, -CurrentRotation.Y, 0), TC);
@@ -192,6 +223,20 @@ namespace ADRCVisualization.Class_Files
 
             //calculate angular position: theta = thetai + wt
             CurrentRotation = CurrentRotation.Add(currentAngularVelocity.Multiply(dT));
+        }
+
+        private bool DetectAgitation()
+        {
+            //rapid rotation in any dimension
+            //rapid movement or oscillation in the X or Z axes
+            //rapid increase or decrease in height
+            
+            //angular velocity of certain speed
+
+            //ESCs can be used to detect a dead motor/prop
+            //
+
+            throw new NotImplementedException();
         }
     }
 }

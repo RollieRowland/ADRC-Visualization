@@ -54,11 +54,14 @@ namespace ADRCVisualization
 
             quad.SetTarget(targetPosition, targetRotation);
 
-            SetTargets();
+            //SetTargets();
             //SetTargetsTrack();
             //SetTargetPositions();
-            //SetTargetRotations();
+            SetTargetRotations();
             //SetTargetCircle();
+            //SetMultiple();
+
+            //DisableMotor();
         }
 
         private void Start3DViewer()
@@ -91,18 +94,85 @@ namespace ADRCVisualization
             return quad;
         }
 
+        private async void DisableMotor()
+        {
+            await Task.Delay(4000);
+
+            quad.ThrusterB.Disable = true;
+
+            //await Task.Delay(500);
+
+            quad.ThrusterD.Disable = true;
+        }
+
+        private async void SetMultiple()
+        {
+            quad.SetTarget(targetPosition, targetRotation);
+
+            while (true)
+            {
+                //targetPosition = new Vector(0, 0, 1.5);
+
+                //await Task.Delay(1000);
+
+                for (double i = 0; i < 720; i += 1)
+                {
+                    targetPosition = new Vector(Math.Sin(Misc.DegreesToRadians(i)) * 1.5, 0, Math.Cos(Misc.DegreesToRadians(i)) * 1.5);
+
+                    await Task.Delay(1);
+                }
+
+                targetPosition = new Vector(1, 0, 1.2);
+                //targetRotation = new Vector(angle, 0, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3000);
+
+                //////////////////////////////////////////////////
+                targetPosition = new Vector(-1, 0, 1.2);
+                //targetRotation = new Vector(0, angle, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3000);
+                
+                //////////////////////////////////////////////////
+                targetPosition = new Vector(-1, 0, -1.2);
+                //targetRotation = new Vector(0, 0, angle);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3000);
+                
+                //////////////////////////////////////////////////
+                targetPosition = new Vector(1, 0, -1.2);
+                //targetRotation = new Vector(0, 0, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3000);
+
+                //////////////////////////////////////////////////
+                targetPosition = new Vector(1, 0, 1.2);
+                //targetRotation = new Vector(0, 0, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3000);
+            }
+        }
+
         private async void SetTargetCircle()
         {
             quad.SetTarget(targetPosition, targetRotation);
 
             while (true)
             {
-                for (double i = 0; i < 360; i += 0.01)
-                {
-                    targetPosition = new Vector(Math.Sin(i), 0, Math.Cos(i));
-                    targetRotation = new Vector(i * 100, i * 100, -i * 100);
+                targetPosition = new Vector(0, 0, 1.5);
 
-                    await Task.Delay(5);
+                await Task.Delay(1000);
+
+                for (double i = 0; i < 360; i += 0.025)
+                {
+                    targetPosition = new Vector(Math.Sin(i)*1.5, 0, Math.Cos(i)*1.5);
+
+                    await Task.Delay(1);
                 }
             }
         }
@@ -119,9 +189,15 @@ namespace ADRCVisualization
                 targetRotation = new Vector(0, 0, 0);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(6000);
-                
+                await Task.Delay(3000);
+
                 //////////////////////////////////////////////////
+                targetPosition = new Vector(-1, 0, 1.2);
+                targetRotation = new Vector(0, 0, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3000);
+
                 targetPosition = new Vector(-1, 0, 1.2);
                 targetRotation = new Vector(angle, 0, 0);
                 Console.WriteLine("Target Set");
@@ -135,6 +211,12 @@ namespace ADRCVisualization
                 await Task.Delay(7000);
 
                 //////////////////////////////////////////////////
+                targetPosition = new Vector(1, 0, -1.2);
+                targetRotation = new Vector(0, 0, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3000);
+
                 targetPosition = new Vector(1, 0, -1.2);
                 targetRotation = new Vector(0, 0, angle);
                 Console.WriteLine("Target Set");
@@ -224,16 +306,35 @@ namespace ADRCVisualization
         {
             quad.SetTarget(targetPosition, targetRotation);
 
+            double angle = 30;
+
+            targetRotation = new Vector(0, 0, 0);
+            Console.WriteLine("Target Set");
+
+            await Task.Delay(1000);
+
             while (true)
             {
-                targetRotation = new Vector(0, 90, 0);
-                targetPosition = new Vector(0, 0, 0);
+                //////////////////////////////////////////////////
+                targetRotation = new Vector(angle, 0, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(10000);
 
+                //////////////////////////////////////////////////
+                targetRotation = new Vector(0, 0, angle);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(10000);
+                
+                //////////////////////////////////////////////////
+                targetRotation = new Vector(0, 90, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(10000);
+
+                //////////////////////////////////////////////////
                 targetRotation = new Vector(0, 0, 0);
-                targetPosition = new Vector(0, 0, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(10000);
@@ -269,7 +370,13 @@ namespace ADRCVisualization
             chart1.Series[6].MarkerColor = Color.BlueViolet;
             chart1.Series[7].MarkerColor = Color.ForestGreen;
             chart1.Series[8].MarkerColor = Color.MediumAquamarine;
-            
+
+            chart1.Series[9].MarkerColor = Color.LimeGreen;
+            chart1.Series[10].MarkerColor = Color.LightPink;
+
+            chart1.Series[9].Points.AddXY(quadcopter.CurrentPosition.X, quadcopter.CurrentPosition.Z);
+            chart1.Series[10].Points.AddXY(quadcopter.TargetPosition.X, quadcopter.TargetPosition.Z);
+
             chart1.Series[0].Points.AddXY(quadcopter.CurrentPosition.X, quadcopter.CurrentPosition.Z);
             chart1.Series[1].Points.AddXY(quadcopter.ThrusterB.CurrentPosition.X, quadcopter.ThrusterB.CurrentPosition.Z);
             chart1.Series[2].Points.AddXY(quadcopter.ThrusterC.CurrentPosition.X, quadcopter.ThrusterC.CurrentPosition.Z);

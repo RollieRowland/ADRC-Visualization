@@ -58,6 +58,8 @@ namespace ADRCVisualization
         {
             InitializeComponent();
 
+            Console.WriteLine("Starting 3D Viewer...");
+
             ModelImporter import = new ModelImporter();
 
             string directory = @"C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\Resources\";

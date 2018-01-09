@@ -20,7 +20,8 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
         public Vector TargetRotation { get; set; }
         public Vector CurrentRotation { get; set; }
         public Vector QuadCenterOffset { get; }
-
+        public bool Disable { get; set; }
+        
         private VectorFeedbackController ThrustController;
         private string name;
         private double samplingPeriod;
@@ -37,17 +38,17 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             
             ThrustController = new VectorFeedbackController()
             {
-                X = new ADRC(650, 12500, 1, 2, 45)
+                X = new ADRC(50, 200, 4, 10, 30)
                 {
-                    PID = new PID(15, 0, 7.5, 1000)
+                    PID = new PID(10, 0, 12.5, 1000)
                 },
-                Y = new ADRC(1500, 0.001, 0.75, 0.01, 100)
+                Y = new ADRC(10, 10, 1.5, 0.05, 100)
                 {
-                    PID = new PID(10, 0, 6, 1000)
+                    PID = new PID(1, 0, 0.2, 1000)
                 },
-                Z = new ADRC(650, 12500, 1, 2, 45)
+                Z = new ADRC(50, 200, 4, 10, 30)
                 {
-                    PID = new PID(15, 0, 7.5, 1000)
+                    PID = new PID(10, 0, 12.5, 1000)
                 }
             };
 
@@ -55,28 +56,23 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             TargetRotation = new Vector(0, 0, 0);
             CurrentPosition = new Vector(0, 0, 0);
             TargetPosition = new Vector(0, 0, 0);
+            Disable = false;
         }
 
         public Vector Calculate(Vector rotation, Vector offset)
         {
-            ADRC X = (ADRC)ThrustController.X;
-            ADRC Y = (ADRC)ThrustController.Y;
-            ADRC Z = (ADRC)ThrustController.Z;
-
+            /*
             //dynamic control of the maximum output, dependent on the current angle of the quad
-            Z.SetOffset(-rotation.X);//Adjusts max outputs of thrusters to allow more 
-            X.SetOffset(rotation.Z);//than 45 degree rotation
-            
-            ThrustController.X = X;
-            ThrustController.Y = Y;
-            ThrustController.Z = Z;
-            
-            //Base on previous offset
-            //increase output if error is stationary
-            //decrease output if error is decreasing
+            string test = ((ADRC)ThrustController.X).SetOffset(rotation.Z);//Adjusts max outputs of thrusters to allow more 
+            string test2 = ((ADRC)ThrustController.Z).SetOffset(-rotation.X);//than 45 degree rotation
 
             //Thrust compensated for the change required when rotating in the xyz dimensions
-            Vector thrust = ThrustController.Calculate(TargetPosition, CurrentPosition, samplingPeriod);//thrust output in XYZ dimension
+            Vector thrust = ThrustController.Calculate(new Vector(0, 0, 0), CurrentPosition.Subtract(TargetPosition), samplingPeriod);//thrust output in XYZ dimension
+
+            thrust.X = thrust.X + rotation.Z;
+            thrust.Z = thrust.Z - rotation.X;
+            
+            //if (name == "TB") Console.WriteLine(thrust + " " + test2);
 
             //AdjustThrust(thrust, rotation);
 
@@ -85,14 +81,18 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
 
             //Normalize secondary rotation control
             offset.Y = offset.Y < 0 ? 0 : offset.Y;
-
+            */
             //Combine quad rotation output with individual thruster output
-            thrust = thrust.Add(offset);
-            //thrust = offset;
+            //thrust = thrust.Add(offset);
+            Vector thrust = offset;
 
             //Normalize thrust output
             thrust.Y = thrust.Y < 0 ? 0 : thrust.Y;
-            
+
+            thrust.X = Disable ? 0 : thrust.X;
+            thrust.Y = Disable ? 0 : thrust.Y;
+            thrust.Z = Disable ? 0 : thrust.Z;
+
             //Sets current rotation of thruster for use in the visualization of the quad
             CurrentRotation = new Vector(-primaryJoint.GetAngle(), 0, -secondaryJoint.GetAngle());
 

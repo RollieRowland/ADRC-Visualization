@@ -129,7 +129,6 @@ namespace ADRCVisualization.Class_Files
                 output = NonlinearCombiner.Combine(pd, plantCoefficient, eso, precisionCoefficient);
 
                 previousPD = pdValue;
-                dateTime = DateTime.Now;
             }
 
             return Misc.Constrain(output, min, max);

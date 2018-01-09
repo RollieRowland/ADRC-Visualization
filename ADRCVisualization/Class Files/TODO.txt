@@ -58,3 +58,11 @@ calculate force vectors needed to reach rotation and position: acceleration in t
 
 Set up failsafes for dying engines
 -when one fails, kill the opposite engine
+-axis of rotation changes when motors die
+
+Velocity is controlled by changing target position of quad, not through the thrust controller 
+-stretched what ADRC was capable of
+
+Detect agitated behavior and reset ADRCs to default
+
+Correct rotation caluclation after adjusting how it is calculated

@@ -38,8 +38,10 @@
             System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.label1 = new System.Windows.Forms.Label();
@@ -52,9 +54,9 @@
             this.yRotationTB = new System.Windows.Forms.TextBox();
             this.zRotationTB = new System.Windows.Forms.TextBox();
             this.sendXYZ = new System.Windows.Forms.Button();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.quadViewer1 = new ADRCVisualization.QuadViewer();
             this.sendHPB = new System.Windows.Forms.Button();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.quadViewer2 = new ADRCVisualization.QuadViewer();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.SuspendLayout();
@@ -115,6 +117,14 @@
             series9.MarkerSize = 10;
             series9.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star4;
             series9.Name = "Series9";
+            series10.ChartArea = "ChartArea1";
+            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series10.MarkerSize = 2;
+            series10.Name = "Series10";
+            series11.ChartArea = "ChartArea1";
+            series11.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series11.MarkerSize = 2;
+            series11.Name = "Series11";
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
             this.chart1.Series.Add(series3);
@@ -124,6 +134,8 @@
             this.chart1.Series.Add(series7);
             this.chart1.Series.Add(series8);
             this.chart1.Series.Add(series9);
+            this.chart1.Series.Add(series10);
+            this.chart1.Series.Add(series11);
             this.chart1.Size = new System.Drawing.Size(500, 500);
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart1";
@@ -136,9 +148,9 @@
             this.chart2.ChartAreas.Add(chartArea2);
             this.chart2.Location = new System.Drawing.Point(520, 13);
             this.chart2.Name = "chart2";
-            series10.ChartArea = "ChartArea1";
-            series10.Name = "Series1";
-            this.chart2.Series.Add(series10);
+            series12.ChartArea = "ChartArea1";
+            series12.Name = "Series1";
+            this.chart2.Series.Add(series12);
             this.chart2.Size = new System.Drawing.Size(190, 486);
             this.chart2.TabIndex = 1;
             this.chart2.Text = "chart2";
@@ -222,15 +234,6 @@
             this.sendXYZ.UseVisualStyleBackColor = true;
             this.sendXYZ.Click += new System.EventHandler(this.SendXYZ_Click);
             // 
-            // elementHost1
-            // 
-            this.elementHost1.Location = new System.Drawing.Point(726, 13);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(502, 486);
-            this.elementHost1.TabIndex = 2;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.quadViewer1;
-            // 
             // sendHPB
             // 
             this.sendHPB.Location = new System.Drawing.Point(838, 519);
@@ -241,12 +244,22 @@
             this.sendHPB.UseVisualStyleBackColor = true;
             this.sendHPB.Click += new System.EventHandler(this.SendHPB_Click);
             // 
+            // elementHost1
+            // 
+            this.elementHost1.Location = new System.Drawing.Point(726, 26);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(502, 473);
+            this.elementHost1.TabIndex = 14;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.quadViewer2;
+            // 
             // Visualizer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(1240, 549);
+            this.Controls.Add(this.elementHost1);
             this.Controls.Add(this.sendHPB);
             this.Controls.Add(this.sendXYZ);
             this.Controls.Add(this.zRotationTB);
@@ -258,7 +271,6 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.elementHost1);
             this.Controls.Add(this.chart2);
             this.Controls.Add(this.chart1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -279,7 +291,6 @@
 
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
-        private System.Windows.Forms.Integration.ElementHost elementHost1;
         private QuadViewer quadViewer1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
@@ -292,6 +303,8 @@
         private System.Windows.Forms.TextBox zRotationTB;
         private System.Windows.Forms.Button sendXYZ;
         private System.Windows.Forms.Button sendHPB;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private QuadViewer quadViewer2;
     }
 }
 
