@@ -116,9 +116,6 @@ namespace ADRCVisualization.Class_Files
 
         public void CalculateCombinedThrustVector()
         {
-            //string test =  ((ADRC)PositionFeedbackController.X).SetOffset(CurrentRotation.Z);
-            //string test2 = ((ADRC)PositionFeedbackController.Z).SetOffset(-CurrentRotation.X);
-
             Vector rotationOutput = RotationFeedbackController.Calculate(new Vector(0, 0, 0), CurrentRotation.Subtract(TargetRotation), samplingPeriod).Multiply(-1);
             Vector positionOutput = PositionFeedbackController.Calculate(new Vector(0, 0, 0), CurrentPosition.Subtract(TargetPosition), samplingPeriod);
 
@@ -134,11 +131,20 @@ namespace ADRCVisualization.Class_Files
             Vector rotationOutputC = new Vector(-rotationOutput.Y, -rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
             Vector rotationOutputD = new Vector( rotationOutput.Y,  rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
             Vector rotationOutputE = new Vector( rotationOutput.Y,  rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);
+
+            //rotate position output to compensate for change in thrust when manipulating B and D thrusters
+            //when in -90/90 Z position:
+            //two thrusters are allocated to translation in the X dimension
+            //the other two are allocated to translation in the Z dimension
+
+            //Fade the two rotation/translation controls together
+
+            //Onl
             
-            ThrusterB.Calculate(CurrentRotation, rotationOutputB.Add(positionOutput));
-            ThrusterC.Calculate(CurrentRotation, rotationOutputC.Add(positionOutput));
-            ThrusterD.Calculate(CurrentRotation, rotationOutputD.Add(positionOutput));
-            ThrusterE.Calculate(CurrentRotation, rotationOutputE.Add(positionOutput));
+            ThrusterB.Calculate(rotationOutputB.Add(positionOutput));
+            ThrusterC.Calculate(rotationOutputC.Add(positionOutput));
+            ThrusterD.Calculate(rotationOutputD.Add(positionOutput));
+            ThrusterE.Calculate(rotationOutputE.Add(positionOutput));//.Add(new Vector(0, 0, CurrentRotation.Z))
         }
         
         public void CalculateCurrent()
@@ -181,6 +187,14 @@ namespace ADRCVisualization.Class_Files
 
             thrustSum = Matrix.RotateVector(CurrentRotation.Multiply(-1), thrustSum);
 
+            //simulate gimbal lock about Z axis
+            
+            //Rotation output negates when over 90 due to rotation matrix, this solution should be expanded to allow multiple increments
+            if (CurrentRotation.X >= 90 || CurrentRotation.Z <= -90)
+            {
+                thrustSum.X *= -1;
+            }
+
             CurrentAcceleration = thrustSum.Add(externalAcceleration);
 
             //calculate velocity: finalVelocity(vf) = vi + at
@@ -197,15 +211,10 @@ namespace ADRCVisualization.Class_Files
             Vector TD = ThrusterD.ReturnThrustVector();
             Vector TE = ThrusterE.ReturnThrustVector();
 
-            TB = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TB);//Thrust relative to environment origin
-            TC = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TC);
-            TD = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TD);
-            TE = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 1, -1)), TE);
-
-            TB = Matrix.RotateVector(new Vector(0, -CurrentRotation.Y, 0), TB);
-            TC = Matrix.RotateVector(new Vector(0, -CurrentRotation.Y, 0), TC);
-            TD = Matrix.RotateVector(new Vector(0, -CurrentRotation.Y, 0), TD);
-            TE = Matrix.RotateVector(new Vector(0, -CurrentRotation.Y, 0), TE);
+            TB = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, 0)), TB);//Thrust relative to environment origin
+            TC = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, 0)), TC);
+            TD = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, 0)), TD);
+            TE = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, 0)), TE);
 
             double torque  = armLength * Math.Sin(Misc.DegreesToRadians(180 - armAngle)) * 5;
 

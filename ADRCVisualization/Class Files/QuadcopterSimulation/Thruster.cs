@@ -22,7 +22,6 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
         public Vector QuadCenterOffset { get; }
         public bool Disable { get; set; }
         
-        private VectorFeedbackController ThrustController;
         private string name;
         private double samplingPeriod;
         
@@ -35,22 +34,6 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             secondaryJoint = new Servo(samplingPeriod, 150, 1);//X
             propellor = new Motor(samplingPeriod, 250, 1);//Y
             primaryJoint = new Servo(samplingPeriod, 150, 1);//Z
-            
-            ThrustController = new VectorFeedbackController()
-            {
-                X = new ADRC(50, 200, 4, 10, 30)
-                {
-                    PID = new PID(10, 0, 12.5, 1000)
-                },
-                Y = new ADRC(10, 10, 1.5, 0.05, 100)
-                {
-                    PID = new PID(1, 0, 0.2, 1000)
-                },
-                Z = new ADRC(50, 200, 4, 10, 30)
-                {
-                    PID = new PID(10, 0, 12.5, 1000)
-                }
-            };
 
             CurrentRotation = new Vector(0, 0, 0);
             TargetRotation = new Vector(0, 0, 0);
@@ -59,35 +42,13 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             Disable = false;
         }
 
-        public Vector Calculate(Vector rotation, Vector offset)
+        public Vector Calculate(Vector offset)
         {
-            /*
-            //dynamic control of the maximum output, dependent on the current angle of the quad
-            string test = ((ADRC)ThrustController.X).SetOffset(rotation.Z);//Adjusts max outputs of thrusters to allow more 
-            string test2 = ((ADRC)ThrustController.Z).SetOffset(-rotation.X);//than 45 degree rotation
-
-            //Thrust compensated for the change required when rotating in the xyz dimensions
-            Vector thrust = ThrustController.Calculate(new Vector(0, 0, 0), CurrentPosition.Subtract(TargetPosition), samplingPeriod);//thrust output in XYZ dimension
-
-            thrust.X = thrust.X + rotation.Z;
-            thrust.Z = thrust.Z - rotation.X;
-            
-            //if (name == "TB") Console.WriteLine(thrust + " " + test2);
-
-            //AdjustThrust(thrust, rotation);
-
-            //Use offset angle to compensate for Y output, add to Y position
-            thrust = Matrix.RotateVector(new Vector(0, rotation.Y, 0), thrust);//adjust thruster output to quad frame, only Y dimension
-
-            //Normalize secondary rotation control
-            offset.Y = offset.Y < 0 ? 0 : offset.Y;
-            */
             //Combine quad rotation output with individual thruster output
-            //thrust = thrust.Add(offset);
             Vector thrust = offset;
 
             //Normalize thrust output
-            thrust.Y = thrust.Y < 0 ? 0 : thrust.Y;
+            //thrust.Y = thrust.Y < 0 ? 0 : thrust.Y;
 
             thrust.X = Disable ? 0 : thrust.X;
             thrust.Y = Disable ? 0 : thrust.Y;

@@ -65,4 +65,13 @@ Velocity is controlled by changing target position of quad, not through the thru
 
 Detect agitated behavior and reset ADRCs to default
 
-Correct rotation caluclation after adjusting how it is calculated
+X Correct rotation calculation after adjusting how it is calculated
+
+X Allow rotations past 90 degrees
+- translation becomes inverted when rotating past 90 degrees about the X dimension
+- used only to compensate for rotations
+- 90 degrees is the max control limit
+
+Correct rotation calculation for on Z axis
+- position simulation is incorrect, thrust outputs need manipulated
+- position calculation needs to be modified to match new simulation
