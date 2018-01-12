@@ -124,13 +124,11 @@ namespace ADRCVisualization.Class_Files
             positionOutput = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
 
             positionOutput.Z = positionOutput.Z - CurrentRotation.X;
-
-            Console.WriteLine(CurrentPosition.Subtract(TargetPosition) + " |" + positionOutput + " |");
             
-            Vector rotationOutputB = new Vector(-rotationOutput.Y, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);//Thruster output relative to environment origin
-            Vector rotationOutputC = new Vector(-rotationOutput.Y, -rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
-            Vector rotationOutputD = new Vector( rotationOutput.Y,  rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
-            Vector rotationOutputE = new Vector( rotationOutput.Y,  rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);
+            Vector thrusterOutputB = new Vector(-rotationOutput.Y, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);//Thruster output relative to environment origin
+            Vector thrusterOutputC = new Vector(-rotationOutput.Y, -rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
+            Vector thrusterOutputD = new Vector( rotationOutput.Y,  rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
+            Vector thrusterOutputE = new Vector( rotationOutput.Y,  rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);
 
             //rotate position output to compensate for change in thrust when manipulating B and D thrusters
             //when in -90/90 Z position:
@@ -138,13 +136,31 @@ namespace ADRCVisualization.Class_Files
             //the other two are allocated to translation in the Z dimension
 
             //Fade the two rotation/translation controls together
+            /*
+            thrustSum.X = outputXZ.X;
+            thrustSum.Z = rotationZ.Z + outputXZ.Z;
+            */
 
-            //Onl
+            Vector rotationZ = Matrix.RotateVector(new Vector(CurrentRotation.Z, 0, 0), new Vector(0, 0, positionOutput.Z));
+            Vector outputXZ  = Matrix.RotateVector(new Vector(0, positionOutput.Z, 0),  new Vector(positionOutput.X, 0, 0));
+
+            //X and Z outputs known
+            //need to find angle for primary joint rotation
+
+            //Console.WriteLine(rotationZ + " " + outputXZ);
+
+            //positionOutput.X = positionOutput.X;
+            //positionOutput.Z = rotationZ.Z + outputXZ.Z;//gimbal lock
             
-            ThrusterB.Calculate(rotationOutputB.Add(positionOutput));
-            ThrusterC.Calculate(rotationOutputC.Add(positionOutput));
-            ThrusterD.Calculate(rotationOutputD.Add(positionOutput));
-            ThrusterE.Calculate(rotationOutputE.Add(positionOutput));//.Add(new Vector(0, 0, CurrentRotation.Z))
+            thrusterOutputB = thrusterOutputB.Add(positionOutput);
+            thrusterOutputC = thrusterOutputC.Add(positionOutput);//.Add(new Vector(0, 0, CurrentRotation.Z));
+            thrusterOutputD = thrusterOutputD.Add(positionOutput);
+            thrusterOutputE = thrusterOutputE.Add(positionOutput);//.Add(new Vector(0, 0, CurrentRotation.Z));
+
+            ThrusterB.Calculate(thrusterOutputB);
+            ThrusterC.Calculate(thrusterOutputC);
+            ThrusterD.Calculate(thrusterOutputD);
+            ThrusterE.Calculate(thrusterOutputE);//.Add(new Vector(0, 0, CurrentRotation.Z))
         }
         
         public void CalculateCurrent()
@@ -185,10 +201,25 @@ namespace ADRCVisualization.Class_Files
 
             Vector thrustSum = TB.Add(TC).Add(TD).Add(TE);
 
-            thrustSum = Matrix.RotateVector(CurrentRotation.Multiply(-1), thrustSum);
+            //Adjust thrust output so that it is relative to origin
+            thrustSum = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, -1, -1)), thrustSum);
 
-            //simulate gimbal lock about Z axis
+            //X nothing changes
+            //Y nothing changes
+            //Z rotation changes, gimbal lock
+
+            //Z rotation calculation
+            //uses X as primary joint
+
+            //Adjusts rotation output for Z when rotating about Z - simulated gimbal lock
+            Vector rotationZ = Matrix.RotateVector(new Vector(CurrentRotation.Z, 0, 0), new Vector(0, 0, thrustSum.Z));
+
+            //Rotate the Inner joint about the outer joint
+            Vector outputXZ = Matrix.RotateVector(new Vector(0, thrustSum.Z, 0), new Vector(thrustSum.X, 0, 0));
             
+            thrustSum.X = outputXZ.X;
+            thrustSum.Z = rotationZ.Z + outputXZ.Z;
+
             //Rotation output negates when over 90 due to rotation matrix, this solution should be expanded to allow multiple increments
             if (CurrentRotation.X >= 90 || CurrentRotation.Z <= -90)
             {

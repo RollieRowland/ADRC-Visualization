@@ -26,35 +26,35 @@ calculate force vectors needed to reach rotation and position: acceleration in t
  torque = swiveling rate * angular momentum
 
 
- ////////////////////////////////////
- Count in gyroscopic precession
+////////////////////////////////////
+Count in gyroscopic precession
 
- Twisting an arm induces torque on the quad itself, rotating the quadcopter relative to the ground
- - relative to the quad the arm is being twisted to the specified angle
+Twisting an arm induces torque on the quad itself, rotating the quadcopter relative to the ground
+- relative to the quad the arm is being twisted to the specified angle
 
- X Transitions to multiple angles. For instance (45, 90, 0) instead of (45, 0, 0)
+X Transitions to multiple angles. For instance (45, 90, 0) instead of (45, 0, 0)
 
- X Rotation matrix about Y axis only for thrusters to modify which relative direction it should be providing thrust
- -Moving to a position on one axis while at the original rotation can be done through moving only one joint
- -Moving to a position on one axis while at a different rotation about the Y axis is done through moving two joints
- -Modify thrust vector computation
+X Rotation matrix about Y axis only for thrusters to modify which relative direction it should be providing thrust
+-Moving to a position on one axis while at the original rotation can be done through moving only one joint
+-Moving to a position on one axis while at a different rotation about the Y axis is done through moving two joints
+-Modify thrust vector computation
 
- X Allow rotations up to and past 90 degrees about X and Z axes
+X Allow rotations up to and past 90 degrees about X and Z axes
 
- Set up feedback controllers such that they understand that when one other value changes it directly affects the other with a constant relationship
- -rotating the X arm affects what will happen to the Y and the value can be known
+X Set up feedback controllers such that they understand that when one other value changes it directly affects the other with a constant relationship
+-rotating the X arm affects what will happen to the Y and the value can be known
 
- X Thruster
- -Feedback controller for determining the output in each individual dimension (TargetPosition, CurrentPosition)
- -Second feedback controller layer for determining how much a change with the X or Z rotations will affect the Y output and automatically compensate
-	- this prevents the initial feedback controller from going haywire by automatically smoothing the output
- -Drawing on desktop
+X Thruster
+-Feedback controller for determining the output in each individual dimension (TargetPosition, CurrentPosition)
+-Second feedback controller layer for determining how much a change with the X or Z rotations will affect the Y output and automatically compensate
+- this prevents the initial feedback controller from going haywire by automatically smoothing the output
+-Drawing on desktop
 
- X Add more delay to thruster movement and calibrate rotational/positional ADRCs
+X Add more delay to thruster movement and calibrate rotational/positional ADRCs
 
- Fix quad display
- -Rotation about Y axis is inverted
-	- Quad rotates opposite as to how it should 
+Fix quad display
+-Rotation about Y axis is inverted
+- Quad rotates opposite as to how it should 
 
 Set up failsafes for dying engines
 -when one fails, kill the opposite engine
