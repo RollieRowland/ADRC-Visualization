@@ -119,50 +119,63 @@ namespace ADRCVisualization.Class_Files
             Vector rotationOutput = RotationFeedbackController.Calculate(new Vector(0, 0, 0), CurrentRotation.Subtract(TargetRotation), samplingPeriod).Multiply(-1);
             Vector positionOutput = PositionFeedbackController.Calculate(new Vector(0, 0, 0), CurrentPosition.Subtract(TargetPosition), samplingPeriod);
 
-            positionOutput.X = positionOutput.X + CurrentRotation.Z;
-
-            positionOutput = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
-
-            positionOutput.Z = positionOutput.Z - CurrentRotation.X;
-            
             Vector thrusterOutputB = new Vector(-rotationOutput.Y, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);//Thruster output relative to environment origin
             Vector thrusterOutputC = new Vector(-rotationOutput.Y, -rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
             Vector thrusterOutputD = new Vector( rotationOutput.Y,  rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
             Vector thrusterOutputE = new Vector( rotationOutput.Y,  rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);
 
-            //rotate position output to compensate for change in thrust when manipulating B and D thrusters
-            //when in -90/90 Z position:
-            //two thrusters are allocated to translation in the X dimension
-            //the other two are allocated to translation in the Z dimension
+            positionOutput.X = positionOutput.X + CurrentRotation.Z;//Adjust main thruster to rotation
+            positionOutput   = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
+            positionOutput.Z = positionOutput.Z - CurrentRotation.X;//Adjust secondary thruster to rotation
 
-            //Fade the two rotation/translation controls together
-            /*
-            thrustSum.X = outputXZ.X;
-            thrustSum.Z = rotationZ.Z + outputXZ.Z;
-            */
+            if (CurrentRotation.Z > 85 && CurrentRotation.Z < 95 || CurrentRotation.Z < -85 && CurrentRotation.Z > -95)
+            {
+                CalculateGimbalLockedMotion(ref positionOutput);
+                CalculateGimbalLockedRotation(ref rotationOutput, ref thrusterOutputB, ref thrusterOutputC, ref thrusterOutputD, ref thrusterOutputE);
+            }
 
-            Vector rotationZ = Matrix.RotateVector(new Vector(CurrentRotation.Z, 0, 0), new Vector(0, 0, positionOutput.Z));
-            Vector outputXZ  = Matrix.RotateVector(new Vector(0, positionOutput.Z, 0),  new Vector(positionOutput.X, 0, 0));
-
-            //X and Z outputs known
-            //need to find angle for primary joint rotation
-
-            //Console.WriteLine(rotationZ + " " + outputXZ);
-
-            //positionOutput.X = positionOutput.X;
-            //positionOutput.Z = rotationZ.Z + outputXZ.Z;//gimbal lock
-            
             thrusterOutputB = thrusterOutputB.Add(positionOutput);
-            thrusterOutputC = thrusterOutputC.Add(positionOutput);//.Add(new Vector(0, 0, CurrentRotation.Z));
+            thrusterOutputC = thrusterOutputC.Add(positionOutput);
             thrusterOutputD = thrusterOutputD.Add(positionOutput);
-            thrusterOutputE = thrusterOutputE.Add(positionOutput);//.Add(new Vector(0, 0, CurrentRotation.Z));
+            thrusterOutputE = thrusterOutputE.Add(positionOutput);
 
             ThrusterB.Calculate(thrusterOutputB);
             ThrusterC.Calculate(thrusterOutputC);
             ThrusterD.Calculate(thrusterOutputD);
-            ThrusterE.Calculate(thrusterOutputE);//.Add(new Vector(0, 0, CurrentRotation.Z))
+            ThrusterE.Calculate(thrusterOutputE);
         }
-        
+
+        private void CalculateGimbalLockedMotion(ref Vector positionControl)
+        {
+            //Rotation magnitude faders, approaches 0 when Z rot is -90/90 degrees
+            Vector rotationX = Matrix.RotateVector(new Vector(0, 0, CurrentRotation.Z), new Vector(positionControl.X, 0, 0));// 1 -> 0
+            Vector rotationZ = Matrix.RotateVector(new Vector(CurrentRotation.Z, 0, 0), new Vector(0, 0, positionControl.Z));// 1 -> 0
+
+            //Determine magnitude and angle of positionOutput X and Z
+            double magn = Math.Sqrt(Math.Pow(positionControl.X, 2) + Math.Pow(positionControl.Z, 2));//Give hypotenuse for origin rotation, magnitude
+            double angle = Misc.RadiansToDegrees(Math.Sign(CurrentRotation.Z) * Math.Atan2(magn, 0) - Math.Atan2(positionControl.Z, positionControl.X));//Determine angle of output, -180 -> 180
+
+            //Normalizes angular output and restricts to the required 180 degree rotation
+            if (angle < 0)
+            {
+                angle += 180;
+                magn  *=  -1;
+            }
+
+            //New position control faders, approaches maximum when z rot is -90/90
+            Vector positionX = Matrix.RotateVector(new Vector(0, 0, 90 - Math.Abs(CurrentRotation.Z)), new Vector(magn / 8, 0, 0));// 0 -> 1
+            Vector positionZ = Matrix.RotateVector(new Vector(90 - Math.Abs(CurrentRotation.Z), 0, 0), new Vector(0, 0, angle));// 0 -> 1
+            
+            //Join the two faded controllers
+            positionControl.X = rotationX.X + positionX.X;
+            positionControl.Z = rotationZ.Z + positionZ.Z;
+        }
+
+        private void CalculateGimbalLockedRotation(ref Vector rotationControl, ref Vector thrusterOutputB, ref Vector thrusterOutputC, ref Vector thrusterOutputD, ref Vector thrusterOutputE)
+        {
+            //Create new 
+        }
+
         public void CalculateCurrent()
         {
             EstimatePosition(samplingPeriod);
