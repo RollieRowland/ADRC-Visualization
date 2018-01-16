@@ -382,8 +382,8 @@ namespace ADRCVisualization
             chart1.Series[9].Points.AddXY(quadcopter.CurrentPosition.X, quadcopter.CurrentPosition.Z);
             chart1.Series[10].Points.AddXY(quadcopter.TargetPosition.X, quadcopter.TargetPosition.Z);
 
-            if (chart1.Series[9].Points.Count > 300) chart1.Series[9].Points.RemoveAt(0);
-            if (chart1.Series[10].Points.Count > 300) chart1.Series[10].Points.RemoveAt(0);
+            if (chart1.Series[9].Points.Count > 400) chart1.Series[9].Points.RemoveAt(0);
+            if (chart1.Series[10].Points.Count > 400) chart1.Series[10].Points.RemoveAt(0);
 
             chart1.Series[0].Points.AddXY(quadcopter.CurrentPosition.X, quadcopter.CurrentPosition.Z);
             chart1.Series[1].Points.AddXY(quadcopter.ThrusterB.CurrentPosition.X, quadcopter.ThrusterB.CurrentPosition.Z);

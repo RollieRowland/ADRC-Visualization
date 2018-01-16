@@ -64,6 +64,8 @@ Velocity is controlled by changing target position of quad, not through the thru
 -stretched what ADRC was capable of
 
 Detect agitated behavior and reset ADRCs to default
+- Write chaotic motion solver
+- smooth control given a chaotic state
 
 X Correct rotation calculation after adjusting how it is calculated
 
@@ -75,3 +77,14 @@ X Allow rotations past 90 degrees
 Correct rotation calculation for on Z axis
 - position simulation is incorrect, thrust outputs need manipulated
 - position calculation needs to be modified to match new simulation
+
+All four props have rotational inertia
+- use for differential thrust
+- adjust output of diagonal motors, increase two by the same amount the other two are decreased
+- each have the constant rotational inertia, factor and sum all of them for the rotational inertia
+- the sum gives the rotational inertia for the quad about the vertical axis of the quad rotor
+- each quad has rotational inertia (0, thrust, 0) or (0, -thrust, 0), rotate the thruster relative to the quad, then the quad relative to the origin rotation
+- add to angular acceleration
+- USE TO CONTROL ROTATION, do not redirect thrusters for rotation
+- ADD TO SIMULATION FIRST
+- ADD TO SOLVER SECOND

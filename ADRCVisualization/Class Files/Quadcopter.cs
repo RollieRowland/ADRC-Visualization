@@ -49,6 +49,8 @@ namespace ADRCVisualization.Class_Files
         private double armAngle;
         private double samplingPeriod;
 
+        private KalmanFilter zRotationKF;
+
         public Quadcopter(double armLength, double armAngle, double samplingPeriod)
         {
             this.armLength = armLength;
@@ -99,6 +101,8 @@ namespace ADRCVisualization.Class_Files
                     PID = new PID(0.5, 0, 0.75, 1000)
                 }
             };
+
+            zRotationKF = new KalmanFilter(0.01, 50);
         }
 
         private void CalculateArmPositions(double ArmLength, double ArmAngle)
@@ -119,21 +123,26 @@ namespace ADRCVisualization.Class_Files
             Vector rotationOutput = RotationFeedbackController.Calculate(new Vector(0, 0, 0), CurrentRotation.Subtract(TargetRotation), samplingPeriod).Multiply(-1);
             Vector positionOutput = PositionFeedbackController.Calculate(new Vector(0, 0, 0), CurrentPosition.Subtract(TargetPosition), samplingPeriod);
 
-            Vector thrusterOutputB = new Vector(-rotationOutput.Y, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);//Thruster output relative to environment origin
-            Vector thrusterOutputC = new Vector(-rotationOutput.Y, -rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
-            Vector thrusterOutputD = new Vector( rotationOutput.Y,  rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
-            Vector thrusterOutputE = new Vector( rotationOutput.Y,  rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);
+            Vector thrusterOutputB = new Vector(0, -rotationOutput.X + rotationOutput.Z, 0);//Thruster output relative to environment origin
+            Vector thrusterOutputC = new Vector(0, -rotationOutput.X - rotationOutput.Z, 0);
+            Vector thrusterOutputD = new Vector(0,  rotationOutput.X - rotationOutput.Z, 0);
+            Vector thrusterOutputE = new Vector(0,  rotationOutput.X + rotationOutput.Z, 0);
 
-            positionOutput.X = positionOutput.X + CurrentRotation.Z;//Adjust main thruster to rotation
-            positionOutput   = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
-            positionOutput.Z = positionOutput.Z - CurrentRotation.X;//Adjust secondary thruster to rotation
+            thrusterOutputB = thrusterOutputB.Add(new Vector(0, -rotationOutput.Y, 0));
+            thrusterOutputC = thrusterOutputC.Add(new Vector(0,  rotationOutput.Y, 0));
+            thrusterOutputD = thrusterOutputD.Add(new Vector(0, -rotationOutput.Y, 0));
+            thrusterOutputE = thrusterOutputE.Add(new Vector(0,  rotationOutput.Y, 0));
 
-            if (CurrentRotation.Z > 85 && CurrentRotation.Z < 95 || CurrentRotation.Z < -85 && CurrentRotation.Z > -95)
+            if (CurrentRotation.Z > 80 && CurrentRotation.Z < 100 || CurrentRotation.Z < -80 && CurrentRotation.Z > -100)
             {
                 CalculateGimbalLockedMotion(ref positionOutput);
                 CalculateGimbalLockedRotation(ref rotationOutput, ref thrusterOutputB, ref thrusterOutputC, ref thrusterOutputD, ref thrusterOutputE);
             }
 
+            positionOutput.X = positionOutput.X + CurrentRotation.Z;//Adjust main thruster to rotation
+            positionOutput = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
+            positionOutput.Z = positionOutput.Z - CurrentRotation.X;//Adjust secondary thruster to rotation
+            
             thrusterOutputB = thrusterOutputB.Add(positionOutput);
             thrusterOutputC = thrusterOutputC.Add(positionOutput);
             thrusterOutputD = thrusterOutputD.Add(positionOutput);
@@ -163,12 +172,16 @@ namespace ADRCVisualization.Class_Files
             }
 
             //New position control faders, approaches maximum when z rot is -90/90
-            Vector positionX = Matrix.RotateVector(new Vector(0, 0, 90 - Math.Abs(CurrentRotation.Z)), new Vector(magn / 8, 0, 0));// 0 -> 1
+            Vector positionX = Matrix.RotateVector(new Vector(0, 0, 90 - Math.Abs(CurrentRotation.Z)), new Vector(0, 0, 0));// 0 -> 1
             Vector positionZ = Matrix.RotateVector(new Vector(90 - Math.Abs(CurrentRotation.Z), 0, 0), new Vector(0, 0, angle));// 0 -> 1
-            
+
             //Join the two faded controllers
-            positionControl.X = rotationX.X + positionX.X;
-            positionControl.Z = rotationZ.Z + positionZ.Z;
+            //positionControl.X = rotationX.X + positionX.X;
+            //positionControl.Z = rotationZ.Z + positionZ.Z;
+            positionControl.X = 0;// positionX.X;
+            positionControl.Z = zRotationKF.Filter(positionZ.Z);
+
+            //Console.WriteLine(positionControl);
         }
 
         private void CalculateGimbalLockedRotation(ref Vector rotationControl, ref Vector thrusterOutputB, ref Vector thrusterOutputC, ref Vector thrusterOutputD, ref Vector thrusterOutputE)
@@ -268,7 +281,12 @@ namespace ADRCVisualization.Class_Files
                 Y = (TB.X + TC.X - TD.X - TE.X) * torque + (TB.Z - TC.Z - TD.Z + TE.Z) * torque,
                 Z = (-TB.Y + TC.Y + TD.Y - TE.Y) * torque
             };
+
+            //TB + TD - (TC + TE)
+            Vector differentialThrustRotation = TB.Add(TD).Add(TC.Add(TE).Multiply(-1)).Multiply(0.15);
             
+            currentAngularAcceleration = currentAngularAcceleration.Add(differentialThrustRotation);
+
             //current angular velocity: w = wi + at
             currentAngularVelocity = currentAngularVelocity.Add(currentAngularAcceleration.Multiply(dT));
 

@@ -42,7 +42,7 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             Disable = false;
         }
 
-        public Vector Calculate(Vector offset)
+        public void Calculate(Vector offset)
         {
             //Combine quad rotation output with individual thruster output
             Vector thrust = offset;
@@ -61,8 +61,6 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             secondaryJoint.SetAngle(thrust.X);
             propellor.SetOutput(thrust.Y);
             primaryJoint.SetAngle(thrust.Z);
-            
-            return thrust;
         }
 
         public Vector ReturnThrustVector()
@@ -73,6 +71,11 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             thrustVector = Matrix.RotateVector(rotationVector, thrustVector);
 
             return thrustVector;
+        }
+
+        public Vector ReturnThrusterOutput()
+        {
+            return new Vector(primaryJoint.GetAngle(), propellor.GetOutput(), secondaryJoint.GetAngle());
         }
 
         public Vector AdjustThrust(Vector thrust, Vector rotation)
