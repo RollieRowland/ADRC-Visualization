@@ -38,5 +38,10 @@ namespace ADRCVisualization.Class_Files.Mathematics
         {
             return radians * (180 / Math.PI);
         }
+
+        public static string DoubleToString(double value)
+        {
+            return String.Format("{0:0.00}", value).PadLeft(7);
+        }
     }
 }

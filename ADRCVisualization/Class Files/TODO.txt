@@ -78,7 +78,7 @@ Correct rotation calculation for on Z axis
 - position simulation is incorrect, thrust outputs need manipulated
 - position calculation needs to be modified to match new simulation
 
-All four props have rotational inertia
+X All four props have rotational inertia
 - use for differential thrust
 - adjust output of diagonal motors, increase two by the same amount the other two are decreased
 - each have the constant rotational inertia, factor and sum all of them for the rotational inertia

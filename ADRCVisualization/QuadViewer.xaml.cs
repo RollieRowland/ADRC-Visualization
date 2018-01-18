@@ -88,7 +88,7 @@ namespace ADRCVisualization
 
             Model3D innerEModel = import.Load(directory + "InnerE.stl");
             Model3D outerEModel = import.Load(directory + "OuterE.stl");
-
+            
             mainX = new ModelVisual3D();
             mainY = new ModelVisual3D();
             mainZ = new ModelVisual3D();
