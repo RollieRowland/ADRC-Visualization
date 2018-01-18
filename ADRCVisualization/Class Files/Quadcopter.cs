@@ -143,24 +143,25 @@ namespace ADRCVisualization.Class_Files
             double fadeIn = (1.0 / 90.0) * Math.Pow((90.0 - Math.Abs(CurrentRotation.Z % (90.0 * 2) - 90.0)), curvature) / Math.Pow(90, curvature - 1);//0 -> 1, New position control faders, approaches 1 when z rot is -90/90
             double fadeOut = 1 - fadeIn;//1 -> 0, Rotation magnitude faders, approaches 0 when Z rot is -90/90 degrees
 
-            double rotation = 45 * fadeIn;
+            double rotation = 30 * fadeIn;
             
             double magnitude = Math.Sqrt(Math.Pow(positionControl.X, 2) + Math.Pow(positionControl.Z, 2));//Give hypotenuse for origin rotation, magnitude
             double angle = Misc.RadiansToDegrees(Math.Sign(CurrentRotation.Z) * Math.Atan2(magnitude, 0) - Math.Atan2(positionControl.Z, positionControl.X));//Determine angle of output, -180 -> 180
 
-            //use angle and magnitude to produce two X rotation values
-            double positiveX = 0;
-            double negativeX = 0;
+            //Rotation matrix on position control copy
+            Vector RotatedControl = Matrix.RotateVector(new Vector(0, -CurrentRotation.Y, 0), new Vector(positionControl.X, 0, positionControl.Z));
 
-            thrusterOutputB.X += -positionControl.X * fadeIn + positiveX * fadeIn;
-            thrusterOutputC.X += -positionControl.X * fadeIn + negativeX * fadeIn;
-            thrusterOutputD.X += -positionControl.X * fadeIn + positiveX * fadeIn;
-            thrusterOutputE.X += -positionControl.X * fadeIn + negativeX * fadeIn;
+            //---- (X-), ++++ (X+), +-+- (Z+), -+-+ (Z-)
+            thrusterOutputB.X = thrusterOutputB.X * fadeOut + (RotatedControl.X * fadeIn) + (RotatedControl.Z * fadeIn);
+            thrusterOutputC.X = thrusterOutputC.X * fadeOut + (RotatedControl.X * fadeIn) - (RotatedControl.Z * fadeIn);
+            thrusterOutputD.X = thrusterOutputD.X * fadeOut + (RotatedControl.X * fadeIn) + (RotatedControl.Z * fadeIn);
+            thrusterOutputE.X = thrusterOutputE.X * fadeOut + (RotatedControl.X * fadeIn) - (RotatedControl.Z * fadeIn);
 
-            thrusterOutputB.Z += rotation;
-            thrusterOutputC.Z -= rotation;
-            thrusterOutputD.Z += rotation;
-            thrusterOutputE.Z -= rotation;
+            //Alternate Z rotation in individual thrusters, preventing rotation bias
+            thrusterOutputB.Z = thrusterOutputB.Z * fadeOut + rotation;
+            thrusterOutputC.Z = thrusterOutputC.Z * fadeOut - rotation;
+            thrusterOutputD.Z = thrusterOutputD.Z * fadeOut + rotation;
+            thrusterOutputE.Z = thrusterOutputE.Z * fadeOut - rotation;
 
             positionControl.X *= fadeOut;
             positionControl.Z *= fadeOut;
@@ -210,26 +211,48 @@ namespace ADRCVisualization.Class_Files
             Vector TC = ThrusterC.ReturnThrustVector();
             Vector TD = ThrusterD.ReturnThrustVector();
             Vector TE = ThrusterE.ReturnThrustVector();
-
-            Vector thrustSum = TB.Add(TC).Add(TD).Add(TE);
-
+            
             //Adjust thrust output so that it is relative to origin
-            thrustSum = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, -1)), thrustSum);
-            thrustSum = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(0, -1, 0)), thrustSum);
+            TB = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, -1)), TB);
+            TB = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(0, -1, 0)), TB);
+            TC = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, -1)), TC);
+            TC = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(0, -1, 0)), TC);
+            TD = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, -1)), TD);
+            TD = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(0, -1, 0)), TD);
+            TE = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, -1)), TE);
+            TE = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(0, -1, 0)), TE);
 
             //Adjusts rotation output for Z when rotating about Z - simulated gimbal lock
-            Vector rotationX = Matrix.RotateVector(new Vector(0, 0, CurrentRotation.Z), new Vector(thrustSum.X, 0, 0));
-            Vector rotationZ = Matrix.RotateVector(new Vector(CurrentRotation.Z, 0, 0), new Vector(0, 0, thrustSum.Z));
+            Vector rotationTBX = Matrix.RotateVector(new Vector(0, 0, -CurrentRotation.Z), new Vector(TB.X, 0, 0));
+            Vector rotationTBZ = Matrix.RotateVector(new Vector(-CurrentRotation.Z, 0, 0), new Vector(0, 0, TB.Z));
+            Vector rotationTCX = Matrix.RotateVector(new Vector(0, 0, CurrentRotation.Z), new Vector(TC.X, 0, 0));
+            Vector rotationTCZ = Matrix.RotateVector(new Vector(CurrentRotation.Z, 0, 0), new Vector(0, 0, TC.Z));
+            Vector rotationTDX = Matrix.RotateVector(new Vector(0, 0, CurrentRotation.Z), new Vector(TD.X, 0, 0));
+            Vector rotationTDZ = Matrix.RotateVector(new Vector(CurrentRotation.Z, 0, 0), new Vector(0, 0, TD.Z));
+            Vector rotationTEX = Matrix.RotateVector(new Vector(0, 0, -CurrentRotation.Z), new Vector(TE.X, 0, 0));
+            Vector rotationTEZ = Matrix.RotateVector(new Vector(-CurrentRotation.Z, 0, 0), new Vector(0, 0, TE.Z));
 
             //Rotate the Inner joint about the outer joint
-            Vector outputZ = Matrix.RotateVector(new Vector(0, thrustSum.Z, 0), new Vector(thrustSum.X, 0, 0));
-            
-            thrustSum.X = rotationX.X + outputZ.X;//Reduced when rotated
-            thrustSum.Z = rotationZ.Z + outputZ.Z;//Added to when rotated
+            Vector outputTBZ = Matrix.RotateVector(new Vector(0, TB.Z, 0), new Vector(TB.X, 0, 0));
+            Vector outputTCZ = Matrix.RotateVector(new Vector(0, TC.Z, 0), new Vector(TC.X, 0, 0));
+            Vector outputTDZ = Matrix.RotateVector(new Vector(0, TD.Z, 0), new Vector(TD.X, 0, 0));
+            Vector outputTEZ = Matrix.RotateVector(new Vector(0, TE.Z, 0), new Vector(TE.X, 0, 0));
 
+            TB.X = rotationTBX.X + outputTBZ.X;//Reduced when rotated
+            TB.Z = rotationTBZ.Z + outputTBZ.Z;//Added to when rotated
+            TC.X = rotationTCX.X + outputTCZ.X;//Reduced when rotated
+            TC.Z = rotationTCZ.Z + outputTCZ.Z;//Added to when rotated
+            TD.X = rotationTDX.X + outputTDZ.X;//Reduced when rotated
+            TD.Z = rotationTDZ.Z + outputTDZ.Z;//Added to when rotated
+            TE.X = rotationTEX.X + outputTEZ.X;//Reduced when rotated
+            TE.Z = rotationTEZ.Z + outputTEZ.Z;//Added to when rotated
+
+            Vector thrustSum = TB.Add(TC).Add(TD).Add(TE);
+            
             //Rotation output negates when over 90 due to rotation matrix, this solution should be expanded to allow multiple increments
             if (CurrentRotation.X >= 90 || CurrentRotation.Z <= -90)
             {
+                // % 180
                 thrustSum.X *= -1;
             }
 

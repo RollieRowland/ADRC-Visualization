@@ -161,14 +161,14 @@ namespace ADRCVisualization
                 targetRotation = new Vector(0, 0, 90);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(7500);
+                await Task.Delay(10000);
 
                 //////////////////////////////////////////////////
-                targetPosition = new Vector(1, 0, 1.2);
+                targetPosition = new Vector(-1, 0, 1.2);
                 targetRotation = new Vector(0, 0, 90);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(3000);
+                await Task.Delay(6000);
 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(1, 0, 1.2);
