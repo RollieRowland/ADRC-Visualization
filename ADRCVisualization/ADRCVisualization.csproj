@@ -70,6 +70,7 @@
     <Compile Include="Class Files\BitmapModifier.cs" />
     <Compile Include="Class Files\FeedbackControl\ADRC\ExtendedStateObserver.cs" />
     <Compile Include="Class Files\FeedbackControl\FeedbackController.cs" />
+    <Compile Include="Class Files\FeedbackControl\QuaternionFeedbackController.cs" />
     <Compile Include="Class Files\FeedbackControl\VectorFeedbackController.cs" />
     <Compile Include="Class Files\Filters\VectorKalmanFilter.cs" />
     <Compile Include="Class Files\FourierTransforms\FourierBitmap.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Class Files\Mathematics\Acceleration.cs" />
     <Compile Include="Class Files\Mathematics\Matrix.cs" />
     <Compile Include="Class Files\Mathematics\Misc.cs" />
+    <Compile Include="Class Files\Mathematics\Quaternion.cs" />
     <Compile Include="Class Files\Mathematics\Statistics.cs" />
     <Compile Include="Class Files\Mathematics\Turbulence.cs" />
     <Compile Include="Class Files\Mathematics\Vector.cs" />

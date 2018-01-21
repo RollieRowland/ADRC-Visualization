@@ -180,7 +180,9 @@ namespace ADRCVisualization.Class_Files
         {
             EstimatePosition(samplingPeriod);
             EstimateRotation(samplingPeriod);
-            
+
+            //Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), Matrix.RotateVector(new Vector(CurrentRotation.X, 0, CurrentRotation.Z), ThrusterB.QuadCenterOffset));
+
             //calculate rotation matrix
             ThrusterB.CurrentPosition = Matrix.RotateVector(CurrentRotation, ThrusterB.QuadCenterOffset).Add(CurrentPosition);
             ThrusterC.CurrentPosition = Matrix.RotateVector(CurrentRotation, ThrusterC.QuadCenterOffset).Add(CurrentPosition);
@@ -238,6 +240,7 @@ namespace ADRCVisualization.Class_Files
             Vector outputTDZ = Matrix.RotateVector(new Vector(0, TD.Z, 0), new Vector(TD.X, 0, 0));
             Vector outputTEZ = Matrix.RotateVector(new Vector(0, TE.Z, 0), new Vector(TE.X, 0, 0));
 
+            //Corrected force outputs, including gimbal lock
             TB.X = rotationTBX.X + outputTBZ.X;//Reduced when rotated
             TB.Z = rotationTBZ.Z + outputTBZ.Z;//Added to when rotated
             TC.X = rotationTCX.X + outputTCZ.X;//Reduced when rotated
@@ -247,6 +250,7 @@ namespace ADRCVisualization.Class_Files
             TE.X = rotationTEX.X + outputTEZ.X;//Reduced when rotated
             TE.Z = rotationTEZ.Z + outputTEZ.Z;//Added to when rotated
 
+            //Summation of the force vectors
             Vector thrustSum = TB.Add(TC).Add(TD).Add(TE);
             
             //Rotation output negates when over 90 due to rotation matrix, this solution should be expanded to allow multiple increments

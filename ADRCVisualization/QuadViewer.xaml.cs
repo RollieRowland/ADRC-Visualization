@@ -214,60 +214,60 @@ namespace ADRCVisualization
                 /// B ROTATION
 
                 innerBMatrix.Translate(new Vector3D(-1638, 1638, -28));
-                innerBMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), bRelativeRotation.Z));
+                innerBMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(1, 0, 0), bRelativeRotation.Z));
                 innerBMatrix.Translate(new Vector3D(1638, -1638, 28));
                 innerB.Transform = new MatrixTransform3D(innerBMatrix);
 
                 outerBMatrix.Translate(new Vector3D(1638, -1638, -28));
-                outerBMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), bRelativeRotation.X));
+                outerBMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(0, 1, 0), bRelativeRotation.X));
                 outerBMatrix.Translate(new Vector3D(-1638, 1638, 28));
                 outerB.Transform = new MatrixTransform3D(outerBMatrix);
 
                 /// C ROTATION
 
                 innerCMatrix.Translate(new Vector3D(1638, -1638, -28));
-                innerCMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), cRelativeRotation.Z));
+                innerCMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(1, 0, 0), cRelativeRotation.Z));
                 innerCMatrix.Translate(new Vector3D(-1638, 1638, 28));
                 innerC.Transform = new MatrixTransform3D(innerCMatrix);
 
                 outerCMatrix.Translate(new Vector3D(1638, -1638, -28));
-                outerCMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), cRelativeRotation.X));
+                outerCMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(0, 1, 0), cRelativeRotation.X));
                 outerCMatrix.Translate(new Vector3D(-1638, 1638, 28));
                 outerC.Transform = new MatrixTransform3D(outerCMatrix);
 
                 /// D ROTATION
                 
                 innerDMatrix.Translate(new Vector3D(-1638, -1638, -28));
-                innerDMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), dRelativeRotation.Z));
+                innerDMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(1, 0, 0), dRelativeRotation.Z));
                 innerDMatrix.Translate(new Vector3D(1638, 1638, 28));
                 innerD.Transform = new MatrixTransform3D(innerDMatrix);
 
                 outerDMatrix.Translate(new Vector3D(-1638, -1638, -28));
-                outerDMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), dRelativeRotation.X));
+                outerDMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(0, 1, 0), dRelativeRotation.X));
                 outerDMatrix.Translate(new Vector3D(1638, 1638, 28));
                 outerD.Transform = new MatrixTransform3D(outerDMatrix);
 
                 /// E ROTATION
 
                 innerEMatrix.Translate(new Vector3D(1638, 1638, -28));
-                innerEMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), eRelativeRotation.Z));
+                innerEMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(1, 0, 0), eRelativeRotation.Z));
                 innerEMatrix.Translate(new Vector3D(-1638, -1638, 28));
                 innerE.Transform = new MatrixTransform3D(innerEMatrix);
 
                 outerEMatrix.Translate(new Vector3D(-1638, -1638, -28));
-                outerEMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), eRelativeRotation.X));
+                outerEMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(0, 1, 0), eRelativeRotation.X));
                 outerEMatrix.Translate(new Vector3D(1638, 1638, 28));
                 outerE.Transform = new MatrixTransform3D(outerEMatrix);
 
                 /// MAIN ROTATION
 
-                mainXMatrix.Rotate(new Quaternion(new Vector3D(1, 0, 0), mainRotationRelative.Z));
+                mainXMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(1, 0, 0), mainRotationRelative.Z));
                 mainX.Transform = new MatrixTransform3D(mainXMatrix);
 
-                mainYMatrix.Rotate(new Quaternion(new Vector3D(0, 0, 1), mainRotationRelative.Y));
+                mainYMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(0, 0, 1), mainRotationRelative.Y));
                 mainY.Transform = new MatrixTransform3D(mainYMatrix);
 
-                mainZMatrix.Rotate(new Quaternion(new Vector3D(0, 1, 0), mainRotationRelative.X));
+                mainZMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(0, 1, 0), mainRotationRelative.X));
                 mainZ.Transform = new MatrixTransform3D(mainZMatrix);
             }));
 

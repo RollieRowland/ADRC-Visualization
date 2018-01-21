@@ -88,3 +88,9 @@ X All four props have rotational inertia
 - USE TO CONTROL ROTATION, do not redirect thrusters for rotation
 - ADD TO SIMULATION FIRST
 - ADD TO SOLVER SECOND
+
+X Allow continuous rotation, no secondary solver. Fade perfectly
+
+X Correct position calculation for gimbal lock
+
+Allow rotations with multiple angles during gimbal lock
