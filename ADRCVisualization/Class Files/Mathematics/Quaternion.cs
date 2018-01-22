@@ -8,11 +8,18 @@ namespace ADRCVisualization.Class_Files.Mathematics
 {
     class Quaternion
     {
-        public double W { get; set; }
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
+        public double W { get; set; }// Real
+        public double X { get; set; }// Imaginary I
+        public double Y { get; set; }// Imaginary J
+        public double Z { get; set; }// Imaginary K
 
+        /// <summary>
+        /// Creates quaternion object.
+        /// </summary>
+        /// <param name="W">Real part of quaternion.</param>
+        /// <param name="X">Imaginary I of quaternion.</param>
+        /// <param name="Y">Imaginary J of quaternion.</param>
+        /// <param name="Z">Imaginary K of quaternion.</param>
         public Quaternion(double W, double X, double Y, double Z)
         {
             this.W = W;
@@ -21,6 +28,10 @@ namespace ADRCVisualization.Class_Files.Mathematics
             this.Z = Z;
         }
 
+        /// <summary>
+        /// Intializes quaternion with vector parameters for imaginary part.
+        /// </summary>
+        /// <param name="vector">Imaginary values of quaternion.</param>
         public Quaternion(Vector vector)
         {
             W = 0;
@@ -29,283 +40,344 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Z = vector.Z;
         }
 
-        public static Quaternion FromEulerAngle(Vector vector)
+        /// <summary>
+        /// Creates a quaternion given Euler rotation.
+        /// </summary>
+        /// <param name="euler">Euler rotation coordinates.</param>
+        /// <returns>Quaternion rotation coordinates.</returns>
+        public static Quaternion FromEulerAngle(Vector euler)
         {
-            /*
-            //Euler angles to quaternion
-            const Quaternion Quaternion::from_euler_rotation(float x, float y, float z) {
-                float c1 = cos(y / 2);
-                float c2 = cos(z / 2);
-                float c3 = cos(x / 2);
+            //Euler angles to quaternion rotation
+            Vector cosine = new Vector(0, 0, 0)
+            {
+                X = Math.Cos(euler.Y / 2),
+                Y = Math.Cos(euler.Z / 2),
+                Z = Math.Cos(euler.X / 2)
+            };
 
-                float s1 = sin(y / 2);
-                float s2 = sin(z / 2);
-                float s3 = sin(x / 2);
-                Quaternion ret;
-                ret.a = c1 * c2 * c3 - s1 * s2 * s3;
-                ret.b = s1 * s2 * c3 + c1 * c2 * s3;
-                ret.c = s1 * c2 * c3 + c1 * s2 * s3;
-                ret.d = c1 * s2 * c3 - s1 * c2 * s3;
-                return ret;
-            }
-            return new ;*/
-            throw new NotImplementedException();
+            Vector sine = new Vector(0, 0, 0)
+            {
+                X = Math.Sin(euler.Y / 2),
+                Y = Math.Sin(euler.Z / 2),
+                Z = Math.Sin(euler.X / 2)
+            };
+
+            Quaternion quaternion = new Quaternion(0, 0, 0, 0)
+            {
+                W = cosine.X * cosine.Y * cosine.Z - sine.X   * sine.Y   * sine.Z,
+                X = sine.X   * sine.Y   * cosine.Z + cosine.X * cosine.Y * sine.Z,
+                Y = sine.X   * cosine.Y * cosine.Z + cosine.X * sine.Y   * sine.Z,
+                Z = cosine.X * sine.Y   * cosine.Z - sine.X   * cosine.Y * sine.Z
+            };
+
+            return quaternion;
         }
 
-        public static Vector RotateVector(Vector vector)
+        /// <summary>
+        /// Rotates a vector coordinate in space given a quaternion value.
+        /// </summary>
+        /// <param name="quaternion">Quaternion used to rotate coordinates.</param>
+        /// <param name="coordinate">Vector that is rotated.</param>
+        /// <returns>Returns new vector position coordinates.</returns>
+        public static Vector RotateVector(Quaternion quaternion, Vector coordinate)
         {
-            Quaternion quaternion;
-            /*
             //Othogonal rotation is non-commutative
-
-            // Rotation
-            double w; // real part of quaternion
-            double x; // imaginary i part of quaternion
-            double y; // imaginary j part of quaternion
-            double z; // imaginary k part of quaternion
-
-        	p2.x = w*w*p1.x + 2*y*w*p1.z - 2*z*w*p1.y + x*x*p1.x + 2*y*x*p1.y + 2*z*x*p1.z - z*z*p1.x - y*y*p1.x;
-	        p2.y = 2*x*y*p1.x + y*y*p1.y + 2*z*y*p1.z + 2*w*z*p1.x - z*z*p1.y + w*w*p1.y - 2*x*w*p1.z - x*x*p1.y;
-	        p2.z = 2*x*z*p1.x + 2*y*z*p1.y + z*z*p1.z - 2*w*y*p1.x - y*y*p1.z + 2*w*x*p1.y - x*x*p1.z + w*w*p1.z;
-            */
-
-            throw new NotImplementedException();
-
-            //return quaternion;
-        }
-
-        public static Quaternion Add(Quaternion quaternion)
-        {
-            /*
-            quaternion
-            quaternion_add(quaternion q1, quaternion q2)
+            Vector rotatedCoordinate = new Vector(0, 0, 0)
             {
-               return (quaternion) {
-                  q1.w+q2.w,
-                  q1.x+q2.x,
-                  q1.y+q2.y,
-                  q1.z+q2.z,
-               };
-            }*/
-            throw new NotImplementedException();
+                X = Math.Pow(quaternion.W, 2) * coordinate.X + 2 * quaternion.Y * quaternion.W * coordinate.Z - 2 * quaternion.Z * quaternion.W * coordinate.Y +
+                    Math.Pow(quaternion.X, 2) * coordinate.X + 2 * quaternion.Y * quaternion.X * coordinate.Y + 2 * quaternion.Z * quaternion.X * coordinate.Z -
+                    Math.Pow(quaternion.Z, 2) * coordinate.X - Math.Pow(quaternion.Y, 2) * coordinate.X,
+
+                Y = 2 * quaternion.X * quaternion.Y * coordinate.X + Math.Pow(quaternion.Y, 2) * coordinate.Y + 2 * quaternion.Z * quaternion.Y * coordinate.Z +
+                    2 * quaternion.W * quaternion.Z * coordinate.X - Math.Pow(quaternion.Z, 2) * coordinate.Y + Math.Pow(quaternion.W, 2) * coordinate.Y       -
+                    2 * quaternion.X * quaternion.W * coordinate.Z - Math.Pow(quaternion.X, 2) * coordinate.Y,
+
+                Z = 2 * quaternion.X * quaternion.Z * coordinate.X + 2 * quaternion.Y * quaternion.Z * coordinate.Y + Math.Pow(quaternion.Z, 2) * coordinate.Z       -
+                    2 * quaternion.W * quaternion.Y * coordinate.X - Math.Pow(quaternion.Y, 2) * coordinate.Z       + 2 * quaternion.W * quaternion.X * coordinate.Y -
+                    Math.Pow(quaternion.X, 2) * coordinate.Z       + Math.Pow(quaternion.W, 2) * coordinate.Z,
+            };
+
+            return rotatedCoordinate;
         }
 
-        public static Quaternion Subtract(Quaternion quaternion)
+        /// <summary>
+        /// Adds two quaternions together.
+        /// </summary>
+        /// <param name="quaternionOne">Quaternion that is added to.</param>
+        /// <param name="quaternionTwo">Quaternion that adds to.</param>
+        /// <returns>Returns the combined quaternions.</returns>
+        public static Quaternion Add(Quaternion quaternionOne, Quaternion quaternionTwo)
         {
-            /*
-            quaternion
-            quaternion_subtract(quaternion q1, quaternion q2)
+            Quaternion added = new Quaternion(0, 0, 0, 0)
             {
-               return (quaternion) {
-                  q1.w-q2.w,
-                  q1.x-q2.x,
-                  q1.y-q2.y,
-                  q1.z-q2.z,
-               };
-            }
-             */
-            throw new NotImplementedException();
+                W = quaternionOne.W + quaternionTwo.W,
+                X = quaternionOne.X + quaternionTwo.X,
+                Y = quaternionOne.Y + quaternionTwo.Y,
+                Z = quaternionOne.Z + quaternionTwo.Z
+            };
+
+            return added;
         }
 
-        public static Quaternion Multiply(double scale)
+        /// <summary>
+        /// Subtracts two quaternions.
+        /// </summary>
+        /// <param name="quaternionOne">Quaternion that is subtracted from.</param>
+        /// <param name="quaternionTwo">Quaternion that subtracts from.</param>
+        /// <returns>Returns the subtracted quaternion.</returns>
+        public static Quaternion Subtract(Quaternion quaternionOne, Quaternion quaternionTwo)
         {
-            /*
-            quaternion
-            quaternion_multiply_scalar(quaternion q, double s)
+            Quaternion subtracted = new Quaternion(0, 0, 0, 0)
             {
-               return (quaternion) {s*q.w, s*q.x, s*q.y, s*q.z};
-            }
-             */
+                W = quaternionOne.W - quaternionTwo.W,
+                X = quaternionOne.X - quaternionTwo.X,
+                Y = quaternionOne.Y - quaternionTwo.Y,
+                Z = quaternionOne.Z - quaternionTwo.Z
+            };
+
             throw new NotImplementedException();
         }
 
-        public static Quaternion Multiply(Quaternion quaternion)
+        /// <summary>
+        /// Multiplies a scalar by a quaternion.
+        /// </summary>
+        /// <param name="quaternion">Quaternion that is scaled.</param>
+        /// <param name="scale">Scalar that scales the quaternion.</param>
+        /// <returns>Returns the scaled quaternion.</returns>
+        public static Quaternion Multiply(Quaternion quaternion, double scale)
         {
-            /*
-            quaternion
-            quaternion_multiply(quaternion q1, quaternion q2)
+            Quaternion multiplied = new Quaternion(0, 0, 0, 0)
             {
-               return (quaternion) {
-                  q1.w*q2.w - q1.x*q2.x - q1.y*q2.y - q1.z*q2.z,
-                  q1.w*q2.x + q1.x*q2.w + q1.y*q2.z - q1.z*q2.y,
-                  q1.w*q2.y - q1.x*q2.z + q1.y*q2.w + q1.z*q2.x,
-                  q1.w*q2.z + q1.x*q2.y - q1.y*q2.x + q1.z*q2.w,
-               };
-            }
-            
-            // Multiplication
-            q.x = (q1.w * q2.x) + (q1.x * q2.w) + (q1.y * q2.z) - (q1.z * q2.y)
-            q.y = (q1.w * q2.y) - (q1.x * q2.z) + (q1.y * q2.w) + (q1.z * q2.x)
-            q.z = (q1.w * q2.z) + (q1.x * q2.y) - (q1.y * q2.x) + (q1.z * q2.w)
-            q.w = (q1.w * q2.w) - (q1.x * q2.x) - (q1.y * q2.y) - (q1.z * q2.z)
-            
-             */
-            throw new NotImplementedException();
+                W = quaternion.W * scale,
+                X = quaternion.X * scale,
+                Y = quaternion.Y * scale,
+                Z = quaternion.Z * scale
+            };
+
+            return multiplied;
         }
 
-        public static Quaternion Divide(double scale)
+        /// <summary>
+        /// Multiplies two quaternions by each other.
+        /// </summary>
+        /// <param name="quaternionOne">Quaternion that is multiplied to.</param>
+        /// <param name="quaternionTwo">Quathernion that multiplies to.</param>
+        /// <returns>Returns the multiplied quaternions.</returns>
+        public static Quaternion Multiply(Quaternion quaternionOne, Quaternion quaternionTwo)
         {
-            /*
-            quaternion
-            quaternion_divide_scalar(quaternion q, double s)
+            Quaternion multiplied = new Quaternion(0, 0, 0, 0)
             {
-               return (quaternion) {q.w/s, q.x/s, q.y/s, q.z/s};
-            }*/
-            throw new NotImplementedException();
+                W = quaternionOne.W * quaternionTwo.W - quaternionOne.X * quaternionTwo.X - quaternionOne.Y * quaternionTwo.Y - quaternionOne.Z * quaternionTwo.Z,
+                X = quaternionOne.W * quaternionTwo.X + quaternionOne.X * quaternionTwo.W + quaternionOne.Y * quaternionTwo.Z - quaternionOne.Z * quaternionTwo.Y,
+                Y = quaternionOne.W * quaternionTwo.Y - quaternionOne.X * quaternionTwo.Z + quaternionOne.Y * quaternionTwo.W + quaternionOne.Z * quaternionTwo.X,
+                Z = quaternionOne.W * quaternionTwo.Z + quaternionOne.X * quaternionTwo.Y - quaternionOne.Y * quaternionTwo.X + quaternionOne.Z * quaternionTwo.W
+            };
+
+            return multiplied;
         }
 
-        public static Quaternion Divide(Quaternion quaternion)
+        /// <summary>
+        /// Divides a quaternion by a scalar.
+        /// </summary>
+        /// <param name="quaternion">Quaternion that is scaled.</param>
+        /// <param name="scale">Scalar that scales quaternion.</param>
+        /// <returns>Returns the scaled quaternion.</returns>
+        public static Quaternion Divide(Quaternion quaternion, double scale)
         {
-            /*
-            quaternion
-            quaternion_divide(quaternion q1, quaternion q2)
+            Quaternion divided = new Quaternion(0, 0, 0, 0)
             {
-               double s = q2.w*q2.w + q2.x*q2.x + q2.y*q2.y + q2.z*q2.z;
-               return (quaternion) {
-                  (  q1.w*q2.w + q1.x*q2.x + q1.y*q2.y + q1.z*q2.z) / s,
-                  (- q1.w*q2.x + q1.x*q2.w + q1.y*q2.z - q1.z*q2.y) / s,
-                  (- q1.w*q2.y - q1.x*q2.z + q1.y*q2.w + q1.z*q2.x) / s,
-                  (- q1.w*q2.z + q1.x*q2.y - q1.y*q2.x + q1.z*q2.w) / s
-               };
-            }*/
-            throw new NotImplementedException();
+                W = quaternion.W / scale,
+                X = quaternion.X / scale,
+                Y = quaternion.Y / scale,
+                Z = quaternion.Z / scale
+            };
+
+            return divided;
         }
 
+        /// <summary>
+        /// Divides two quaternions by each other.
+        /// </summary>
+        /// <param name="quaternionOne">Quaternion that is divided.</param>
+        /// <param name="quaternionTwo">Quaternion that divides by.</param>
+        /// <returns>Returns the divided quaternion.</returns>
+        public static Quaternion Divide(Quaternion quaternionOne, Quaternion quaternionTwo)
+        {
+            double scale = quaternionTwo.W * quaternionTwo.W + quaternionTwo.X * quaternionTwo.X + quaternionTwo.Y * quaternionTwo.Y + quaternionTwo.Z * quaternionTwo.Z;
+
+            Quaternion divided = new Quaternion(0, 0, 0, 0)
+            {
+                W = (  quaternionOne.W * quaternionTwo.W + quaternionOne.X * quaternionTwo.X + quaternionOne.Y * quaternionTwo.Y + quaternionOne.Z * quaternionTwo.Z) / scale,
+                X = (- quaternionOne.W * quaternionTwo.X + quaternionOne.X * quaternionTwo.W + quaternionOne.Y * quaternionTwo.Z - quaternionOne.Z * quaternionTwo.Y) / scale,
+                Y = (- quaternionOne.W * quaternionTwo.Y - quaternionOne.X * quaternionTwo.Z + quaternionOne.Y * quaternionTwo.W + quaternionOne.Z * quaternionTwo.X) / scale,
+                Z = (- quaternionOne.W * quaternionTwo.Z + quaternionOne.X * quaternionTwo.Y - quaternionOne.Y * quaternionTwo.X + quaternionOne.Z * quaternionTwo.W) / scale 
+            };
+
+            return divided;
+        }
+
+        /// <summary>
+        /// Returns the absolute value of each individual quaternion.
+        /// </summary>
+        /// <param name="quaternion">Quaternion that is converted to a magnitude.</param>
+        /// <returns>Returns the absolute value of the input quaternion.</returns>
         public static Quaternion Absolute(Quaternion quaternion)
         {
-            /*
-            double
-            quaternion_absolute(quaternion q)
+            Quaternion absolute = new Quaternion(0, 0, 0, 0)
             {
-               return sqrt(q.w*q.w + q.x*q.x + q.y*q.y + q.z*q.z);
-            }*/
-            throw new NotImplementedException();
+                W = Math.Abs(quaternion.W),
+                X = Math.Abs(quaternion.X),
+                Y = Math.Abs(quaternion.Y),
+                Z = Math.Abs(quaternion.Z)
+            };
+
+            return absolute;
         }
 
+        /// <summary>
+        /// Returns the inverse of the input quaternion. (Not the conjugate.)
+        /// </summary>
+        /// <param name="quaternion">Quaternion that is inverted.</param>
+        /// <returns>Returns the inverse of the quaternion.</returns>
         public static Quaternion Inverse(Quaternion quaternion)
         {
-            /*
-            quaternion
-            quaternion_inverse(quaternion q)
+            Quaternion inverse = new Quaternion(0, 0, 0, 0)
             {
-               return (quaternion) {-q.w, -q.x, -q.y, -q.z};
-            }*/
-            throw new NotImplementedException();
+                W = -quaternion.W,
+                X = -quaternion.X,
+                Y = -quaternion.Y,
+                Z = -quaternion.Z
+            };
+
+            return inverse;
         }
 
+        /// <summary>
+        /// Returns the conjugate of the input quaternion. (Not the inverse.)
+        /// </summary>
+        /// <param name="quaternion">Quaternion that is conjugated.</param>
+        /// <returns>Returns the conjugate of the input quaternion.</returns>
         public static Quaternion Conjugate(Quaternion quaternion)
         {
-            /*
-            quaternion
-            quaternion_conjugate(quaternion q)
+            Quaternion conjugate = new Quaternion(0, 0, 0, 0)
             {
-               return (quaternion) {q.w, -q.x, -q.y, -q.z};
-            }*/
-            throw new NotImplementedException();
+                W =  quaternion.W,
+                X = -quaternion.X,
+                Y = -quaternion.Y,
+                Z = -quaternion.Z
+            };
+
+            return conjugate;
         }
 
-        public static Quaternion Power(Quaternion quaternion, Quaternion quaternionExp)
+        /// <summary>
+        /// Returns the scalar power of the input quaternion.
+        /// </summary>
+        /// <param name="quaternion">Quaternion that is exponentiated.</param>
+        /// <param name="exponent">Scalar that is used as the exponent.</param>
+        /// <returns>Returns the scalar power of the input quaternion.</returns>
+        public static Quaternion Power(Quaternion quaternion, double exponent)
         {
-            /*
-            quaternion
-            quaternion_power(quaternion q, quaternion p)
+            Quaternion power = new Quaternion(0, 0, 0, 0)
             {
-               return quaternion_exp(quaternion_multiply(quaternion_log(q), p));
-            }
-            */
-            throw new NotImplementedException();
+                W = Math.Pow(quaternion.W, exponent),
+                X = Math.Pow(quaternion.X, exponent),
+                Y = Math.Pow(quaternion.Y, exponent),
+                Z = Math.Pow(quaternion.Z, exponent)
+            };
+
+            return power;
         }
 
-        public static Quaternion Normalize()
+        /// <summary>
+        /// Returns the quaternion power of the input quaternion.
+        /// </summary>
+        /// <param name="quaternion">Quaternion that is exponentiated.</param>
+        /// <param name="exponent">Quaternion that is used as the exponent.</param>
+        /// <returns>Returns the quaternion power of the input quaternion.</returns>
+        public static Quaternion Power(Quaternion quaternion, Quaternion exponent)
         {
-            /*
-            Quaternion & Quaternion::normalize() {
-                float n = sqrt(a*a + b*b + c*c + d*d);
-                a /= n;
-                b /= n;
-                c /= n;
-                d /= n;
-                return *this;
-            }*/
-            throw new NotImplementedException();
+            Quaternion power = new Quaternion(0, 0, 0, 0)
+            {
+                W = Math.Pow(quaternion.W, exponent.W),
+                X = Math.Pow(quaternion.X, exponent.X),
+                Y = Math.Pow(quaternion.Y, exponent.Y),
+                Z = Math.Pow(quaternion.Z, exponent.Z)
+            };
+
+            return power;
+        }
+
+        /// <summary>
+        /// Normalizes the input quaternion.
+        /// </summary>
+        /// <param name="quaternion">Quaternion that is normalized.</param>
+        /// <returns>Returns the normalized input quaternion.</returns>
+        public static Quaternion Normalize(Quaternion quaternion)
+        {
+            double n = Math.Sqrt(Math.Pow(quaternion.W, 2) + Math.Pow(quaternion.X, 2) + Math.Pow(quaternion.Y, 2) + Math.Pow(quaternion.Z, 2));
+
+            quaternion.W /= n;
+            quaternion.X /= n;
+            quaternion.Y /= n;
+            quaternion.Z /= n;
+
+            return quaternion;
         }
         
+        /// <summary>
+        /// Determines if any individual value of the quaternion is not a number.
+        /// </summary>
+        /// <param name="quaternion">Quaternion that isNaN checked.</param>
+        /// <returns>Returns true if all any of the values are not a number.</returns>
         public static bool IsNaN(Quaternion quaternion)
         {
-            /*
-            int
-            quaternion_isnan(quaternion q)
-            {
-                return isnan(q.w) || isnan(q.x) || isnan(q.y) || isnan(q.z);
-            }*/
-            throw new NotImplementedException();
+            return double.IsNaN(quaternion.W) || double.IsNaN(quaternion.X) || double.IsNaN(quaternion.Y) || double.IsNaN(quaternion.Z);
         }
 
+        /// <summary>
+        /// Determines if all of the quaternions values are finite.
+        /// </summary>
+        /// <param name="quaternion">Quaternion that is checked.</param>
+        /// <returns>Returns true if all values are finite.</returns>
         public static bool IsFinite(Quaternion quaternion)
         {
-            /*
-            int
-            quaternion_isfinite(quaternion q)
-            {
-                return isfinite(q.w) && isfinite(q.x) && isfinite(q.y) && isfinite(q.z);
-            }*/
-            throw new NotImplementedException();
+            return !double.IsInfinity(quaternion.W) && !double.IsInfinity(quaternion.X) && !double.IsInfinity(quaternion.Y) && !double.IsInfinity(quaternion.Z);
         }
 
+        /// <summary>
+        /// Determines if all of the quaternions values are infinite.
+        /// </summary>
+        /// <param name="quaternion">Quaternion that is checked.</param>
+        /// <returns>Returns true if all values are infinite.</returns>
         public static bool IsInfinite(Quaternion quaternion)
         {
-            /*
-            int
-            quaternion_isinf(quaternion q)
-            {
-                return isinf(q.w) || isinf(q.x) || isinf(q.y) || isnan(q.z);
-            }*/
-            throw new NotImplementedException();
+            return double.IsInfinity(quaternion.W) && double.IsInfinity(quaternion.X) && double.IsInfinity(quaternion.Y) && double.IsInfinity(quaternion.Z);
         }
 
+        /// <summary>
+        /// Determines if all of the quaternions values are nonzero.
+        /// </summary>
+        /// <param name="quaternion">Quaternion that is checked.</param>
+        /// <returns>Returns true if all values are nonzero.</returns>
         public static bool IsNonZero(Quaternion quaternion)
         {
-            /*
-            int
-            quaternion_isnonzero(quaternion q)
-            {
-                return q.w != 0 && q.x != 0 && q.y != 0 && q.z != 0;
-            }*/
-            throw new NotImplementedException();
+            return quaternion.W != 0 && quaternion.X != 0 && quaternion.Y != 0 && quaternion.Z != 0;
         }
 
+        /// <summary>
+        /// Determines if the two input quaternions are equal.
+        /// </summary>
+        /// <param name="quaternionA">Quaternion that is checked.</param>
+        /// <param name="quaternionB">Quaternion that is checked.</param>
+        /// <returns>Returns true if both quaternions are equal.</returns>
         public static bool IsEqual(Quaternion quaternionA, Quaternion quaternionB)
         {
-            /*
-            bool
-            quaternion_equal(quaternion q1, quaternion q2)
-            {
-                return 
-                    !quaternion_isnan(q1) &&
-                    !quaternion_isnan(q2) &&
-                    q1.w == q2.w && 
-                    q1.x == q2.x && 
-                    q1.y == q2.y && 
-                    q1.z == q2.z;
-            }*/
-            throw new NotImplementedException();
+            return !IsNaN(quaternionA) && !IsNaN(quaternionB) &&
+                    quaternionA.W == quaternionB.W &&
+                    quaternionA.X == quaternionB.X &&
+                    quaternionA.Y == quaternionB.Y &&
+                    quaternionA.Z == quaternionB.Z;
         }
-
-
-        /*
-
-            
-            
-            
-
-
-
-
-
-            
-
-
-            
-        */
     }
 }
