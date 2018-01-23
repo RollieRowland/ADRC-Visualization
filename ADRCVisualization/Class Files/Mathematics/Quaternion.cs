@@ -42,35 +42,65 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
         /// <summary>
         /// Creates a quaternion given Euler rotation.
+        /// Converted from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
         /// </summary>
         /// <param name="euler">Euler rotation coordinates.</param>
         /// <returns>Quaternion rotation coordinates.</returns>
         public static Quaternion FromEulerAngle(Vector euler)
         {
-            //Euler angles to quaternion rotation
-            Vector cosine = new Vector(0, 0, 0)
-            {
-                X = Math.Cos(Misc.DegreesToRadians(euler.Y) / 2),
-                Y = Math.Cos(Misc.DegreesToRadians(euler.Z) / 2),
-                Z = Math.Cos(Misc.DegreesToRadians(euler.X) / 2)
-            };
+            //pitch, yaw, roll
 
-            Vector sine = new Vector(0, 0, 0)
-            {
-                X = Math.Sin(Misc.DegreesToRadians(euler.Y) / 2),
-                Y = Math.Sin(Misc.DegreesToRadians(euler.Z) / 2),
-                Z = Math.Sin(Misc.DegreesToRadians(euler.X) / 2)
-            };
+            //Euler angles to quaternion rotation
+            double cy, sy, cr, sr, cp, sp;
+
+            cy = Math.Cos(Misc.DegreesToRadians(euler.Y) * 0.5);
+            sy = Math.Cos(Misc.DegreesToRadians(euler.Y) * 0.5);
+            cr = Math.Cos(Misc.DegreesToRadians(euler.Z) * 0.5);
+            sr = Math.Cos(Misc.DegreesToRadians(euler.Z) * 0.5);
+            cp = Math.Cos(Misc.DegreesToRadians(euler.X) * 0.5);
+            sp = Math.Cos(Misc.DegreesToRadians(euler.X) * 0.5);
 
             Quaternion quaternion = new Quaternion(0, 0, 0, 0)
             {
-                W = cosine.X * cosine.Y * cosine.Z - sine.X   * sine.Y   * sine.Z,
-                X = sine.X   * sine.Y   * cosine.Z + cosine.X * cosine.Y * sine.Z,
-                Y = sine.X   * cosine.Y * cosine.Z + cosine.X * sine.Y   * sine.Z,
-                Z = cosine.X * sine.Y   * cosine.Z - sine.X   * cosine.Y * sine.Z
+                W = cy * cr * cp + sy * sr * sp,
+                X = cy * sr * cp - sy * cr * sp,
+                Y = cy * cr * sp + sy * sr * cp,
+                Z = sy * cr * cp - cy * sr * sp
             };
 
             return quaternion;
+        }
+
+        /// <summary>
+        /// Creates a vector euler rotation given a quaterion.
+        /// Converted from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+        /// </summary>
+        /// <param name="quaternion">Quaternion rotation coordinates.</param>
+        /// <returns>Euler rotation coordinates.</returns>
+        public static Vector ToEulerAngle(Quaternion quaternion)
+        {
+            //X = pitch, Y = yaw, Z = roll
+            double pitch, roll, yaw;
+
+            double sinr =       2.0 * (quaternion.W * quaternion.X + quaternion.Y * quaternion.Z);
+            double cosr = 1.0 - 2.0 * (quaternion.X * quaternion.X + quaternion.Y * quaternion.Y);
+            double sinp =       2.0 * (quaternion.W * quaternion.X - quaternion.Y * quaternion.Z);
+            double siny =       2.0 * (quaternion.W * quaternion.Z + quaternion.X * quaternion.Y);
+            double cosy = 1.0 - 2.0 * (quaternion.Y * quaternion.Y + quaternion.Z * quaternion.Z);
+            
+            roll = Math.Atan2(sinr, cosr);
+            yaw = Math.Atan2(siny, cosy);
+            
+            if (Math.Abs(sinp) >= 1)
+                pitch = Math.PI / 2 * Math.Sign(sinp); // use 90 degrees if out of range
+            else
+                pitch = Math.Asin(sinp);
+
+            roll = Misc.RadiansToDegrees(roll);
+            yaw = Misc.RadiansToDegrees(yaw);
+            pitch = Misc.RadiansToDegrees(pitch);
+
+            return new Vector(pitch, yaw, roll);
         }
 
         /// <summary>
@@ -106,17 +136,17 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="quaternionOne">Quaternion that is added to.</param>
         /// <param name="quaternionTwo">Quaternion that adds to.</param>
         /// <returns>Returns the combined quaternions.</returns>
-        public static Quaternion Add(Quaternion quaternionOne, Quaternion quaternionTwo)
+        public Quaternion Add(Quaternion quaternion)
         {
-            Quaternion added = new Quaternion(0, 0, 0, 0)
-            {
-                W = quaternionOne.W + quaternionTwo.W,
-                X = quaternionOne.X + quaternionTwo.X,
-                Y = quaternionOne.Y + quaternionTwo.Y,
-                Z = quaternionOne.Z + quaternionTwo.Z
-            };
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            return added;
+            return new Quaternion(0, 0, 0, 0)
+            {
+                W = current.W + quaternion.W,
+                X = current.X + quaternion.X,
+                Y = current.Y + quaternion.Y,
+                Z = current.Z + quaternion.Z
+            };
         }
 
         /// <summary>
@@ -125,17 +155,17 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="quaternionOne">Quaternion that is subtracted from.</param>
         /// <param name="quaternionTwo">Quaternion that subtracts from.</param>
         /// <returns>Returns the subtracted quaternion.</returns>
-        public static Quaternion Subtract(Quaternion quaternionOne, Quaternion quaternionTwo)
+        public Quaternion Subtract(Quaternion quaternion)
         {
-            Quaternion subtracted = new Quaternion(0, 0, 0, 0)
-            {
-                W = quaternionOne.W - quaternionTwo.W,
-                X = quaternionOne.X - quaternionTwo.X,
-                Y = quaternionOne.Y - quaternionTwo.Y,
-                Z = quaternionOne.Z - quaternionTwo.Z
-            };
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            throw new NotImplementedException();
+            return new Quaternion(0, 0, 0, 0)
+            {
+                W = current.W - quaternion.W,
+                X = current.X - quaternion.X,
+                Y = current.Y - quaternion.Y,
+                Z = current.Z - quaternion.Z
+            };
         }
 
         /// <summary>
@@ -144,17 +174,17 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="quaternion">Quaternion that is scaled.</param>
         /// <param name="scale">Scalar that scales the quaternion.</param>
         /// <returns>Returns the scaled quaternion.</returns>
-        public static Quaternion Multiply(Quaternion quaternion, double scale)
+        public Quaternion Multiply(double scale)
         {
-            Quaternion multiplied = new Quaternion(0, 0, 0, 0)
-            {
-                W = quaternion.W * scale,
-                X = quaternion.X * scale,
-                Y = quaternion.Y * scale,
-                Z = quaternion.Z * scale
-            };
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            return multiplied;
+            return new Quaternion(0, 0, 0, 0)
+            {
+                W = current.W * scale,
+                X = current.X * scale,
+                Y = current.Y * scale,
+                Z = current.Z * scale
+            };
         }
 
         /// <summary>
@@ -163,17 +193,17 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="quaternionOne">Quaternion that is multiplied to.</param>
         /// <param name="quaternionTwo">Quathernion that multiplies to.</param>
         /// <returns>Returns the multiplied quaternions.</returns>
-        public static Quaternion Multiply(Quaternion quaternionOne, Quaternion quaternionTwo)
+        public Quaternion Multiply(Quaternion quaternion)
         {
-            Quaternion multiplied = new Quaternion(0, 0, 0, 0)
-            {
-                W = quaternionOne.W * quaternionTwo.W - quaternionOne.X * quaternionTwo.X - quaternionOne.Y * quaternionTwo.Y - quaternionOne.Z * quaternionTwo.Z,
-                X = quaternionOne.W * quaternionTwo.X + quaternionOne.X * quaternionTwo.W + quaternionOne.Y * quaternionTwo.Z - quaternionOne.Z * quaternionTwo.Y,
-                Y = quaternionOne.W * quaternionTwo.Y - quaternionOne.X * quaternionTwo.Z + quaternionOne.Y * quaternionTwo.W + quaternionOne.Z * quaternionTwo.X,
-                Z = quaternionOne.W * quaternionTwo.Z + quaternionOne.X * quaternionTwo.Y - quaternionOne.Y * quaternionTwo.X + quaternionOne.Z * quaternionTwo.W
-            };
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            return multiplied;
+            return new Quaternion(0, 0, 0, 0)
+            {
+                W = current.W * quaternion.W - current.X * quaternion.X - current.Y * quaternion.Y - current.Z * quaternion.Z,
+                X = current.W * quaternion.X + current.X * quaternion.W + current.Y * quaternion.Z - current.Z * quaternion.Y,
+                Y = current.W * quaternion.Y - current.X * quaternion.Z + current.Y * quaternion.W + current.Z * quaternion.X,
+                Z = current.W * quaternion.Z + current.X * quaternion.Y - current.Y * quaternion.X + current.Z * quaternion.W
+            };
         }
 
         /// <summary>
@@ -182,17 +212,17 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="quaternion">Quaternion that is scaled.</param>
         /// <param name="scale">Scalar that scales quaternion.</param>
         /// <returns>Returns the scaled quaternion.</returns>
-        public static Quaternion Divide(Quaternion quaternion, double scale)
+        public Quaternion Divide(double scale)
         {
-            Quaternion divided = new Quaternion(0, 0, 0, 0)
-            {
-                W = quaternion.W / scale,
-                X = quaternion.X / scale,
-                Y = quaternion.Y / scale,
-                Z = quaternion.Z / scale
-            };
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            return divided;
+            return new Quaternion(0, 0, 0, 0)
+            {
+                W = current.W / scale,
+                X = current.X / scale,
+                Y = current.Y / scale,
+                Z = current.Z / scale
+            };
         }
 
         /// <summary>
@@ -201,19 +231,18 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="quaternionOne">Quaternion that is divided.</param>
         /// <param name="quaternionTwo">Quaternion that divides by.</param>
         /// <returns>Returns the divided quaternion.</returns>
-        public static Quaternion Divide(Quaternion quaternionOne, Quaternion quaternionTwo)
+        public Quaternion Divide(Quaternion quaternion)
         {
-            double scale = quaternionTwo.W * quaternionTwo.W + quaternionTwo.X * quaternionTwo.X + quaternionTwo.Y * quaternionTwo.Y + quaternionTwo.Z * quaternionTwo.Z;
+            double scale = quaternion.W * quaternion.W + quaternion.X * quaternion.X + quaternion.Y * quaternion.Y + quaternion.Z * quaternion.Z;
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            Quaternion divided = new Quaternion(0, 0, 0, 0)
+            return new Quaternion(0, 0, 0, 0)
             {
-                W = (  quaternionOne.W * quaternionTwo.W + quaternionOne.X * quaternionTwo.X + quaternionOne.Y * quaternionTwo.Y + quaternionOne.Z * quaternionTwo.Z) / scale,
-                X = (- quaternionOne.W * quaternionTwo.X + quaternionOne.X * quaternionTwo.W + quaternionOne.Y * quaternionTwo.Z - quaternionOne.Z * quaternionTwo.Y) / scale,
-                Y = (- quaternionOne.W * quaternionTwo.Y - quaternionOne.X * quaternionTwo.Z + quaternionOne.Y * quaternionTwo.W + quaternionOne.Z * quaternionTwo.X) / scale,
-                Z = (- quaternionOne.W * quaternionTwo.Z + quaternionOne.X * quaternionTwo.Y - quaternionOne.Y * quaternionTwo.X + quaternionOne.Z * quaternionTwo.W) / scale 
+                W = (  current.W * quaternion.W + current.X * quaternion.X + current.Y * quaternion.Y + current.Z * quaternion.Z) / scale,
+                X = (- current.W * quaternion.X + current.X * quaternion.W + current.Y * quaternion.Z - current.Z * quaternion.Y) / scale,
+                Y = (- current.W * quaternion.Y - current.X * quaternion.Z + current.Y * quaternion.W + current.Z * quaternion.X) / scale,
+                Z = (- current.W * quaternion.Z + current.X * quaternion.Y - current.Y * quaternion.X + current.Z * quaternion.W) / scale 
             };
-
-            return divided;
         }
 
         /// <summary>
@@ -221,17 +250,17 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="quaternion">Quaternion that is converted to a magnitude.</param>
         /// <returns>Returns the absolute value of the input quaternion.</returns>
-        public static Quaternion Absolute(Quaternion quaternion)
+        public Quaternion Absolute()
         {
-            Quaternion absolute = new Quaternion(0, 0, 0, 0)
-            {
-                W = Math.Abs(quaternion.W),
-                X = Math.Abs(quaternion.X),
-                Y = Math.Abs(quaternion.Y),
-                Z = Math.Abs(quaternion.Z)
-            };
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            return absolute;
+            return new Quaternion(0, 0, 0, 0)
+            {
+                W = Math.Abs(current.W),
+                X = Math.Abs(current.X),
+                Y = Math.Abs(current.Y),
+                Z = Math.Abs(current.Z)
+            };
         }
 
         /// <summary>
@@ -239,17 +268,17 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="quaternion">Quaternion that is inverted.</param>
         /// <returns>Returns the inverse of the quaternion.</returns>
-        public static Quaternion Inverse(Quaternion quaternion)
+        public Quaternion Inverse()
         {
-            Quaternion inverse = new Quaternion(0, 0, 0, 0)
-            {
-                W = -quaternion.W,
-                X = -quaternion.X,
-                Y = -quaternion.Y,
-                Z = -quaternion.Z
-            };
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            return inverse;
+            return new Quaternion(0, 0, 0, 0)
+            {
+                W = -current.W,
+                X = -current.X,
+                Y = -current.Y,
+                Z = -current.Z
+            };
         }
 
         /// <summary>
@@ -257,17 +286,17 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="quaternion">Quaternion that is conjugated.</param>
         /// <returns>Returns the conjugate of the input quaternion.</returns>
-        public static Quaternion Conjugate(Quaternion quaternion)
+        public Quaternion Conjugate()
         {
-            Quaternion conjugate = new Quaternion(0, 0, 0, 0)
-            {
-                W =  quaternion.W,
-                X = -quaternion.X,
-                Y = -quaternion.Y,
-                Z = -quaternion.Z
-            };
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            return conjugate;
+            return new Quaternion(0, 0, 0, 0)
+            {
+                W =  current.W,
+                X = -current.X,
+                Y = -current.Y,
+                Z = -current.Z
+            };
         }
 
         /// <summary>
@@ -276,17 +305,17 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="quaternion">Quaternion that is exponentiated.</param>
         /// <param name="exponent">Scalar that is used as the exponent.</param>
         /// <returns>Returns the scalar power of the input quaternion.</returns>
-        public static Quaternion Power(Quaternion quaternion, double exponent)
+        public Quaternion Power(double exponent)
         {
-            Quaternion power = new Quaternion(0, 0, 0, 0)
-            {
-                W = Math.Pow(quaternion.W, exponent),
-                X = Math.Pow(quaternion.X, exponent),
-                Y = Math.Pow(quaternion.Y, exponent),
-                Z = Math.Pow(quaternion.Z, exponent)
-            };
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            return power;
+            return new Quaternion(0, 0, 0, 0)
+            {
+                W = Math.Pow(current.W, exponent),
+                X = Math.Pow(current.X, exponent),
+                Y = Math.Pow(current.Y, exponent),
+                Z = Math.Pow(current.Z, exponent)
+            };
         }
 
         /// <summary>
@@ -295,17 +324,17 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="quaternion">Quaternion that is exponentiated.</param>
         /// <param name="exponent">Quaternion that is used as the exponent.</param>
         /// <returns>Returns the quaternion power of the input quaternion.</returns>
-        public static Quaternion Power(Quaternion quaternion, Quaternion exponent)
+        public Quaternion Power(Quaternion exponent)
         {
-            Quaternion power = new Quaternion(0, 0, 0, 0)
-            {
-                W = Math.Pow(quaternion.W, exponent.W),
-                X = Math.Pow(quaternion.X, exponent.X),
-                Y = Math.Pow(quaternion.Y, exponent.Y),
-                Z = Math.Pow(quaternion.Z, exponent.Z)
-            };
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            return power;
+            return new Quaternion(0, 0, 0, 0)
+            {
+                W = Math.Pow(current.W, exponent.W),
+                X = Math.Pow(current.X, exponent.X),
+                Y = Math.Pow(current.Y, exponent.Y),
+                Z = Math.Pow(current.Z, exponent.Z)
+            };
         }
 
         /// <summary>
@@ -313,16 +342,18 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="quaternion">Quaternion that is normalized.</param>
         /// <returns>Returns the normalized input quaternion.</returns>
-        public static Quaternion Normalize(Quaternion quaternion)
+        public Quaternion Normalize()
         {
-            double n = Math.Sqrt(Math.Pow(quaternion.W, 2) + Math.Pow(quaternion.X, 2) + Math.Pow(quaternion.Y, 2) + Math.Pow(quaternion.Z, 2));
+            Quaternion current = new Quaternion(W, X, Y, Z);
 
-            quaternion.W /= n;
-            quaternion.X /= n;
-            quaternion.Y /= n;
-            quaternion.Z /= n;
+            double n = Math.Sqrt(Math.Pow(current.W, 2) + Math.Pow(current.X, 2) + Math.Pow(current.Y, 2) + Math.Pow(current.Z, 2));
 
-            return quaternion;
+            current.W /= n;
+            current.X /= n;
+            current.Y /= n;
+            current.Z /= n;
+
+            return current;
         }
         
         /// <summary>
@@ -330,9 +361,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="quaternion">Quaternion that isNaN checked.</param>
         /// <returns>Returns true if all any of the values are not a number.</returns>
-        public static bool IsNaN(Quaternion quaternion)
+        public bool IsNaN()
         {
-            return double.IsNaN(quaternion.W) || double.IsNaN(quaternion.X) || double.IsNaN(quaternion.Y) || double.IsNaN(quaternion.Z);
+            Quaternion current = new Quaternion(W, X, Y, Z);
+
+            return double.IsNaN(current.W) || double.IsNaN(current.X) || double.IsNaN(current.Y) || double.IsNaN(current.Z);
         }
 
         /// <summary>
@@ -340,9 +373,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="quaternion">Quaternion that is checked.</param>
         /// <returns>Returns true if all values are finite.</returns>
-        public static bool IsFinite(Quaternion quaternion)
+        public bool IsFinite()
         {
-            return !double.IsInfinity(quaternion.W) && !double.IsInfinity(quaternion.X) && !double.IsInfinity(quaternion.Y) && !double.IsInfinity(quaternion.Z);
+            Quaternion current = new Quaternion(W, X, Y, Z);
+
+            return !double.IsInfinity(current.W) && !double.IsInfinity(current.X) && !double.IsInfinity(current.Y) && !double.IsInfinity(current.Z);
         }
 
         /// <summary>
@@ -350,9 +385,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="quaternion">Quaternion that is checked.</param>
         /// <returns>Returns true if all values are infinite.</returns>
-        public static bool IsInfinite(Quaternion quaternion)
+        public bool IsInfinite()
         {
-            return double.IsInfinity(quaternion.W) && double.IsInfinity(quaternion.X) && double.IsInfinity(quaternion.Y) && double.IsInfinity(quaternion.Z);
+            Quaternion current = new Quaternion(W, X, Y, Z);
+
+            return double.IsInfinity(current.W) && double.IsInfinity(current.X) && double.IsInfinity(current.Y) && double.IsInfinity(current.Z);
         }
 
         /// <summary>
@@ -360,9 +397,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="quaternion">Quaternion that is checked.</param>
         /// <returns>Returns true if all values are nonzero.</returns>
-        public static bool IsNonZero(Quaternion quaternion)
+        public bool IsNonZero()
         {
-            return quaternion.W != 0 && quaternion.X != 0 && quaternion.Y != 0 && quaternion.Z != 0;
+            Quaternion current = new Quaternion(W, X, Y, Z);
+
+            return current.W != 0 && current.X != 0 && current.Y != 0 && current.Z != 0;
         }
 
         /// <summary>
@@ -371,13 +410,25 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="quaternionA">Quaternion that is checked.</param>
         /// <param name="quaternionB">Quaternion that is checked.</param>
         /// <returns>Returns true if both quaternions are equal.</returns>
-        public static bool IsEqual(Quaternion quaternionA, Quaternion quaternionB)
+        public bool IsEqual(Quaternion quaternion)
         {
-            return !IsNaN(quaternionA) && !IsNaN(quaternionB) &&
-                    quaternionA.W == quaternionB.W &&
-                    quaternionA.X == quaternionB.X &&
-                    quaternionA.Y == quaternionB.Y &&
-                    quaternionA.Z == quaternionB.Z;
+            Quaternion current = new Quaternion(W, X, Y, Z);
+
+            return !current.IsNaN() && !quaternion.IsNaN() &&
+                    current.W == quaternion.W &&
+                    current.X == quaternion.X &&
+                    current.Y == quaternion.Y &&
+                    current.Z == quaternion.Z;
+        }
+        
+        public override string ToString()
+        {
+            string w = String.Format("{0:0.000}", W).PadLeft(7);
+            string x = String.Format("{0:0.000}", X).PadLeft(7);
+            string y = String.Format("{0:0.000}", Y).PadLeft(7);
+            string z = String.Format("{0:0.000}", Z).PadLeft(7);
+
+            return w + " " + x + " " + y + " " + z;
         }
     }
 }

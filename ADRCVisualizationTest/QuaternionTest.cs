@@ -244,6 +244,136 @@ namespace ADRCVisualizationTest
         }
 
         //Test from euler angle 
+        //Test to euler angle
+
+        [TestMethod]
+        public void TestEulerAngleConversion()
+        {
+            Vector euler = new Vector(15, 30, 45);
+
+            Quaternion quaternion = Quaternion.FromEulerAngle(euler);
+
+            Vector eulerConverted = Quaternion.ToEulerAngle(quaternion);//bad translation
+
+            Assert.AreEqual(euler.X, eulerConverted.X, 0.001, "Bad translation in X dimension" + eulerConverted);
+            Assert.AreEqual(euler.Y, eulerConverted.Y, 0.001, "Bad translation in X dimension" + eulerConverted);
+            Assert.AreEqual(euler.Z, eulerConverted.Z, 0.001, "Bad translation in X dimension" + eulerConverted);
+        }
+
+        [TestMethod]
+        public void TestToEulerAngle90()
+        {
+            Quaternion XRotation = new Quaternion(Math.Sqrt(0.5), Math.Sqrt(0.5), 0,              0             );
+            Quaternion YRotation = new Quaternion(Math.Sqrt(0.5), 0,              Math.Sqrt(0.5), 0             );
+            Quaternion ZRotation = new Quaternion(Math.Sqrt(0.5), 0,              0,              Math.Sqrt(0.5));
+            
+            Vector eulerConvertedX = Quaternion.ToEulerAngle(XRotation);//bad translation
+            Vector eulerConvertedY = Quaternion.ToEulerAngle(YRotation);//bad translation
+            Vector eulerConvertedZ = Quaternion.ToEulerAngle(ZRotation);//bad translation
+
+            Assert.AreEqual(90, eulerConvertedX.X, 0.001, "90 X Rotation" + eulerConvertedX);
+            Assert.AreEqual(0,  eulerConvertedX.Y, 0.001, "90 X Rotation" + eulerConvertedX);
+            Assert.AreEqual(0,  eulerConvertedX.Z, 0.001, "90 X Rotation" + eulerConvertedX);
+
+            Assert.AreEqual(0,  eulerConvertedY.X, 0.001, "90 Y Rotation" + eulerConvertedY);
+            Assert.AreEqual(90, eulerConvertedY.Y, 0.001, "90 Y Rotation" + eulerConvertedY);
+            Assert.AreEqual(0,  eulerConvertedY.Z, 0.001, "90 Y Rotation" + eulerConvertedY);
+
+            Assert.AreEqual(0,  eulerConvertedZ.X, 0.001, "90 Z Rotation" + eulerConvertedZ);
+            Assert.AreEqual(0,  eulerConvertedZ.Y, 0.001, "90 Z Rotation" + eulerConvertedZ);
+            Assert.AreEqual(90, eulerConvertedZ.Z, 0.001, "90 Z Rotation" + eulerConvertedZ);
+        }
+
+        [TestMethod]
+        public void TestToEulerAngle180()
+        {
+            Quaternion noRotation = new Quaternion(1, 0, 0, 0);
+            Quaternion XRotation  = new Quaternion(0, 1, 0, 0);
+            Quaternion YRotation  = new Quaternion(0, 0, 1, 0);
+            Quaternion ZRotation  = new Quaternion(0, 0, 0, 1);
+
+            Vector eulerConvertedNo = Quaternion.ToEulerAngle(noRotation);//bad translation
+            Vector eulerConvertedX  = Quaternion.ToEulerAngle(XRotation);//bad translation
+            Vector eulerConvertedY  = Quaternion.ToEulerAngle(YRotation);//bad translation
+            Vector eulerConvertedZ  = Quaternion.ToEulerAngle(ZRotation);//bad translation
+
+            Assert.AreEqual(0, eulerConvertedNo.X, 0.001, "No rotation" + eulerConvertedNo);
+            Assert.AreEqual(0, eulerConvertedNo.Y, 0.001, "No rotation" + eulerConvertedNo);
+            Assert.AreEqual(0, eulerConvertedNo.Z, 0.001, "No rotation" + eulerConvertedNo);
+            
+            Assert.AreEqual(180, eulerConvertedX.X, 0.001, "180 X Rotation" + eulerConvertedX);
+            Assert.AreEqual(0,   eulerConvertedX.Y, 0.001, "180 X Rotation" + eulerConvertedX);
+            Assert.AreEqual(0,   eulerConvertedX.Z, 0.001, "180 X Rotation" + eulerConvertedX);
+
+            Assert.AreEqual(0,   eulerConvertedY.X, 0.001, "180 Y Rotation" + eulerConvertedY);
+            Assert.AreEqual(180, eulerConvertedY.Y, 0.001, "180 Y Rotation" + eulerConvertedY);
+            Assert.AreEqual(0,   eulerConvertedY.Z, 0.001, "180 Y Rotation" + eulerConvertedY);
+
+            Assert.AreEqual(0,   eulerConvertedZ.X, 0.001, "180 Z Rotation" + eulerConvertedZ);
+            Assert.AreEqual(0,   eulerConvertedZ.Y, 0.001, "180 Z Rotation" + eulerConvertedZ);
+            Assert.AreEqual(180, eulerConvertedZ.Z, 0.001, "180 Z Rotation" + eulerConvertedZ);
+        }
+
+        [TestMethod]
+        public void TestFromEulerAngle90()
+        {
+            Vector XRotation = new Vector(90, 0, 0);
+            Vector YRotation = new Vector(0, 90, 0);
+            Vector ZRotation = new Vector(0, 0, 90);
+            
+            Quaternion eulerConvertedX = Quaternion.FromEulerAngle(XRotation);//bad translation
+            Quaternion eulerConvertedY = Quaternion.FromEulerAngle(YRotation);//bad translation
+            Quaternion eulerConvertedZ = Quaternion.FromEulerAngle(ZRotation);//bad translation
+
+            Assert.AreEqual(Math.Sqrt(0.5), eulerConvertedX.W, 0.001, "90 X Rotation" + eulerConvertedX);
+            Assert.AreEqual(Math.Sqrt(0.5), eulerConvertedX.X, 0.001, "90 X Rotation" + eulerConvertedX);
+            Assert.AreEqual(0,              eulerConvertedX.Y, 0.001, "90 X Rotation" + eulerConvertedX);
+            Assert.AreEqual(0,              eulerConvertedX.Z, 0.001, "90 X Rotation" + eulerConvertedX);
+
+            Assert.AreEqual(Math.Sqrt(0.5), eulerConvertedX.W, 0.001, "90 Y Rotation" + eulerConvertedX);
+            Assert.AreEqual(0,              eulerConvertedY.X, 0.001, "90 Y Rotation" + eulerConvertedY);
+            Assert.AreEqual(Math.Sqrt(0.5), eulerConvertedY.Y, 0.001, "90 Y Rotation" + eulerConvertedY);
+            Assert.AreEqual(0,              eulerConvertedY.Z, 0.001, "90 Y Rotation" + eulerConvertedY);
+
+            Assert.AreEqual(Math.Sqrt(0.5), eulerConvertedX.W, 0.001, "90 Z Rotation" + eulerConvertedX);
+            Assert.AreEqual(0,              eulerConvertedZ.X, 0.001, "90 Z Rotation" + eulerConvertedZ);
+            Assert.AreEqual(0,              eulerConvertedZ.Y, 0.001, "90 Z Rotation" + eulerConvertedZ);
+            Assert.AreEqual(Math.Sqrt(0.5), eulerConvertedZ.Z, 0.001, "90 Z Rotation" + eulerConvertedZ);
+        }
+
+        [TestMethod]
+        public void TestFromEulerAngle180()
+        {
+            Vector noRotation = new Vector(0,   0,   0  );
+            Vector XRotation  = new Vector(180, 0,   0  );
+            Vector YRotation  = new Vector(0,   180, 0  );
+            Vector ZRotation  = new Vector(0,   0,   180);
+
+            Quaternion eulerConvertedNo = Quaternion.FromEulerAngle(noRotation);//bad translation
+            Quaternion eulerConvertedX  = Quaternion.FromEulerAngle(XRotation);//bad translation
+            Quaternion eulerConvertedY  = Quaternion.FromEulerAngle(YRotation);//bad translation
+            Quaternion eulerConvertedZ  = Quaternion.FromEulerAngle(ZRotation);//bad translation
+
+            Assert.AreEqual(1, eulerConvertedNo.W, 0.001, "No rotation" + eulerConvertedNo);
+            Assert.AreEqual(0, eulerConvertedNo.X, 0.001, "No rotation" + eulerConvertedNo);
+            Assert.AreEqual(0, eulerConvertedNo.Y, 0.001, "No rotation" + eulerConvertedNo);
+            Assert.AreEqual(0, eulerConvertedNo.Z, 0.001, "No rotation" + eulerConvertedNo);
+
+            Assert.AreEqual(0, eulerConvertedX.W, 0.001, "180 X Rotation" + eulerConvertedX);
+            Assert.AreEqual(1, eulerConvertedX.X, 0.001, "180 X Rotation" + eulerConvertedX);
+            Assert.AreEqual(0, eulerConvertedX.Y, 0.001, "180 X Rotation" + eulerConvertedX);
+            Assert.AreEqual(0, eulerConvertedX.Z, 0.001, "180 X Rotation" + eulerConvertedX);
+
+            Assert.AreEqual(0, eulerConvertedX.W, 0.001, "180 Y Rotation" + eulerConvertedX);
+            Assert.AreEqual(0, eulerConvertedY.X, 0.001, "180 Y Rotation" + eulerConvertedY);
+            Assert.AreEqual(1, eulerConvertedY.Y, 0.001, "180 Y Rotation" + eulerConvertedY);
+            Assert.AreEqual(0, eulerConvertedY.Z, 0.001, "180 Y Rotation" + eulerConvertedY);
+
+            Assert.AreEqual(0, eulerConvertedX.W, 0.001, "180 Z Rotation" + eulerConvertedX);
+            Assert.AreEqual(0, eulerConvertedZ.X, 0.001, "180 Z Rotation" + eulerConvertedZ);
+            Assert.AreEqual(0, eulerConvertedZ.Y, 0.001, "180 Z Rotation" + eulerConvertedZ);
+            Assert.AreEqual(1, eulerConvertedZ.Z, 0.001, "180 Z Rotation" + eulerConvertedZ);
+        }
 
         //Test all individual functions in quaternion class
     }

@@ -232,7 +232,7 @@ namespace ADRCVisualization.Class_Files
             TE = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(0, -1, 0)), TE);
 
             //Adjusts rotation output for Z when rotating about Z - simulated gimbal lock
-            Vector rotationTBX = Matrix.RotateVector(new Vector(0, 0, -CurrentRotation.Z), new Vector(TB.X, 0, 0));
+            Vector rotationTBX = Matrix.RotateVector(new Vector(0, 0, -CurrentRotation.Z), new Vector(TB.X, 0, 0)); 
             Vector rotationTBZ = Matrix.RotateVector(new Vector(-CurrentRotation.Z, 0, 0), new Vector(0, 0, TB.Z));
             Vector rotationTCX = Matrix.RotateVector(new Vector(0, 0, CurrentRotation.Z), new Vector(TC.X, 0, 0));
             Vector rotationTCZ = Matrix.RotateVector(new Vector(CurrentRotation.Z, 0, 0), new Vector(0, 0, TC.Z));
@@ -309,6 +309,9 @@ namespace ADRCVisualization.Class_Files
 
             //calculate angular position: theta = thetai + wt
             CurrentRotation = CurrentRotation.Add(currentAngularVelocity.Multiply(dT));
+
+            //Console.WriteLine(currentAngularVelocity.Multiply(dT) + " " + Quaternion.FromEulerAngle(currentAngularVelocity.Multiply(dT)));
+            Console.WriteLine(CurrentRotation + " " + Quaternion.FromEulerAngle(CurrentRotation));
         }
 
         private bool DetectAgitation()

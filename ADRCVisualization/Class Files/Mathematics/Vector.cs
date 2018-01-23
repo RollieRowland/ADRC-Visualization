@@ -125,9 +125,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
         public override string ToString()
         {
-            string x = String.Format("{0:0.00}", X).PadLeft(7);
-            string y = String.Format("{0:0.00}", Y).PadLeft(7);
-            string z = String.Format("{0:0.00}", Z).PadLeft(7);
+            string x = String.Format("{0:0.000}", X).PadLeft(7);
+            string y = String.Format("{0:0.000}", Y).PadLeft(7);
+            string z = String.Format("{0:0.000}", Z).PadLeft(7);
             
             return x + " " + y + " " + z;
         }

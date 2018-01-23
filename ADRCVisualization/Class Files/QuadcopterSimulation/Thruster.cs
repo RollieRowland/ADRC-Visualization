@@ -47,7 +47,7 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             //Combine quad rotation output with individual thruster output
             Vector thrust = offset;
 
-            //Normalize thrust output
+            //Disable negative thrust output
             //thrust.Y = thrust.Y < 0 ? 0 : thrust.Y;
 
             thrust.X = Disable ? 0 : thrust.X;
