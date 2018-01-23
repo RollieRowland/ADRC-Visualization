@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ADRCVisualization.Class_Files.Mathematics
 {
-    class Quaternion
+    public class Quaternion
     {
         public double W { get; set; }// Real
         public double X { get; set; }// Imaginary I
@@ -50,16 +50,16 @@ namespace ADRCVisualization.Class_Files.Mathematics
             //Euler angles to quaternion rotation
             Vector cosine = new Vector(0, 0, 0)
             {
-                X = Math.Cos(euler.Y / 2),
-                Y = Math.Cos(euler.Z / 2),
-                Z = Math.Cos(euler.X / 2)
+                X = Math.Cos(Misc.DegreesToRadians(euler.Y) / 2),
+                Y = Math.Cos(Misc.DegreesToRadians(euler.Z) / 2),
+                Z = Math.Cos(Misc.DegreesToRadians(euler.X) / 2)
             };
 
             Vector sine = new Vector(0, 0, 0)
             {
-                X = Math.Sin(euler.Y / 2),
-                Y = Math.Sin(euler.Z / 2),
-                Z = Math.Sin(euler.X / 2)
+                X = Math.Sin(Misc.DegreesToRadians(euler.Y) / 2),
+                Y = Math.Sin(Misc.DegreesToRadians(euler.Z) / 2),
+                Z = Math.Sin(Misc.DegreesToRadians(euler.X) / 2)
             };
 
             Quaternion quaternion = new Quaternion(0, 0, 0, 0)

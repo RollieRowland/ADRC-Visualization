@@ -8,6 +8,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("microsoft.visualstudio.testplatform.mstest.testadapter.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("microsoft.visualstudio.testplatform.mstestadapter.platformservices.interface.dll")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("microsoft.visualstudio.testplatform.mstestadapter.platformservices.dll")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("class%20files/todo.txt")]
 
 

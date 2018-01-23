@@ -112,6 +112,13 @@ namespace ADRCVisualization.Class_Files
             ThrusterC = new Thruster(new Vector( XLength, 0,  ZLength), "TC", samplingPeriod);
             ThrusterD = new Thruster(new Vector( XLength, 0, -ZLength), "TD", samplingPeriod);
             ThrusterE = new Thruster(new Vector(-XLength, 0, -ZLength), "TE", samplingPeriod);
+
+            Quaternion quaternion = new Quaternion(Math.Sqrt(0.5), 0, Math.Sqrt(0.5), 0);
+            Vector vector = new Vector(1, 0, 0);
+
+            Vector output = Quaternion.RotateVector(quaternion, vector);
+
+            Console.WriteLine(output);
         }
 
         public void CalculateCombinedThrustVector()
