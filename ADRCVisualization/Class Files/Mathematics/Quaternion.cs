@@ -46,11 +46,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="euler">Euler rotation coordinates.</param>
         /// <returns>Quaternion rotation coordinates.</returns>
-        public static Quaternion FromEulerAngle(Vector euler)
+        public static Quaternion FromEulerAngle1(Vector euler)
         {
             //pitch, yaw, roll
-
-            //Euler angles to quaternion rotation
+            
+            //Eulerian angles to quaternion rotation
             double cy, sy, cr, sr, cp, sp;
 
             cy = Math.Cos(Misc.DegreesToRadians(euler.Y) * 0.5);
@@ -71,6 +71,38 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return quaternion;
         }
 
+        public static Quaternion FromEulerAngle2(Vector euler)
+        {
+            Quaternion q = new Quaternion(0, 0, 0, 0);
+
+            double pitch, yaw, roll;
+
+            pitch = Misc.DegreesToRadians(euler.Y);
+            yaw   = Misc.DegreesToRadians(euler.X);
+            roll  = Misc.DegreesToRadians(euler.Z);
+
+            double t0 = Math.Cos(yaw * 0.5);
+            double t1 = Math.Sin(yaw * 0.5);
+            double t2 = Math.Cos(roll * 0.5);
+            double t3 = Math.Sin(roll * 0.5);
+            double t4 = Math.Cos(pitch * 0.5);
+            double t5 = Math.Sin(pitch * 0.5);
+
+            q.W = t0 * t2 * t4 + t1 * t3 * t5;
+            q.X = t0 * t3 * t4 - t1 * t2 * t5;
+            q.Y = t0 * t2 * t5 + t1 * t3 * t4;
+            q.Z = t1 * t2 * t4 - t0 * t3 * t5;
+
+            return q;
+        }
+
+        public static Quaternion FromEulerAngle(Vector euler, string order)
+        {
+            Quaternion q = new Quaternion(0, 0, 0, 0);
+
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Creates a vector euler rotation given a quaterion.
         /// Converted from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
@@ -80,6 +112,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public static Vector ToEulerAngle(Quaternion quaternion)
         {
             //X = pitch, Y = yaw, Z = roll
+            //X = pitch = attitude
+            //Y = yaw = heading
+            //Z = roll = bank
             double pitch, roll, yaw;
 
             double sinr =       2.0 * (quaternion.W * quaternion.X + quaternion.Y * quaternion.Z);
@@ -96,38 +131,76 @@ namespace ADRCVisualization.Class_Files.Mathematics
             else
                 pitch = Math.Asin(sinp);
 
-            roll = Misc.RadiansToDegrees(roll);
-            yaw = Misc.RadiansToDegrees(yaw);
+            roll  = Misc.RadiansToDegrees(yaw);
+            yaw   = Misc.RadiansToDegrees(roll);
             pitch = Misc.RadiansToDegrees(pitch);
 
             return new Vector(pitch, yaw, roll);
         }
 
+        public static Vector ToEulerAngle2(Quaternion q)
+        {
+            //X = pitch, Y = yaw, Z = roll
+            double sqY = q.Y * q.Y;
+            double t0 = -2.0 * (sqY + q.Z * q.Z) + 1.0;
+            double t1 =  2.0 * (q.X * q.Y - q.W * q.Z);
+            double t2 = -2.0 * (q.X * q.Z + q.W * q.Y);
+            double t3 =  2.0 * (q.Y * q.Z - q.W * q.X);
+            double t4 = -2.0 * (q.X * q.X + sqY) + 1.0;
+
+            t2 = t2 >  1 ?  1 : t2;
+            t2 = t2 < -1 ? -1 : t2;
+
+            double pitch = Misc.RadiansToDegrees(Math.Asin(t2));
+            double roll  = Misc.RadiansToDegrees(Math.Atan2(t3, t4));
+            double yaw   = Misc.RadiansToDegrees(Math.Atan2(t1, t0));
+
+            return new Vector(pitch, yaw, roll);
+        }
+
+        public static Vector ToEulerAngle3(Quaternion q)
+        {
+            double x, y, z;
+            double sqY = q.Y * q.Y;
+
+            double t0 = 2.0 * (q.W * q.X + q.Y * q.Z);
+            double t1 = 1.0 - 2.0 * (q.X * q.X + sqY);
+
+            x = Misc.RadiansToDegrees(Math.Atan2(t0, t1));
+
+            double t2 = 2.0 * (q.W * q.Y - q.Z * q.X);
+            t2 = t2 > 1 ? 1 : t2;
+            t2 = t2 < -1 ? -1 : t2;
+
+            y = Misc.RadiansToDegrees(Math.Asin(t2));
+
+            double t3 = 2.0 * (q.W * q.Z + q.X * q.Y);
+            double t4 = 1.0 - 2.0 * (sqY + q.Z * q.Z);
+
+            z = Misc.RadiansToDegrees(Math.Atan2(t3, t4));
+
+            return new Vector(x, y, z);
+        }
+
         /// <summary>
         /// Rotates a vector coordinate in space given a quaternion value.
         /// </summary>
-        /// <param name="quaternion">Quaternion used to rotate coordinates.</param>
-        /// <param name="coordinate">Vector that is rotated.</param>
-        /// <returns>Returns new vector position coordinates.</returns>
-        public static Vector RotateVector(Quaternion quaternion, Vector coordinate)
+        /// <param name="coordinate">Coordinate vector that is rotated.</param>
+        /// <returns>Returns new vector position coordinate.</returns>
+        public Vector RotateVector(Vector coordinate)
         {
-            //Othogonal rotation is non-commutative
-            Vector rotatedCoordinate = new Vector(0, 0, 0)
+            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion qv = new Quaternion(0, coordinate.X, coordinate.Y, coordinate.Z);
+            Quaternion qr = current.Multiply(qv).Multiply(current.MultiplicativeInverse());
+
+            Vector rotatedVector = new Vector(0, 0, 0)
             {
-                X = Math.Pow(quaternion.W, 2) * coordinate.X + 2 * quaternion.Y * quaternion.W * coordinate.Z - 2 * quaternion.Z * quaternion.W * coordinate.Y +
-                    Math.Pow(quaternion.X, 2) * coordinate.X + 2 * quaternion.Y * quaternion.X * coordinate.Y + 2 * quaternion.Z * quaternion.X * coordinate.Z -
-                    Math.Pow(quaternion.Z, 2) * coordinate.X - Math.Pow(quaternion.Y, 2) * coordinate.X,
-
-                Y = 2 * quaternion.X * quaternion.Y * coordinate.X + Math.Pow(quaternion.Y, 2) * coordinate.Y + 2 * quaternion.Z * quaternion.Y * coordinate.Z +
-                    2 * quaternion.W * quaternion.Z * coordinate.X - Math.Pow(quaternion.Z, 2) * coordinate.Y + Math.Pow(quaternion.W, 2) * coordinate.Y       -
-                    2 * quaternion.X * quaternion.W * coordinate.Z - Math.Pow(quaternion.X, 2) * coordinate.Y,
-
-                Z = 2 * quaternion.X * quaternion.Z * coordinate.X + 2 * quaternion.Y * quaternion.Z * coordinate.Y + Math.Pow(quaternion.Z, 2) * coordinate.Z       -
-                    2 * quaternion.W * quaternion.Y * coordinate.X - Math.Pow(quaternion.Y, 2) * coordinate.Z       + 2 * quaternion.W * quaternion.X * coordinate.Y -
-                    Math.Pow(quaternion.X, 2) * coordinate.Z       + Math.Pow(quaternion.W, 2) * coordinate.Z,
+                X = qr.X,
+                Y = qr.Y,
+                Z = qr.Z
             };
 
-            return rotatedCoordinate;
+            return rotatedVector;
         }
 
         /// <summary>
@@ -268,7 +341,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="quaternion">Quaternion that is inverted.</param>
         /// <returns>Returns the inverse of the quaternion.</returns>
-        public Quaternion Inverse()
+        public Quaternion AdditiveInverse()
         {
             Quaternion current = new Quaternion(W, X, Y, Z);
 
@@ -355,7 +428,51 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
             return current;
         }
-        
+
+        /// <summary>
+        /// Calculates the norm of the quaternion.
+        /// </summary>
+        /// <returns>Returns the norm of the quaternion.</returns>
+        public double Normal()
+        {
+            Quaternion q = new Quaternion(W, X, Y, Z);
+
+            return Math.Pow(q.W, 2) + Math.Pow(q.X, 2) + Math.Pow(q.Y, 2) + Math.Pow(q.Z, 2);
+        }
+
+        /// <summary>
+        /// Calculates the magnitude of the quaternion.
+        /// </summary>
+        /// <returns>Returns the magnitude of the quaternion.</returns>
+        public double Magnitude()
+        {
+            return Math.Sqrt(Normal());
+        }
+
+        /// <summary>
+        /// Calculates the multiplicative inverse of the quaternion.
+        /// </summary>
+        /// <returns>Returns the multiplicative inverse of the quaternion.</returns>
+        public Quaternion MultiplicativeInverse()
+        {
+            Quaternion current = new Quaternion(W, X, Y, Z);
+
+            return current.Conjugate().Multiply(1 / current.Normal());
+        }
+
+        /// <summary>
+        /// Restricts the quaternion to a single hemisphere of rotation, disables constant rotation around any real or imaginary axis.
+        /// This will cause jumping in calculations, similar to that of a tangent function.
+        /// </summary>
+        /// <returns>Returns the unit quaternion of the current quaternion values.</returns>
+        public Quaternion UnitQuaternion()
+        {
+            Quaternion current = new Quaternion(W, X, Y, Z);
+
+            return current.Multiply(1 / current.Magnitude());
+        }
+
+
         /// <summary>
         /// Determines if any individual value of the quaternion is not a number.
         /// </summary>

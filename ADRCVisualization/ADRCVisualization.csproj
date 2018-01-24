@@ -86,6 +86,7 @@
     <Compile Include="Class Files\FourierTransforms\FourierTransform.cs" />
     <Compile Include="Class Files\Filters\KalmanFilter.cs" />
     <Compile Include="Class Files\Mathematics\Acceleration.cs" />
+    <Compile Include="Class Files\Mathematics\EulerAngle.cs" />
     <Compile Include="Class Files\Mathematics\Matrix.cs" />
     <Compile Include="Class Files\Mathematics\Misc.cs" />
     <Compile Include="Class Files\Mathematics\Quaternion.cs" />

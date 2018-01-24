@@ -91,7 +91,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return Math.Sqrt(Math.Pow(vector.X, 2) + Math.Pow(vector.Y, 2) + Math.Pow(vector.Z, 2));
         }
 
-        public Vector Rotate(double pitch, double roll, double yaw)
+        public Vector RotateEuler(double pitch, double roll, double yaw)
         {
             var cosa = Math.Cos(yaw);
             var sina = Math.Sin(yaw);

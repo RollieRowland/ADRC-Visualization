@@ -116,7 +116,7 @@ namespace ADRCVisualization.Class_Files
             Quaternion quaternion = new Quaternion(Math.Sqrt(0.5), 0, Math.Sqrt(0.5), 0);
             Vector vector = new Vector(1, 0, 0);
 
-            Vector output = Quaternion.RotateVector(quaternion, vector);
+            Vector output = quaternion.RotateVector(vector);
 
             Console.WriteLine(output);
         }
@@ -146,7 +146,7 @@ namespace ADRCVisualization.Class_Files
 
         private void CalculateGimbalLockedMotion(ref Vector positionControl, ref Vector thrusterOutputB, ref Vector thrusterOutputC, ref Vector thrusterOutputD, ref Vector thrusterOutputE)
         {
-            double curvature = 8;
+            double curvature = 8;// 0.5: |‾ , 1: /, 2, _|
             double fadeIn = (1.0 / 90.0) * Math.Pow((90.0 - Math.Abs(CurrentRotation.Z % (90.0 * 2) - 90.0)), curvature) / Math.Pow(90, curvature - 1);//0 -> 1, New position control faders, approaches 1 when z rot is -90/90
             double fadeOut = 1 - fadeIn;//1 -> 0, Rotation magnitude faders, approaches 0 when Z rot is -90/90 degrees
 
@@ -311,7 +311,7 @@ namespace ADRCVisualization.Class_Files
             CurrentRotation = CurrentRotation.Add(currentAngularVelocity.Multiply(dT));
 
             //Console.WriteLine(currentAngularVelocity.Multiply(dT) + " " + Quaternion.FromEulerAngle(currentAngularVelocity.Multiply(dT)));
-            Console.WriteLine(CurrentRotation + " " + Quaternion.FromEulerAngle(CurrentRotation));
+            //Console.WriteLine(CurrentRotation + " " + Quaternion.FromEulerAngle(CurrentRotation));
         }
 
         private bool DetectAgitation()
