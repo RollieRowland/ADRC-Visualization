@@ -41,148 +41,6 @@ namespace ADRCVisualization.Class_Files.Mathematics
         }
 
         /// <summary>
-        /// Creates a quaternion given Euler rotation.
-        /// Converted from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-        /// </summary>
-        /// <param name="euler">Euler rotation coordinates.</param>
-        /// <returns>Quaternion rotation coordinates.</returns>
-        public static Quaternion FromEulerAngle1(Vector euler)
-        {
-            //pitch, yaw, roll
-            
-            //Eulerian angles to quaternion rotation
-            double cy, sy, cr, sr, cp, sp;
-
-            cy = Math.Cos(Misc.DegreesToRadians(euler.Y) * 0.5);
-            sy = Math.Cos(Misc.DegreesToRadians(euler.Y) * 0.5);
-            cr = Math.Cos(Misc.DegreesToRadians(euler.Z) * 0.5);
-            sr = Math.Cos(Misc.DegreesToRadians(euler.Z) * 0.5);
-            cp = Math.Cos(Misc.DegreesToRadians(euler.X) * 0.5);
-            sp = Math.Cos(Misc.DegreesToRadians(euler.X) * 0.5);
-
-            Quaternion quaternion = new Quaternion(0, 0, 0, 0)
-            {
-                W = cy * cr * cp + sy * sr * sp,
-                X = cy * sr * cp - sy * cr * sp,
-                Y = cy * cr * sp + sy * sr * cp,
-                Z = sy * cr * cp - cy * sr * sp
-            };
-
-            return quaternion;
-        }
-
-        public static Quaternion FromEulerAngle2(Vector euler)
-        {
-            Quaternion q = new Quaternion(0, 0, 0, 0);
-
-            double pitch, yaw, roll;
-
-            pitch = Misc.DegreesToRadians(euler.Y);
-            yaw   = Misc.DegreesToRadians(euler.X);
-            roll  = Misc.DegreesToRadians(euler.Z);
-
-            double t0 = Math.Cos(yaw * 0.5);
-            double t1 = Math.Sin(yaw * 0.5);
-            double t2 = Math.Cos(roll * 0.5);
-            double t3 = Math.Sin(roll * 0.5);
-            double t4 = Math.Cos(pitch * 0.5);
-            double t5 = Math.Sin(pitch * 0.5);
-
-            q.W = t0 * t2 * t4 + t1 * t3 * t5;
-            q.X = t0 * t3 * t4 - t1 * t2 * t5;
-            q.Y = t0 * t2 * t5 + t1 * t3 * t4;
-            q.Z = t1 * t2 * t4 - t0 * t3 * t5;
-
-            return q;
-        }
-
-        public static Quaternion FromEulerAngle(Vector euler, string order)
-        {
-            Quaternion q = new Quaternion(0, 0, 0, 0);
-
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Creates a vector euler rotation given a quaterion.
-        /// Converted from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-        /// </summary>
-        /// <param name="quaternion">Quaternion rotation coordinates.</param>
-        /// <returns>Euler rotation coordinates.</returns>
-        public static Vector ToEulerAngle(Quaternion quaternion)
-        {
-            //X = pitch, Y = yaw, Z = roll
-            //X = pitch = attitude
-            //Y = yaw = heading
-            //Z = roll = bank
-            double pitch, roll, yaw;
-
-            double sinr =       2.0 * (quaternion.W * quaternion.X + quaternion.Y * quaternion.Z);
-            double cosr = 1.0 - 2.0 * (quaternion.X * quaternion.X + quaternion.Y * quaternion.Y);
-            double sinp =       2.0 * (quaternion.W * quaternion.X - quaternion.Y * quaternion.Z);
-            double siny =       2.0 * (quaternion.W * quaternion.Z + quaternion.X * quaternion.Y);
-            double cosy = 1.0 - 2.0 * (quaternion.Y * quaternion.Y + quaternion.Z * quaternion.Z);
-            
-            roll = Math.Atan2(sinr, cosr);
-            yaw = Math.Atan2(siny, cosy);
-            
-            if (Math.Abs(sinp) >= 1)
-                pitch = Math.PI / 2 * Math.Sign(sinp); // use 90 degrees if out of range
-            else
-                pitch = Math.Asin(sinp);
-
-            roll  = Misc.RadiansToDegrees(yaw);
-            yaw   = Misc.RadiansToDegrees(roll);
-            pitch = Misc.RadiansToDegrees(pitch);
-
-            return new Vector(pitch, yaw, roll);
-        }
-
-        public static Vector ToEulerAngle2(Quaternion q)
-        {
-            //X = pitch, Y = yaw, Z = roll
-            double sqY = q.Y * q.Y;
-            double t0 = -2.0 * (sqY + q.Z * q.Z) + 1.0;
-            double t1 =  2.0 * (q.X * q.Y - q.W * q.Z);
-            double t2 = -2.0 * (q.X * q.Z + q.W * q.Y);
-            double t3 =  2.0 * (q.Y * q.Z - q.W * q.X);
-            double t4 = -2.0 * (q.X * q.X + sqY) + 1.0;
-
-            t2 = t2 >  1 ?  1 : t2;
-            t2 = t2 < -1 ? -1 : t2;
-
-            double pitch = Misc.RadiansToDegrees(Math.Asin(t2));
-            double roll  = Misc.RadiansToDegrees(Math.Atan2(t3, t4));
-            double yaw   = Misc.RadiansToDegrees(Math.Atan2(t1, t0));
-
-            return new Vector(pitch, yaw, roll);
-        }
-
-        public static Vector ToEulerAngle3(Quaternion q)
-        {
-            double x, y, z;
-            double sqY = q.Y * q.Y;
-
-            double t0 = 2.0 * (q.W * q.X + q.Y * q.Z);
-            double t1 = 1.0 - 2.0 * (q.X * q.X + sqY);
-
-            x = Misc.RadiansToDegrees(Math.Atan2(t0, t1));
-
-            double t2 = 2.0 * (q.W * q.Y - q.Z * q.X);
-            t2 = t2 > 1 ? 1 : t2;
-            t2 = t2 < -1 ? -1 : t2;
-
-            y = Misc.RadiansToDegrees(Math.Asin(t2));
-
-            double t3 = 2.0 * (q.W * q.Z + q.X * q.Y);
-            double t4 = 1.0 - 2.0 * (sqY + q.Z * q.Z);
-
-            z = Misc.RadiansToDegrees(Math.Atan2(t3, t4));
-
-            return new Vector(x, y, z);
-        }
-
-        /// <summary>
         /// Rotates a vector coordinate in space given a quaternion value.
         /// </summary>
         /// <param name="coordinate">Coordinate vector that is rotated.</param>
@@ -536,6 +394,23 @@ namespace ADRCVisualization.Class_Files.Mathematics
                     current.X == quaternion.X &&
                     current.Y == quaternion.Y &&
                     current.Z == quaternion.Z;
+        }
+
+        public Quaternion Permutate(Vector permutation)
+        {
+            Quaternion current = new Quaternion(W, X, Y, Z);
+
+            double[] perm = new double[3];
+
+            perm[(int)permutation.X] = current.X;
+            perm[(int)permutation.Y] = current.Y;
+            perm[(int)permutation.Z] = current.Z;
+
+            current.X = perm[0];
+            current.Y = perm[1];
+            current.Z = perm[2];
+
+            return current;
         }
         
         public override string ToString()

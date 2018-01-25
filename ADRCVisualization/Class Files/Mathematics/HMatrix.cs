@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ADRCVisualization.Class_Files.Mathematics
 {
-    class HMatrix
+    public class HMatrix//Hierarchical matrix
     {
         private double[,] hierarchicalMatrixValues = new double[4, 4];
 
@@ -26,15 +26,15 @@ namespace ADRCVisualization.Class_Files.Mathematics
             hierarchicalMatrixValues = hMatrix;
         }
 
-        public double this[int index1, int index2]
+        public double this[double index1, double index2]
         {
             get
             {
-                return hierarchicalMatrixValues[index1, index2];
+                return hierarchicalMatrixValues[(int)index1, (int)index2];
             }
             set
             {
-                hierarchicalMatrixValues[index1, index2] = value;
+                hierarchicalMatrixValues[(int)index1, (int)index2] = value;
             }
         }
     }
