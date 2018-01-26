@@ -279,7 +279,7 @@ namespace ADRCVisualizationTest
         {
             EulerAngles eulerAngles = new EulerAngles(new Vector(euler.X, euler.Y, euler.Z), EulerConstants.EulerOrderZYXS);
 
-            Quaternion quaternion = EulerAngles.EulerToQuaternion(eulerAngles);
+            Quaternion quaternion = Quaternion.EulerToQuaternion(eulerAngles);
 
             testContextInstance.WriteLine(q + " | " + quaternion + " | " + q.Subtract(quaternion));
 
@@ -343,7 +343,7 @@ namespace ADRCVisualizationTest
         {
             EulerAngles eulerAngles = new EulerAngles(new Vector(euler.X, euler.Y, euler.Z), EulerConstants.EulerOrderXYZS);
 
-            Quaternion quaternion = EulerAngles.EulerToQuaternion(eulerAngles);
+            Quaternion quaternion = Quaternion.EulerToQuaternion(eulerAngles);
 
             Vector eulerConverted = EulerAngles.QuaternionToEuler(quaternion, EulerConstants.EulerOrderXYZS).Angles;//bad translation
 
@@ -415,9 +415,9 @@ namespace ADRCVisualizationTest
             EulerAngles YRotation = new EulerAngles(new Vector(0, 90, 0), EulerConstants.EulerOrderXYZS);
             EulerAngles ZRotation = new EulerAngles(new Vector(0, 0, 90), EulerConstants.EulerOrderXYZS);
             
-            Quaternion eulerConvertedX = EulerAngles.EulerToQuaternion(XRotation);
-            Quaternion eulerConvertedY = EulerAngles.EulerToQuaternion(YRotation);
-            Quaternion eulerConvertedZ = EulerAngles.EulerToQuaternion(ZRotation);
+            Quaternion eulerConvertedX = Quaternion.EulerToQuaternion(XRotation);
+            Quaternion eulerConvertedY = Quaternion.EulerToQuaternion(YRotation);
+            Quaternion eulerConvertedZ = Quaternion.EulerToQuaternion(ZRotation);
 
             Assert.AreEqual(Math.Sqrt(0.5), eulerConvertedX.W, 0.01, "90 X Rotation" + eulerConvertedX);
             Assert.AreEqual(Math.Sqrt(0.5), eulerConvertedX.X, 0.01, "90 X Rotation" + eulerConvertedX);
@@ -443,10 +443,10 @@ namespace ADRCVisualizationTest
             EulerAngles YRotation  = new EulerAngles(new Vector(0,   180, 0  ), EulerConstants.EulerOrderXYZS);
             EulerAngles ZRotation  = new EulerAngles(new Vector(0,   0,   180), EulerConstants.EulerOrderXYZS);
 
-            Quaternion eulerConvertedNo = EulerAngles.EulerToQuaternion(noRotation);
-            Quaternion eulerConvertedX  = EulerAngles.EulerToQuaternion(XRotation);
-            Quaternion eulerConvertedY  = EulerAngles.EulerToQuaternion(YRotation);
-            Quaternion eulerConvertedZ  = EulerAngles.EulerToQuaternion(ZRotation);
+            Quaternion eulerConvertedNo = Quaternion.EulerToQuaternion(noRotation);
+            Quaternion eulerConvertedX  = Quaternion.EulerToQuaternion(XRotation);
+            Quaternion eulerConvertedY  = Quaternion.EulerToQuaternion(YRotation);
+            Quaternion eulerConvertedZ  = Quaternion.EulerToQuaternion(ZRotation);
 
             Assert.AreEqual(1, eulerConvertedNo.W, 0.01, "No rotation" + eulerConvertedNo);
             Assert.AreEqual(0, eulerConvertedNo.X, 0.01, "No rotation" + eulerConvertedNo);

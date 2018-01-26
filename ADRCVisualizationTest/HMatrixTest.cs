@@ -57,7 +57,7 @@ namespace ADRCVisualizationTest
         {
             EulerAngles eulerAngles = new EulerAngles(new Vector(euler.X, euler.Y, euler.Z), EulerConstants.EulerOrderXYZR);
 
-            HMatrix hM = EulerAngles.EulerToHMatrix(eulerAngles);
+            HMatrix hM = HMatrix.EulerToHMatrix(eulerAngles);
 
             Vector eulerConverted = EulerAngles.HMatrixToEuler(hM, EulerConstants.EulerOrderXYZR).Angles;//bad translation
 

@@ -61,6 +61,66 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return rotatedVector;
         }
 
+        public static Quaternion EulerToQuaternion(EulerAngles eulerAngles)
+        {
+            Quaternion q = new Quaternion(0, 0, 0, 0);
+            double sx, sy, sz, cx, cy, cz, cc, cs, sc, ss;
+
+            eulerAngles.Angles.X = Misc.DegreesToRadians(eulerAngles.Angles.X);
+            eulerAngles.Angles.Y = Misc.DegreesToRadians(eulerAngles.Angles.Y);
+            eulerAngles.Angles.Z = Misc.DegreesToRadians(eulerAngles.Angles.Z);
+
+            if (eulerAngles.Order.FrameTaken == EulerOrder.AxisFrame.Rotating)
+            {
+                double t = eulerAngles.Angles.X;
+                eulerAngles.Angles.X = eulerAngles.Angles.Z;
+                eulerAngles.Angles.Z = t;
+            }
+
+            if (eulerAngles.Order.AxisPermutation == EulerOrder.Parity.Odd)
+            {
+                eulerAngles.Angles.Y = -eulerAngles.Angles.Y;
+            }
+
+            sx = Math.Sin(eulerAngles.Angles.X * 0.5);
+            sy = Math.Sin(eulerAngles.Angles.Y * 0.5);
+            sz = Math.Sin(eulerAngles.Angles.Z * 0.5);
+
+            cx = Math.Cos(eulerAngles.Angles.X * 0.5);
+            cy = Math.Cos(eulerAngles.Angles.Y * 0.5);
+            cz = Math.Cos(eulerAngles.Angles.Z * 0.5);
+
+            cc = cx * cz;
+            cs = cx * sz;
+            sc = sx * cz;
+            ss = sx * sz;
+
+            if (eulerAngles.Order.InitialAxisRepitition == EulerOrder.AxisRepitition.Yes)
+            {
+                q.X = cy * (cs + sc);
+                q.Y = sy * (cc + ss);
+                q.Z = sy * (cs - sc);
+                q.W = cy * (cc - ss);
+            }
+            else
+            {
+                q.X = cy * sc - sy * cs;
+                q.Y = cy * ss + sy * cc;
+                q.Z = cy * cs - sy * sc;
+                q.W = cy * cc + sy * ss;
+            }
+
+            q.Permutate(eulerAngles.Order.Permutation);
+
+            if (eulerAngles.Order.AxisPermutation == EulerOrder.Parity.Odd)
+            {
+                q.Y = -q.Y;
+            }
+
+            return q;
+        }
+
+
         /// <summary>
         /// Adds two quaternions together.
         /// </summary>
@@ -412,7 +472,20 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
             return current;
         }
-        
+
+        /*
+            Angular acceleration
+
+            Angular Velocity,
+            d q(t) /dt = 1/2 * W(t) q(t)
+            W(t) = (0, x, y, z)  -> bivector
+
+            d q0(t) / dt = − 1/2* (Wx (t) q1(t) + Wy (t) q2(t) + Wz (t) q3(t)) 
+            d q1(t) / dt =   1/2* (Wx (t) q0(t) + Wy (t) q3(t) − Wz (t) q2(t)) 
+            d q2(t) / dt =   1/2* (Wy (t) q0(t) + Wz (t) q1(t) − Wx (t) q3(t))
+            d q3(t) / dt =   1/2* (Wz (t) q0(t) + Wx (t) q2(t) − Wy (t) q1(t))
+        */
+
         public override string ToString()
         {
             string w = String.Format("{0:0.000}", W).PadLeft(7);
