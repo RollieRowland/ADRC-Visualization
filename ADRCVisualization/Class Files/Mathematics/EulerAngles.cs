@@ -23,6 +23,10 @@ namespace ADRCVisualization.Class_Files.Mathematics
             double sx, sy, sz, cx, cy, cz, cc, cs, sc, ss;
             Vector p = eulerAngles.Order.Permutation;
 
+            eulerAngles.Angles.X = Misc.DegreesToRadians(eulerAngles.Angles.X);
+            eulerAngles.Angles.Y = Misc.DegreesToRadians(eulerAngles.Angles.Y);
+            eulerAngles.Angles.Z = Misc.DegreesToRadians(eulerAngles.Angles.Z);
+
             if (eulerAngles.Order.FrameTaken == EulerOrder.AxisFrame.Rotating)
             {
                 double t = eulerAngles.Angles.X;
@@ -91,6 +95,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             sx = Math.Sin(eulerAngles.Angles.X * 0.5);
             sy = Math.Sin(eulerAngles.Angles.Y * 0.5);
             sz = Math.Sin(eulerAngles.Angles.Z * 0.5);
+
             cx = Math.Cos(eulerAngles.Angles.X * 0.5);
             cy = Math.Cos(eulerAngles.Angles.Y * 0.5);
             cz = Math.Cos(eulerAngles.Angles.Z * 0.5);
@@ -102,26 +107,26 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
             if (eulerAngles.Order.InitialAxisRepitition == EulerOrder.AxisRepitition.Yes)
             {
-                q.W = cy * (cc - ss);
                 q.X = cy * (cs + sc);
                 q.Y = sy * (cc + ss);
                 q.Z = sy * (cs - sc);
+                q.W = cy * (cc - ss);
             }
             else
             {
-                q.W = cy * cc + sy * ss;
                 q.X = cy * sc - sy * cs;
                 q.Y = cy * ss + sy * cc;
                 q.Z = cy * cs - sy * sc;
+                q.W = cy * cc + sy * ss;
             }
+
+            q.Permutate(eulerAngles.Order.Permutation);
 
             if (eulerAngles.Order.AxisPermutation == EulerOrder.Parity.Odd)
             {
                 q.Y = -q.Y;
             }
-
-            q.Permutate(eulerAngles.Order.Permutation);
-
+            
             return q;
         }
         
@@ -134,7 +139,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             {
                 double sy = Math.Sqrt(Math.Pow(hM[p.X, p.Y], 2) + Math.Pow(hM[p.X, p.Z], 2));
 
-                if (sy > 16 * double.Epsilon)
+                if (sy > 32 * double.Epsilon)//16 * float.Epsilon
                 {
                     eulerAngles.Angles.X = Math.Atan2(hM[p.X, p.Y],  hM[p.X, p.Z]);
                     eulerAngles.Angles.Y = Math.Atan2(sy,            hM[p.X, p.X]);
@@ -143,7 +148,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
                 else
                 {
                     eulerAngles.Angles.X = Math.Atan2(-hM[p.Y, p.Z], hM[p.Y, p.Y]);
-                    eulerAngles.Angles.Y = Math.Atan2(sy, hM[p.X, p.X]);
+                    eulerAngles.Angles.Y = Math.Atan2( sy,           hM[p.X, p.X]);
                     eulerAngles.Angles.Z = 0;
                 }
             }
@@ -151,7 +156,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             {
                 double cy = Math.Sqrt(Math.Pow(hM[p.X, p.X], 2) + Math.Pow(hM[p.Y, p.X], 2));
 
-                if (cy > 16 * double.Epsilon)
+                if (cy > 32 * double.Epsilon)
                 {
                     eulerAngles.Angles.X = Math.Atan2( hM[p.Z, p.Y], hM[p.Z, p.Z]);
                     eulerAngles.Angles.Y = Math.Atan2(-hM[p.Z, p.X], cy);
@@ -195,15 +200,15 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Vector s = new Vector(q.X * scale, q.Y * scale, q.Z * scale);
             Vector w = new Vector(q.W * s.X,   q.W * s.Y,   q.W * s.Z  );
             Vector x = new Vector(q.X * s.X,   q.X * s.Y,   q.X * s.Z  );
-            Vector y = new Vector(0,           q.Y * s.Y,   q.Y * s.Z  );
-            Vector z = new Vector(0,           0,           q.Z * s.Z  );
-
+            Vector y = new Vector(0.0,         q.Y * s.Y,   q.Y * s.Z  );
+            Vector z = new Vector(0.0,         0.0,         q.Z * s.Z  );
+            
             //0X, 1Y, 2Z, 3W
-            hM[0, 0] = 1.0 - y.Y + z.Z;     hM[0, 1] = x.Y - w.Z;           hM[0, 2] = x.Z + w.Y;           hM[0, 3] = 0;
-            hM[1, 0] = x.Y + w.Z;           hM[1, 1] = 1.0 - x.X + z.Z;     hM[1, 2] = y.Z - w.X;           hM[1, 3] = 0;
-            hM[2, 0] = x.Z - w.Y;           hM[2, 1] = y.Z + w.X;           hM[2, 2] = 1.0 - x.X + y.Y;     hM[2, 3] = 0;
-            hM[3, 0] = 0;                   hM[3, 1] = 0;                   hM[3, 2] = 0;                   hM[3, 3] = 1;
-
+            hM[0, 0] = 1.0 - (y.Y + z.Z);   hM[0, 1] = x.Y - w.Z;           hM[0, 2] = x.Z + w.Y;           hM[0, 3] = 0.0;
+            hM[1, 0] = x.Y + w.Z;           hM[1, 1] = 1.0 - (x.X + z.Z);   hM[1, 2] = y.Z - w.X;           hM[1, 3] = 0.0;
+            hM[2, 0] = x.Z - w.Y;           hM[2, 1] = y.Z + w.X;           hM[2, 2] = 1.0 - (x.X + y.Y);   hM[2, 3] = 0.0;
+            hM[3, 0] = 0.0;                 hM[3, 1] = 0.0;                 hM[3, 2] = 0.0;                 hM[3, 3] = 1.0;
+            
             return HMatrixToEuler(hM, order);
         }
     }

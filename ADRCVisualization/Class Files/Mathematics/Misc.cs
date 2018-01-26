@@ -31,12 +31,12 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
         public static double DegreesToRadians(double degrees)
         {
-            return degrees / (180 / Math.PI);
+            return degrees / (180.0 / Math.PI);
         }
 
         public static double RadiansToDegrees(double radians)
         {
-            return radians * (180 / Math.PI);
+            return radians * (180.0 / Math.PI);
         }
 
         public static string DoubleToString(double value)
