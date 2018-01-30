@@ -31,24 +31,14 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return (X == vector.X) && (Y == vector.Y) && (Z == vector.Z);
         }
 
-        public Vector Multiply(double k)
+        public Vector Add(Vector vector)
         {
-            return new Vector((X * k), (Y * k), (Z * k));
+            return new Vector(X + vector.X, Y + vector.Y, Z + vector.Z);
         }
 
-        public Vector Multiply(Vector vector)
+        public static Vector operator +(Vector v1, Vector v2)
         {
-            return new Vector((X * vector.X), (Y * vector.Y), (Z * vector.Z));
-        }
-
-        public Vector Divide(double k)
-        {
-            return new Vector((X / k), (Y / k), (Z / k));
-        }
-
-        public Vector Divide(Vector vector)
-        {
-            return new Vector((X / vector.X), (Y / vector.Y), (Z / vector.Z));
+            return v1.Add(v2);
         }
 
         public Vector Subtract(Vector vector)
@@ -56,9 +46,49 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return new Vector(X - vector.X, Y - vector.Y, Z - vector.Z);
         }
 
-        public Vector Add(Vector vector)
+        public static Vector operator -(Vector v1, Vector v2)
         {
-            return new Vector(X + vector.X, Y + vector.Y, Z + vector.Z);
+            return v1.Subtract(v2);
+        }
+
+        public Vector Multiply(double k)
+        {
+            return new Vector((X * k), (Y * k), (Z * k));
+        }
+
+        public static Vector operator *(Vector v1, double s)
+        {
+            return v1.Multiply(s);
+        }
+
+        public Vector Multiply(Vector vector)
+        {
+            return new Vector((X * vector.X), (Y * vector.Y), (Z * vector.Z));
+        }
+
+        public static Vector operator *(Vector v1, Vector v2)
+        {
+            return v1.Multiply(v2);
+        }
+
+        public Vector Divide(double k)
+        {
+            return new Vector((X / k), (Y / k), (Z / k));
+        }
+
+        public static Vector operator /(Vector v1, double s)
+        {
+            return v1.Divide(s);
+        }
+
+        public Vector Divide(Vector vector)
+        {
+            return new Vector((X / vector.X), (Y / vector.Y), (Z / vector.Z));
+        }
+
+        public static Vector operator /(Vector v1, Vector v2)
+        {
+            return v1.Divide(v2);
         }
 
         public static double DotProduct(Vector vectorO, Vector vectorT)

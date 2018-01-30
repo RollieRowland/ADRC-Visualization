@@ -94,3 +94,12 @@ X Allow continuous rotation, no secondary solver. Fade perfectly
 X Correct position calculation for gimbal lock
 
 Allow rotations with multiple angles during gimbal lock
+
+
+Thruster -> 2DOF -> Convert to quaternion, rotate quaternion by quadcopter quaternion
+Thrust vector from quaternion?
+
+Multiply quaternions to rotate
+
+
+Rotate 

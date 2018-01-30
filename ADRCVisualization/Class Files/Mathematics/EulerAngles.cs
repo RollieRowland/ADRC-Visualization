@@ -98,5 +98,10 @@ namespace ADRCVisualization.Class_Files.Mathematics
             
             return HMatrixToEuler(hM, order);
         }
+
+        public override string ToString()
+        {
+            return Angles.ToString();
+        }
     }
 }

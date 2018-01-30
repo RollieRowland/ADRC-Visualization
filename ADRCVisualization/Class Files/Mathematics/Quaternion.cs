@@ -30,6 +30,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
         /// <summary>
         /// Intializes quaternion with vector parameters for imaginary part.
+        /// Creates quaternion bivector.
         /// </summary>
         /// <param name="vector">Imaginary values of quaternion.</param>
         public Quaternion(Vector vector)
@@ -140,6 +141,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
             };
         }
 
+        public static Quaternion operator +(Quaternion q1, Quaternion q2)
+        {
+            return q1.Add(q2);
+        }
+
         /// <summary>
         /// Subtracts two quaternions.
         /// </summary>
@@ -157,6 +163,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
                 Y = current.Y - quaternion.Y,
                 Z = current.Z - quaternion.Z
             };
+        }
+        
+        public static Quaternion operator -(Quaternion q1, Quaternion q2)
+        {
+            return q1.Subtract(q2);
         }
 
         /// <summary>
@@ -196,6 +207,20 @@ namespace ADRCVisualization.Class_Files.Mathematics
                 Z = current.W * quaternion.Z + current.X * quaternion.Y - current.Y * quaternion.X + current.Z * quaternion.W
             };
         }
+        public static Quaternion operator *(double s, Quaternion q1)
+        {
+            return q1.Multiply(s);
+        }
+
+        public static Quaternion operator *(Quaternion q1, double s)
+        {
+            return q1.Multiply(s);
+        }
+
+        public static Quaternion operator *(Quaternion q1, Quaternion q2)
+        {
+            return q1.Multiply(q2);
+        }
 
         /// <summary>
         /// Divides a quaternion by a scalar.
@@ -234,6 +259,21 @@ namespace ADRCVisualization.Class_Files.Mathematics
                 Y = (- current.W * quaternion.Y - current.X * quaternion.Z + current.Y * quaternion.W + current.Z * quaternion.X) / scale,
                 Z = (- current.W * quaternion.Z + current.X * quaternion.Y - current.Y * quaternion.X + current.Z * quaternion.W) / scale 
             };
+        }
+
+        public static Quaternion operator /(double s, Quaternion q1)
+        {
+            return q1.Divide(s);
+        }
+
+        public static Quaternion operator /(Quaternion q1, double s)
+        {
+            return q1.Divide(s);
+        }
+
+        public static Quaternion operator /(Quaternion q1, Quaternion q2)
+        {
+            return q1.Divide(q2);
         }
 
         /// <summary>
@@ -365,6 +405,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public double Magnitude()
         {
             return Math.Sqrt(Normal());
+        }
+
+        public double Determinant()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
