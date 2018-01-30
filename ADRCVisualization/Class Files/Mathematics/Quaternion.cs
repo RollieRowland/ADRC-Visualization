@@ -121,6 +121,25 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return q;
         }
 
+        /// <summary>
+        /// Converts axis angle rotation representation to quaternion.
+        /// </summary>
+        /// <param name="axisAngle">Axis-Angle rotation representation.</param>
+        /// <returns>Converted quaternion value.</returns>
+        public static Quaternion AxisAngleToQuaternion(AxisAngle axisAngle)
+        {
+            double rotation = Misc.DegreesToRadians(axisAngle.Rotation);
+            double scale = Math.Sin(rotation / 2);
+
+            return new Quaternion(1, 0, 0, 0)
+            {
+                W = Math.Cos(rotation / 2),
+                X = axisAngle.X * scale,
+                Y = axisAngle.Y * scale,
+                Z = axisAngle.Z * scale
+            };
+        }
+
 
         /// <summary>
         /// Adds two quaternions together.
@@ -207,6 +226,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
                 Z = current.W * quaternion.Z + current.X * quaternion.Y - current.Y * quaternion.X + current.Z * quaternion.W
             };
         }
+
         public static Quaternion operator *(double s, Quaternion q1)
         {
             return q1.Multiply(s);
@@ -399,6 +419,16 @@ namespace ADRCVisualization.Class_Files.Mathematics
         }
 
         /// <summary>
+        /// Calculates the dot product of two vectors.
+        /// </summary>
+        /// <param name="q">Input quaternion</param>
+        /// <returns>Returns the dot product of the current quaternion and the input quaternion.</returns>
+        public double DotProduct(Quaternion q)
+        {
+            return (W * q.W) + (X * q.X) + (Y * q.Y) + (Z * q.Z);
+        }
+
+        /// <summary>
         /// Calculates the magnitude of the quaternion.
         /// </summary>
         /// <returns>Returns the magnitude of the quaternion.</returns>
@@ -433,6 +463,47 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Quaternion current = new Quaternion(W, X, Y, Z);
 
             return current.Multiply(1 / current.Magnitude());
+        }
+
+        /// <summary>
+        /// Slerp operation or Spherical Linear Interpolation, used to interpolate between quaternions.
+        /// Constant speed motion along a unit-radius orthodrome(great circle) arc, given the ends and
+        /// an interpolation parameter between 0 and 1.
+        /// </summary>
+        /// <param name="q2">Second quaternion for interpolation.</param>
+        /// <param name="t">Ratio between input quaternions.</param>
+        /// <returns>Interpolated quaternion.</returns>
+        public Quaternion SphericalLinearInterpolation(Quaternion q2, double t)
+        {
+            Quaternion q1 = this;
+
+            q1 = q1.UnitQuaternion();
+            q2 = q2.UnitQuaternion();
+
+            double dot = q1.DotProduct(q2);//Cosine between the two quaternions
+
+            if (dot < 0.0)//Shortest path correction
+            {
+                q1  = q1.AdditiveInverse();
+                dot = -dot;
+            }
+
+            if (dot > 0.9995)//Linearly interpolates if results are close
+            {
+                Quaternion result = (q1 + t * (q1 - q2)).UnitQuaternion();
+                return result;
+            }
+            else
+            {
+                dot = Misc.Constrain(dot, -1, 1);
+
+                double theta0 = Math.Acos(dot);
+                double theta = theta0 * t;
+
+                Quaternion q3 = (q2 - q1 * dot).UnitQuaternion();//UQ for orthonomal 
+
+                return q1 * Math.Cos(theta) + q3 * Math.Sin(theta);
+            }
         }
 
 
@@ -518,19 +589,6 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return current;
         }
 
-        /*
-            Angular acceleration
-
-            Angular Velocity,
-            d q(t) /dt = 1/2 * W(t) q(t)
-            W(t) = (0, x, y, z)  -> bivector
-
-            d q0(t) / dt = − 1/2* (Wx (t) q1(t) + Wy (t) q2(t) + Wz (t) q3(t)) 
-            d q1(t) / dt =   1/2* (Wx (t) q0(t) + Wy (t) q3(t) − Wz (t) q2(t)) 
-            d q2(t) / dt =   1/2* (Wy (t) q0(t) + Wz (t) q1(t) − Wx (t) q3(t))
-            d q3(t) / dt =   1/2* (Wz (t) q0(t) + Wx (t) q2(t) − Wy (t) q1(t))
-        */
-
         public override string ToString()
         {
             string w = String.Format("{0:0.000}", W).PadLeft(7);
@@ -540,5 +598,6 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
             return w + " " + x + " " + y + " " + z;
         }
+
     }
 }

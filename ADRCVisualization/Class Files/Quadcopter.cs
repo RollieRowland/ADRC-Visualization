@@ -318,6 +318,7 @@ namespace ADRCVisualization.Class_Files
         public Quaternion av = new Quaternion(1, 0, 0, 0);
         public Quaternion q  = new Quaternion(1, 0, 0, 0);
         public Vector angularVelocity = new Vector(0, 0, 0);
+        public Vector angularAcceleration = new Vector(0, 0, 0);
 
         public void EstimateQuaternionRotation(double dT)
         {
@@ -336,7 +337,7 @@ namespace ADRCVisualization.Class_Files
 
             double torque = armLength * Math.Sin(Misc.DegreesToRadians(180 - armAngle)) * 5;
 
-            Vector angularAcceleration = new Vector(0, 0, 0)
+            angularAcceleration = new Vector(0, 0, 0)
             {
                 X = (TB.Y + TC.Y - TD.Y - TE.Y) * torque,
                 Y = (TB.X + TC.X - TD.X - TE.X) * torque + (TB.Z - TC.Z - TD.Z + TE.Z) * torque,
@@ -350,10 +351,19 @@ namespace ADRCVisualization.Class_Files
 
             angularVelocity = angularVelocity + angularAcceleration * dT;
 
-            aa = 0.5 * new Quaternion(angularAcceleration) * aa;
+            double dot;
+            Quaternion alpha = new Quaternion(1, 0, 0, 0);
 
-            //Console.WriteLine(EulerAngles.QuaternionToEuler(q, EulerConstants.EulerOrderXYZR));
-            Console.WriteLine(q);
+            av = 0.5 * q * new Quaternion(angularVelocity);
+            dot = -2 * (av.DotProduct(av));
+            alpha = new Quaternion(dot, angularAcceleration.X, angularAcceleration.Y, angularAcceleration.Z);
+            aa = 0.5 * q * alpha;
+
+            q = (av * dT) + (0.5 * aa * dT * dT);
+
+            Console.WriteLine(av);
+            
+            //Console.WriteLine(q + " " + EulerAngles.QuaternionToEuler(q, EulerConstants.EulerOrderXYZR));
         }
 
         private bool DetectAgitation()

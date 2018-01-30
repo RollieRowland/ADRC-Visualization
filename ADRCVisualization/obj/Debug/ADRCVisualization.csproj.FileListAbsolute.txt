@@ -25,7 +25,6 @@ C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\bin\Debug\Helix
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\bin\Debug\HelixToolkit.Wpf.xml
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
-C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization.csprojResolveAssemblyReference.cache
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\QuadViewer.g.cs
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization_Content.g.cs
 C:\Users\steve\source\repos\ADRC-Visualization\ADRCVisualization\obj\Debug\ADRCVisualization_MarkupCompile.cache
