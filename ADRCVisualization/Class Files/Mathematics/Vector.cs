@@ -55,6 +55,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
         {
             return new Vector((X * k), (Y * k), (Z * k));
         }
+        
+        public static Vector operator *(double s, Vector v1)
+        {
+            return v1.Multiply(s);
+        }
 
         public static Vector operator *(Vector v1, double s)
         {

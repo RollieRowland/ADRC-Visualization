@@ -313,9 +313,7 @@ namespace ADRCVisualization.Class_Files
             //Console.WriteLine(currentAngularVelocity.Multiply(dT) + " " + Quaternion.FromEulerAngle(currentAngularVelocity.Multiply(dT)));
             //Console.WriteLine(CurrentRotation + " " + Quaternion.FromEulerAngle(CurrentRotation));
         }
-
-        public Quaternion aa = new Quaternion(1, 0, 0, 0);
-        public Quaternion av = new Quaternion(1, 0, 0, 0);
+        
         public Quaternion q  = new Quaternion(1, 0, 0, 0);
         public Vector angularVelocity = new Vector(0, 0, 0);
         public Vector angularAcceleration = new Vector(0, 0, 0);
@@ -328,12 +326,12 @@ namespace ADRCVisualization.Class_Files
             Vector TD = ThrusterD.ReturnThrustVector();
             Vector TE = ThrusterE.ReturnThrustVector();
 
-            Vector tempRotation = EulerAngles.QuaternionToEuler(q, EulerConstants.EulerOrderYZYR).Angles;
+            AxisAngle tempRotation = AxisAngle.QuaternionToAxisAngle(q);
 
-            TB = Matrix.RotateVector(tempRotation.Multiply(new Vector(-1, 0, -1)), TB);//Thrust relative to environment origin
-            TC = Matrix.RotateVector(tempRotation.Multiply(new Vector(-1, 0, -1)), TC);
-            TD = Matrix.RotateVector(tempRotation.Multiply(new Vector(-1, 0, -1)), TD);
-            TE = Matrix.RotateVector(tempRotation.Multiply(new Vector(-1, 0, -1)), TE);
+            TB = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, -1)), TB);//Thrust relative to environment origin
+            TC = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, -1)), TC);
+            TD = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, -1)), TD);
+            TE = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, -1)), TE);
 
             double torque = armLength * Math.Sin(Misc.DegreesToRadians(180 - armAngle)) * 5;
 
@@ -347,23 +345,29 @@ namespace ADRCVisualization.Class_Files
             //TB + TD - (TC + TE)
             Vector differentialThrustRotation = TB.Add(TD).Add(TC.Add(TE).Multiply(-1)).Multiply(0.15);//Relative to world origin
 
-            angularAcceleration = angularAcceleration.Add(differentialThrustRotation);//Eulerian quantity
+            angularAcceleration = angularAcceleration + differentialThrustRotation;//Eulerian quantity
+
+            angularAcceleration.X = Misc.DegreesToRadians(angularAcceleration.X);
+            angularAcceleration.Y = Misc.DegreesToRadians(angularAcceleration.Y);
+            angularAcceleration.Z = Misc.DegreesToRadians(angularAcceleration.Z);
 
             angularVelocity = angularVelocity + angularAcceleration * dT;
-
-            double dot;
-            Quaternion alpha = new Quaternion(1, 0, 0, 0);
-
-            av = 0.5 * q * new Quaternion(angularVelocity);
-            dot = -2 * (av.DotProduct(av));
-            alpha = new Quaternion(dot, angularAcceleration.X, angularAcceleration.Y, angularAcceleration.Z);
-            aa = 0.5 * q * alpha;
-
-            q = (av * dT) + (0.5 * aa * dT * dT);
-
-            Console.WriteLine(av);
             
-            //Console.WriteLine(q + " " + EulerAngles.QuaternionToEuler(q, EulerConstants.EulerOrderXYZR));
+            Quaternion angularRotation = new Quaternion(0.5 * angularVelocity * dT);
+
+            q += angularRotation * q;
+
+            q = q.UnitQuaternion();
+            
+            //Console.WriteLine(CurrentRotation + " " + Quaternion.FromEulerAngle(CurrentRotation));
+            Quaternion temp = Quaternion.EulerToQuaternion(new EulerAngles(new Vector(CurrentRotation.X, CurrentRotation.Y, CurrentRotation.Z), EulerConstants.EulerOrderXYZS));
+            
+            AxisAngle calcAA = AxisAngle.QuaternionToAxisAngle(q);
+            AxisAngle otheAA = AxisAngle.QuaternionToAxisAngle(temp);
+
+            Console.WriteLine(calcAA + " " + otheAA);
+            //Console.WriteLine(otheAA);
+            //Console.WriteLine((calcAA.Rotation - otheAA.Rotation) + " " + (calcAA.X - otheAA.X) + " " + (calcAA.Y - otheAA.Y) + " " + (calcAA.Z - otheAA.Z));
         }
 
         private bool DetectAgitation()

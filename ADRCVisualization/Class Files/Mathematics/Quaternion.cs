@@ -387,13 +387,13 @@ namespace ADRCVisualization.Class_Files.Mathematics
                 Z = Math.Pow(current.Z, exponent.Z)
             };
         }
-
+        
         /// <summary>
-        /// Normalizes the input quaternion.
+        /// Restricts the quaternion to a single hemisphere of rotation, disables constant rotation around any real or imaginary axis.
+        /// This will cause jumping in calculations, similar to that of a tangent function.
         /// </summary>
-        /// <param name="quaternion">Quaternion that is normalized.</param>
-        /// <returns>Returns the normalized input quaternion.</returns>
-        public Quaternion Normalize()
+        /// <returns>Returns the unit quaternion of the current quaternion values.</returns>
+        public Quaternion UnitQuaternion()
         {
             Quaternion current = new Quaternion(W, X, Y, Z);
 
@@ -415,7 +415,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         {
             Quaternion q = new Quaternion(W, X, Y, Z);
 
-            return Math.Pow(q.W, 2) + Math.Pow(q.X, 2) + Math.Pow(q.Y, 2) + Math.Pow(q.Z, 2);
+            return Math.Pow(q.W, 2.0) + Math.Pow(q.X, 2.0) + Math.Pow(q.Y, 2.0) + Math.Pow(q.Z, 2.0);
         }
 
         /// <summary>
@@ -450,19 +450,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         {
             Quaternion current = new Quaternion(W, X, Y, Z);
 
-            return current.Conjugate().Multiply(1 / current.Normal());
-        }
-
-        /// <summary>
-        /// Restricts the quaternion to a single hemisphere of rotation, disables constant rotation around any real or imaginary axis.
-        /// This will cause jumping in calculations, similar to that of a tangent function.
-        /// </summary>
-        /// <returns>Returns the unit quaternion of the current quaternion values.</returns>
-        public Quaternion UnitQuaternion()
-        {
-            Quaternion current = new Quaternion(W, X, Y, Z);
-
-            return current.Multiply(1 / current.Magnitude());
+            return current.Conjugate().Multiply(1.0 / current.Normal());
         }
 
         /// <summary>
@@ -505,7 +493,6 @@ namespace ADRCVisualization.Class_Files.Mathematics
                 return q1 * Math.Cos(theta) + q3 * Math.Sin(theta);
             }
         }
-
 
         /// <summary>
         /// Determines if any individual value of the quaternion is not a number.
