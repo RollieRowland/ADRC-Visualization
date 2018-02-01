@@ -185,7 +185,7 @@ namespace ADRCVisualization.Class_Files
         public void CalculateCurrent()
         {
             EstimatePosition(samplingPeriod);
-            EstimateRotation(samplingPeriod);
+            //EstimateRotation(samplingPeriod);
             EstimateQuaternionRotation(samplingPeriod);
 
             //Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), Matrix.RotateVector(new Vector(CurrentRotation.X, 0, CurrentRotation.Z), ThrusterB.QuadCenterOffset));
@@ -365,9 +365,15 @@ namespace ADRCVisualization.Class_Files
             AxisAngle calcAA = AxisAngle.QuaternionToAxisAngle(q);
             AxisAngle otheAA = AxisAngle.QuaternionToAxisAngle(temp);
 
+            CurrentRotation = EulerAngles.QuaternionToEuler(q, EulerConstants.EulerOrderXYZS).Angles;
+
             Console.WriteLine(calcAA + " " + otheAA);
             //Console.WriteLine(otheAA);
             //Console.WriteLine((calcAA.Rotation - otheAA.Rotation) + " " + (calcAA.X - otheAA.X) + " " + (calcAA.Y - otheAA.Y) + " " + (calcAA.Z - otheAA.Z));
+
+            //The angular acceleration applied to the Euler angles produce different result when nearing gimbal lock or rotating about more than one axis.
+            //Quaternions do not face this issue, so the quaternion calculation defined above is much more accurate than the Euler angle calculation.
+            //Use Quat ADRC for spherical interpolation, 
         }
 
         private bool DetectAgitation()

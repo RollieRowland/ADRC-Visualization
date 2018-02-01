@@ -111,7 +111,6 @@ namespace ADRCVisualization
 
             while (true)
             {
-                
                 for (double i = 0; i < 360; i += 1)
                 {
                     targetPosition = new Vector(Math.Sin(Misc.DegreesToRadians(i)) * 1.5, 0, Math.Cos(Misc.DegreesToRadians(i)) * 1.5);
@@ -137,6 +136,12 @@ namespace ADRCVisualization
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(-1, 0, 1.2);
                 targetRotation = new Vector(90, 0, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(7500);
+
+                targetPosition = new Vector(-1, 0, 1.2);
+                targetRotation = new Vector(0, 0, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(7500);
