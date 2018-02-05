@@ -114,7 +114,7 @@ namespace ADRCVisualization
                 for (double i = 0; i < 360; i += 1)
                 {
                     targetPosition = new Vector(Math.Sin(Misc.DegreesToRadians(i)) * 1.5, 0, Math.Cos(Misc.DegreesToRadians(i)) * 1.5);
-                    targetRotation = new Vector(i / 2, 0, 0);
+                    targetRotation = new Vector(i / 4, 0, 0);
 
                     await Task.Delay(15);
                 }
@@ -122,7 +122,7 @@ namespace ADRCVisualization
                 for (double i = 0; i < 360; i += 1)
                 {
                     targetPosition = new Vector(Math.Sin(Misc.DegreesToRadians(i)) * 1.5, 0, Math.Cos(Misc.DegreesToRadians(i)) * 1.5);
-                    targetRotation = new Vector(180 - i / 2, 0, 0);
+                    targetRotation = new Vector(180 - i / 4, 0, 0);
 
                     await Task.Delay(15);
                 }

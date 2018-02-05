@@ -80,7 +80,7 @@ namespace ADRCVisualizationTest
 
         public void TestAxisAngleQuatConversion(AxisAngle axisAngle, Quaternion q)
         {
-            AxisAngle aa = AxisAngle.QuaternionToAxisAngle(q);
+            AxisAngle aa = AxisAngle.QuaternionToStandardAxisAngle(q);
 
             testContextInstance.WriteLine(aa + " | " + axisAngle);
 
@@ -88,6 +88,24 @@ namespace ADRCVisualizationTest
             Assert.AreEqual(axisAngle.X,        aa.X,        0.05, "Bad translation in X dimension" + aa);
             Assert.AreEqual(axisAngle.Y,        aa.Y,        0.05, "Bad translation in Y dimension" + aa);
             Assert.AreEqual(axisAngle.Z,        aa.Z,        0.05, "Bad translation in Z dimension" + aa);
+        }
+
+        [TestMethod]
+        public void TestCustomAxisAngleQuaternion()
+        {
+            Quaternion q = new Quaternion(1, 0, 0, 0);//90, 0, 0
+
+            AxisAngle nonStandardAA = AxisAngle.QuaternionToCustomAxisAngle(q);
+
+            Vector expectedDirection = new Vector(0, 0, 0);
+            double expectedRotation = 0;
+            
+            Assert.AreEqual(expectedRotation, nonStandardAA.Rotation, 0.1, "Bad translation in R rotation " + nonStandardAA);
+            Assert.AreEqual(expectedDirection.X, nonStandardAA.X, 0.05, "Bad translation in X dimension" + nonStandardAA);
+            Assert.AreEqual(expectedDirection.Y, nonStandardAA.Y, 0.05, "Bad translation in Y dimension" + nonStandardAA);
+            Assert.AreEqual(expectedDirection.Z, nonStandardAA.Z, 0.05, "Bad translation in Z dimension" + nonStandardAA);
+
+            throw new NotImplementedException();
         }
     }
 }

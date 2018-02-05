@@ -35,6 +35,9 @@ namespace ADRCVisualization.Class_Files
         public Vector CurrentRotation { get; private set; }
         public Vector TargetRotation { get; private set; }
 
+        public Quaternion QuatCurrentRotation { get; private set; }
+        public Quaternion QuatTargetRotation { get; private set; }
+
         private Vector CurrentVelocity;
         private Vector currentAngularVelocity;
         private Vector CurrentAcceleration;
@@ -326,7 +329,7 @@ namespace ADRCVisualization.Class_Files
             Vector TD = ThrusterD.ReturnThrustVector();
             Vector TE = ThrusterE.ReturnThrustVector();
 
-            AxisAngle tempRotation = AxisAngle.QuaternionToAxisAngle(q);
+            AxisAngle tempRotation = AxisAngle.QuaternionToStandardAxisAngle(q);
 
             TB = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, -1)), TB);//Thrust relative to environment origin
             TC = Matrix.RotateVector(CurrentRotation.Multiply(new Vector(-1, 0, -1)), TC);
@@ -359,15 +362,11 @@ namespace ADRCVisualization.Class_Files
 
             q = q.UnitQuaternion();
             
-            //Console.WriteLine(CurrentRotation + " " + Quaternion.FromEulerAngle(CurrentRotation));
-            Quaternion temp = Quaternion.EulerToQuaternion(new EulerAngles(new Vector(CurrentRotation.X, CurrentRotation.Y, CurrentRotation.Z), EulerConstants.EulerOrderXYZS));
-            
-            AxisAngle calcAA = AxisAngle.QuaternionToAxisAngle(q);
-            AxisAngle otheAA = AxisAngle.QuaternionToAxisAngle(temp);
+            AxisAngle calcAA = AxisAngle.QuaternionToStandardAxisAngle(q);
 
             CurrentRotation = EulerAngles.QuaternionToEuler(q, EulerConstants.EulerOrderXYZS).Angles;
 
-            Console.WriteLine(calcAA + " " + otheAA);
+            Console.WriteLine(calcAA);
             //Console.WriteLine(otheAA);
             //Console.WriteLine((calcAA.Rotation - otheAA.Rotation) + " " + (calcAA.X - otheAA.X) + " " + (calcAA.Y - otheAA.Y) + " " + (calcAA.Z - otheAA.Z));
 
