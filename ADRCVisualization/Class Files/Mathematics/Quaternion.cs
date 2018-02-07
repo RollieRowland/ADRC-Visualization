@@ -50,7 +50,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         {
             Quaternion current = new Quaternion(W, X, Y, Z);
             Quaternion qv = new Quaternion(0, coordinate.X, coordinate.Y, coordinate.Z);
-            Quaternion qr = current.Multiply(qv).Multiply(current.MultiplicativeInverse());
+            Quaternion qr = current * qv * current.MultiplicativeInverse();
 
             Vector rotatedVector = new Vector(0, 0, 0)
             {

@@ -89,23 +89,28 @@ namespace ADRCVisualizationTest
             Assert.AreEqual(axisAngle.Y,        aa.Y,        0.05, "Bad translation in Y dimension" + aa);
             Assert.AreEqual(axisAngle.Z,        aa.Z,        0.05, "Bad translation in Z dimension" + aa);
         }
+        
 
         [TestMethod]
-        public void TestCustomAxisAngleQuaternion()
+        public void TestCustomAxisAngleQuaternionConversions()
         {
-            Quaternion q = new Quaternion(1, 0, 0, 0);//90, 0, 0
+            for (int i = 0; i < 90; i += 5)
+            {
+                Console.WriteLine(AxisAngle.QuaternionToCustomAxisAngle(Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, 0, 0), EulerConstants.EulerOrderXYZR))));
+            }
 
+            TestCustomAxisAngleQuaternion(new AxisAngle(0,  new Vector(0, 0.707, 0.707)), new Quaternion(0.9239, 0.3827, 0, 0));
+            TestCustomAxisAngleQuaternion(new AxisAngle(45, new Vector(-0.707, 0.707, 0)), new Quaternion(0.9239, 0, 0, 0.3827));
+        }
+
+        public void TestCustomAxisAngleQuaternion(AxisAngle expected, Quaternion q)
+        {
             AxisAngle nonStandardAA = AxisAngle.QuaternionToCustomAxisAngle(q);
-
-            Vector expectedDirection = new Vector(0, 0, 0);
-            double expectedRotation = 0;
             
-            Assert.AreEqual(expectedRotation, nonStandardAA.Rotation, 0.1, "Bad translation in R rotation " + nonStandardAA);
-            Assert.AreEqual(expectedDirection.X, nonStandardAA.X, 0.05, "Bad translation in X dimension" + nonStandardAA);
-            Assert.AreEqual(expectedDirection.Y, nonStandardAA.Y, 0.05, "Bad translation in Y dimension" + nonStandardAA);
-            Assert.AreEqual(expectedDirection.Z, nonStandardAA.Z, 0.05, "Bad translation in Z dimension" + nonStandardAA);
-
-            throw new NotImplementedException();
+            Assert.AreEqual(expected.Rotation, nonStandardAA.Rotation, 0.1,  "Bad translation in R rotation " + nonStandardAA);
+            Assert.AreEqual(expected.X,        nonStandardAA.X,        0.05, "Bad translation in X dimension" + nonStandardAA);
+            Assert.AreEqual(expected.Y,        nonStandardAA.Y,        0.05, "Bad translation in Y dimension" + nonStandardAA);
+            Assert.AreEqual(expected.Z,        nonStandardAA.Z,        0.05, "Bad translation in Z dimension" + nonStandardAA);
         }
     }
 }

@@ -66,30 +66,36 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public static AxisAngle QuaternionToCustomAxisAngle(Quaternion quaternion)
         {
             Vector up = new Vector(0, 1, 0);//up vector
-            Vector forward = new Vector(0, 0, 1);
+            Vector right = new Vector(1, 0, 0);
             Vector rotatedUp = quaternion.RotateVector(up);//new direction vector
-            Vector rotatedForward = quaternion.RotateVector(forward);
+            Vector rotatedRight = quaternion.RotateVector(right);
 
-            //rotated up vector to Euler angles
+            Console.WriteLine("QCAA Up/Right Vector: " + rotatedUp + " " + rotatedRight);
+
+            //Convert rotated up vector to spherical coordinate system
             //Calculate individual 2dof rotations, ensure that order is correct
-            double XRotation = 0;
-            double ZRotation = 0;
+            double radius  = Math.Sqrt(Math.Pow(rotatedUp.X, 2) + Math.Pow(rotatedUp.Y, 2) + Math.Pow(rotatedUp.Z, 2));
+            double XZTheta = Misc.RadiansToDegrees(Math.Atan2(rotatedUp.Z, rotatedUp.X));//azimuthal rotation, Z/X, adjust as forward z being zero
+            double YPhi    = Misc.RadiansToDegrees(Math.Acos(rotatedUp.Y / radius));//polar rotation, Y/R
+            
+            Console.WriteLine("QCAA Spherical Coordinates: R" + radius + " XZ" + XZTheta + " Y" + YPhi);
 
-            //CALCULATE X AND Z ROTATION
-
-
-            //define X and Z rotation as Euler angle rotation with order
-            EulerAngles rotatedUpVectorEulerRotation = new EulerAngles(new Vector(XRotation, 0, ZRotation), EulerConstants.EulerOrderXYZS);
+            //define spherical coordinate as Euler angle rotation with order
+            EulerAngles rotatedUpVectorEulerRotation = new EulerAngles(new Vector(0, XZTheta, YPhi), EulerConstants.EulerOrderXYZR);
 
             //computed Euler angles to quaternion
             Quaternion rotatedUpVectorQuatRotation = Quaternion.EulerToQuaternion(rotatedUpVectorEulerRotation);
 
             //rotate forward vector by direction vector rotation
-            Vector forwardXZCompensated = rotatedUpVectorQuatRotation.RotateVector(rotatedForward);//should only be two points on circle, compare against forward
+            Vector rightXZCompensated = rotatedUpVectorQuatRotation.RotateVector(rotatedRight);//should only be two points on circle, compare against forward
+
+            Console.WriteLine("QCAA Right Vectors: " + right + " " + rightXZCompensated);
 
             //define angles that define the forward vector, and the rotated then compensated forward vector
-            double forwardAngle = Misc.RadiansToDegrees(Math.Atan2(forward.Z, forward.X));
-            double forwardRotatedAngle = Misc.RadiansToDegrees(Math.Atan2(forwardXZCompensated.Z, forwardXZCompensated.X));
+            double forwardAngle = Misc.RadiansToDegrees(Math.Atan2(right.Z, right.X));//forward as zero
+            double forwardRotatedAngle = Misc.RadiansToDegrees(Math.Atan2(rightXZCompensated.Z, rightXZCompensated.X));//forward as zero
+
+            Console.WriteLine("QCAA Right Angles: " + forwardAngle + " " + forwardRotatedAngle);
 
             //angle about the axis defined by the direction of the object
             double angle = forwardAngle - forwardRotatedAngle;
