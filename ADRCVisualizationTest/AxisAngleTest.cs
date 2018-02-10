@@ -94,16 +94,32 @@ namespace ADRCVisualizationTest
         [TestMethod]
         public void TestCustomAxisAngleQuaternionConversions()
         {
-            for (int i = 90; i > -90; i -= 5)
+            Console.WriteLine("X Axis");
+
+            for (int i = -180; i <= 180; i += 30)
             {
-                Console.WriteLine(i + " " + AxisAngle.QuaternionToCustomAxisAngle(Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, 0, 0), EulerConstants.EulerOrderXYZS))));
+                for (int k = -180; k <= 180; k += 30)
+                {
+                    Console.WriteLine(AxisAngle.QuaternionToCustomAxisAngle(Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, k, 0), EulerConstants.EulerOrderYXZS))));
+                }
             }
 
-            TestCustomAxisAngleQuaternion(new AxisAngle(0,  new Vector(0, 0.707, 0.707)),  new Quaternion(0.9239, 0.3827, 0, 0));
-            TestCustomAxisAngleQuaternion(new AxisAngle(0,  new Vector(0, 0.707, -0.707)), new Quaternion(0.9239, -0.3827, 0, 0));
-            TestCustomAxisAngleQuaternion(new AxisAngle(0,  new Vector(0.707, 0.707, 0)),  new Quaternion(0.9239, 0, 0,  0.3827));//XYZ: 45, 0, 0
-            TestCustomAxisAngleQuaternion(new AxisAngle(0,  new Vector(-0.707, 0.707, 0)), new Quaternion(0.9239, 0, 0, -0.3827));//XYZ: -45, 0, 0
-            TestCustomAxisAngleQuaternion(new AxisAngle(45, new Vector(-0.707, 0.707, 0)), new Quaternion(0.8536, -0.1465, 0.3536, 0.3536));//ZYX: 45, 45, 0
+            Console.WriteLine("Z Axis");
+
+            for (int i = -180; i <= 180; i += 30)
+            {
+                for (int k = -180; k <= 180; k += 30)
+                {
+                    Console.WriteLine(AxisAngle.QuaternionToCustomAxisAngle(Quaternion.EulerToQuaternion(new EulerAngles(new Vector(0, k, i), EulerConstants.EulerOrderYZXS))));
+                }
+            }
+
+            Console.WriteLine("Test Cases");
+
+            TestCustomAxisAngleQuaternion(new AxisAngle(0,  new Vector(0, 0.707, 0.707)),  new Quaternion(0.9239, 0.3827, 0, 0)); //XYZ: 45, 0, 0
+            TestCustomAxisAngleQuaternion(new AxisAngle(0,  new Vector(-0.707, 0.707, 0)),  new Quaternion(0.9239, 0, 0,  0.3827));//XYZ: 0,   0,   45
+            TestCustomAxisAngleQuaternion(new AxisAngle(0,  new Vector(0.707, 0.707, 0)), new Quaternion(0.9239, 0, 0, -0.3827));//XYZ: 0, 0,   -45
+            TestCustomAxisAngleQuaternion(new AxisAngle(90, new Vector(0, 0.707, 0.707)), new Quaternion(0.6533, 0.2706, 0.6533, 0.2706));//YXZ: 0, 90, 45
         }
 
         public void TestCustomAxisAngleQuaternion(AxisAngle expected, Quaternion q)

@@ -69,38 +69,18 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Vector right = new Vector(1, 0, 0);
             Vector rotatedUp = quaternion.RotateVector(up);//new direction vector
             Vector rotatedRight = quaternion.RotateVector(right);
-
-            //Console.WriteLine("QCAA Up/Right Vector: " + rotatedUp + " " + rotatedRight);
-
-            //Convert rotated up vector to spherical coordinate system
-            SphericalCoordinate spherCoor = new SphericalCoordinate(rotatedUp);
+            Quaternion rotationChange = Quaternion.QuaternionFromTwoVectors(up, rotatedUp);
             
-            //Console.WriteLine("QCAA Spherical Coordinates: R" + spherCoor.Radius + " XZ" + spherCoor.Theta + " Y" + spherCoor.Phi);
-
-            //define spherical coordinate as Euler angle rotation with order
-            EulerAngles rotatedUpVectorEulerRotation = new EulerAngles(new Vector(spherCoor.Phi, spherCoor.Theta, 0), EulerConstants.EulerOrderYXZS);
-
-            //computed Euler angles to quaternion
-            Quaternion rotatedUpVectorQuatRotation = Quaternion.EulerToQuaternion(rotatedUpVectorEulerRotation);
-
-            //Console.WriteLine("QCAA Limited Quaternion: " + rotatedUpVectorQuatRotation);
-
             //rotate forward vector by direction vector rotation
-            Vector rightXZCompensated = rotatedUpVectorQuatRotation.RotateVector(rotatedRight);//should only be two points on circle, compare against right
-
-            //Console.WriteLine("QCAA Vector Rotation: " + rotatedUpVectorQuatRotation.RotateVector(right));
-
-            //Console.WriteLine("QCAA Right Vectors: " + right + " " + rightXZCompensated);
-
+            Vector rightXZCompensated = rotationChange.UnrotateVector(rotatedRight);//should only be two points on circle, compare against right
+            
             //define angles that define the forward vector, and the rotated then compensated forward vector
             double rightAngle = Misc.RadiansToDegrees(Math.Atan2(right.Z, right.X));//forward as zero
             double rightRotatedAngle = Misc.RadiansToDegrees(Math.Atan2(rightXZCompensated.Z, rightXZCompensated.X));//forward as zero
-
-            //Console.WriteLine("QCAA Right Angles: " + rightAngle + " " + rightRotatedAngle);
-
+            
             //angle about the axis defined by the direction of the object
             double angle = rightAngle - rightRotatedAngle;
-
+            
             //returns the angle rotated about the rotated up vector as an axis
             return new AxisAngle(angle, rotatedUp);
         }
@@ -125,10 +105,10 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
         public override string ToString()
         {
-            string r = String.Format("{0:0.000}", Rotation).PadLeft(7);
-            string x = String.Format("{0:0.000}", X       ).PadLeft(7);
-            string y = String.Format("{0:0.000}", Y       ).PadLeft(7);
-            string z = String.Format("{0:0.000}", Z       ).PadLeft(7);
+            string r = String.Format("{0:0.000}", Rotation).PadLeft(8);
+            string x = String.Format("{0:0.000}", X       ).PadLeft(8);
+            string y = String.Format("{0:0.000}", Y       ).PadLeft(8);
+            string z = String.Format("{0:0.000}", Z       ).PadLeft(8);
 
             return r + ": [" + x + " " + y + " " + z + "]";
         }

@@ -62,6 +62,23 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return rotatedVector;
         }
 
+        /// <summary>
+        /// Rotates a vector coordinate in space by the inverse of a given quaternion value.
+        /// </summary>
+        /// <param name="coordinate">Coordinate vector that is unrotated.</param>
+        /// <returns>Returns new vector position coordinate.</returns>
+        public Vector UnrotateVector(Vector coordinate)
+        {
+            Quaternion current = new Quaternion(W, X, Y, Z);
+
+            return current.Conjugate().RotateVector(coordinate);
+        }
+
+        /// <summary>
+        /// Converts Euler angles to a unit quaternion.
+        /// </summary>
+        /// <param name="eulerAngles">Input Euler angles.</param>
+        /// <returns>Returns new Quaternion object.</returns>
         public static Quaternion EulerToQuaternion(EulerAngles eulerAngles)
         {
             Quaternion q = new Quaternion(0, 0, 0, 0);
@@ -138,6 +155,56 @@ namespace ADRCVisualization.Class_Files.Mathematics
                 Y = axisAngle.Y * scale,
                 Z = axisAngle.Z * scale
             };
+        }
+
+        /// <summary>
+        /// Creates quaternion of shortest rotation from two separate vectors.
+        /// </summary>
+        /// <param name="initial">Initial direction vector.</param>
+        /// <param name="target">Target direction vector.</param>
+        /// <returns>Returns quaternion rotation between two vectors.</returns>
+        public static Quaternion QuaternionFromTwoVectors(Vector initial, Vector target)
+        {
+            Quaternion q = new Quaternion(1, 0, 0, 0);
+            Vector tempV = new Vector(0, 0, 0);
+            Vector xAxis = new Vector(1, 0, 0);
+            Vector yAxis = new Vector(0, 1, 0);
+
+            double dot = Vector.DotProduct(initial, target);
+
+            if (dot < -0.999999)
+            {
+                tempV = Vector.CrossProduct(xAxis, initial);
+
+                if (tempV.GetLength() < 0.000001)
+                {
+                    tempV = Vector.CrossProduct(yAxis, initial);
+                }
+
+                tempV = tempV.Normalize();
+
+                q = AxisAngleToQuaternion(new AxisAngle(Math.PI, tempV));
+            }
+            else if (dot > 0.999999)
+            {
+                q.W = 1;
+                q.X = 0;
+                q.Y = 0;
+                q.Z = 0;
+            }
+            else
+            {
+                tempV = Vector.CrossProduct(initial, target);
+
+                q.W = 1 + dot;
+                q.X = tempV.X;
+                q.Y = tempV.Y;
+                q.Z = tempV.Z;
+
+                q = q.UnitQuaternion();
+            }
+
+            return q;
         }
 
 

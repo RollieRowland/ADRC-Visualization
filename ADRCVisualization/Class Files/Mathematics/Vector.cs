@@ -111,9 +111,10 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return Math.Sqrt(DotProduct(vector, vector));
         }
 
-        public static Vector Normalize(Vector vector)
+        public Vector Normalize()
         {
-            double length = GetLength(vector);
+            Vector vector = new Vector(X, Y, Z);
+            double length = vector.GetLength();
 
             if (length == 1) return vector;
             if (length == 0) return new Vector(1, 0, 0);
@@ -121,9 +122,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return new Vector(vector.X / length, vector.Y / length, vector.Z / length);
         }
 
-        public static double GetLength(Vector vector)
+        public double GetLength()
         {
-            return Math.Sqrt(Math.Pow(vector.X, 2) + Math.Pow(vector.Y, 2) + Math.Pow(vector.Z, 2));
+            return Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2) + Math.Pow(Z, 2));
         }
 
         public Vector RotateEuler(double pitch, double roll, double yaw)

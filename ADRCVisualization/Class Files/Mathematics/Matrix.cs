@@ -17,11 +17,25 @@ namespace ADRCVisualization.Class_Files.Mathematics
         
         public Matrix(Vector axes)
         {
-            XAxis = new Vector(axes.X, axes.X, axes.X);
-            YAxis = new Vector(axes.Y, axes.Y, axes.Y);
-            ZAxis = new Vector(axes.Z, axes.Z, axes.Z);
+            XAxis = new Vector(axes.X, 0, 0);
+            YAxis = new Vector(0, axes.Y, 0);
+            ZAxis = new Vector(0, 0, axes.Z);
 
             InitialVector = axes;
+        }
+
+        public static Matrix QuaternionToMatrixRotation(Quaternion quaternion)
+        {
+            Vector X = new Vector(1, 0, 0);
+            Vector Y = new Vector(0, 1, 0);
+            Vector Z = new Vector(0, 0, 1);
+
+            return new Matrix(new Vector(1, 1, 1))
+            {
+                XAxis = quaternion.RotateVector(X),
+                YAxis = quaternion.RotateVector(Y),
+                ZAxis = quaternion.RotateVector(Z)
+            };
         }
         
         public static Vector RotateVector(Vector Rotate, Vector Coordinates)
@@ -67,7 +81,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="theta"></param>
         public Matrix(Vector axis, double theta)
         {
-            Vector u = Vector.Normalize(axis);
+            Vector u = axis.Normalize();
 
             double sin = Math.Sin(theta);
             double cos = Math.Cos(theta);
@@ -191,9 +205,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Vector vz = Vector.CrossProduct(XAxis, YAxis);
             Vector vy = Vector.CrossProduct(vz, XAxis);
 
-            XAxis = Vector.Normalize(XAxis);
-            YAxis = Vector.Normalize(vy);
-            ZAxis = Vector.Normalize(vz);
+            XAxis = XAxis.Normalize();
+            YAxis = vy.Normalize();
+            ZAxis = vz.Normalize();
         }
 
         public void Transpose()//opposite rotation matrix
