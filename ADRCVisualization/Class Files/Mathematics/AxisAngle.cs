@@ -35,7 +35,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             AxisAngle axisAngle = new AxisAngle(0, 0, 1, 0);
             quaternion = (Math.Abs(quaternion.W) > 1.0) ? quaternion.UnitQuaternion() : quaternion;
 
-            axisAngle.Rotation = Misc.RadiansToDegrees(2.0 * Math.Acos(quaternion.W));
+            axisAngle.Rotation = MathE.RadiansToDegrees(2.0 * Math.Acos(quaternion.W));
 
             double quaternionCheck = Math.Sqrt(1.0 - Math.Pow(quaternion.W, 2.0));//Prevents rotation jumps, and division by zero
 
@@ -58,8 +58,8 @@ namespace ADRCVisualization.Class_Files.Mathematics
         }
 
         /// <summary>
-        /// This form of axis angle is a custom type of rotation, the orientation is defined as the up vector of the object pointing at a specific point.
-        /// Defining an axis of rotation, in which the object rotates about.
+        /// This form of axis-angle is a custom type of rotation, the orientation is defined as the up vector of the object pointing at a specific 
+        /// point in cartesian space; defining an axis of rotation, in which the object rotates about.
         /// </summary>
         /// <param name="quaternion">Quaternion rotation of the current object.</param>
         /// <returns></returns>
@@ -75,8 +75,8 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Vector rightXZCompensated = rotationChange.UnrotateVector(rotatedRight);//should only be two points on circle, compare against right
             
             //define angles that define the forward vector, and the rotated then compensated forward vector
-            double rightAngle = Misc.RadiansToDegrees(Math.Atan2(right.Z, right.X));//forward as zero
-            double rightRotatedAngle = Misc.RadiansToDegrees(Math.Atan2(rightXZCompensated.Z, rightXZCompensated.X));//forward as zero
+            double rightAngle = MathE.RadiansToDegrees(Math.Atan2(right.Z, right.X));//forward as zero
+            double rightRotatedAngle = MathE.RadiansToDegrees(Math.Atan2(rightXZCompensated.Z, rightXZCompensated.X));//forward as zero
             
             //angle about the axis defined by the direction of the object
             double angle = rightAngle - rightRotatedAngle;
@@ -86,8 +86,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         }
 
         /// <summary>
-        /// Technical Concepts: Orientation, Rotation, Velocity and Acceleration, and the SRM
-        /// Page 35
+        /// Rotates vector by axis-angle
         /// </summary>
         /// <returns></returns>
         public Vector RotateVector(Vector v)

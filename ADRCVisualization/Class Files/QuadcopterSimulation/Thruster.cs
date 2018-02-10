@@ -91,10 +91,10 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
 
             if (combinedThrustAngle > 0)
             {
-                adjustedThrustOutput  = thrust.Y / Math.Sin(Misc.DegreesToRadians(combinedThrustAngle));
+                adjustedThrustOutput  = thrust.Y / Math.Sin(MathE.DegreesToRadians(combinedThrustAngle));
 
-                xAdjustedThrustOutput = Math.Sin(Misc.DegreesToRadians(thrust.Y * Math.Asin(Misc.DegreesToRadians(xThrustAngle))) / thrust.Y);
-                zAdjustedThrustOutput = Math.Sin(Misc.DegreesToRadians(thrust.Y * Math.Asin(Misc.DegreesToRadians(zThrustAngle))) / thrust.Y);
+                xAdjustedThrustOutput = Math.Sin(MathE.DegreesToRadians(thrust.Y * Math.Asin(MathE.DegreesToRadians(xThrustAngle))) / thrust.Y);
+                zAdjustedThrustOutput = Math.Sin(MathE.DegreesToRadians(thrust.Y * Math.Asin(MathE.DegreesToRadians(zThrustAngle))) / thrust.Y);
             }
             else
             {
@@ -106,8 +106,8 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             if (adjustedThrustOutput != 0 && adjustedThrustOutput != thrust.Y)
             {
                 thrust.Y = adjustedThrustOutput;
-                thrust.X = Misc.RadiansToDegrees(Misc.RadiansToDegrees(xAdjustedThrustOutput));
-                thrust.Z = Misc.RadiansToDegrees(Misc.RadiansToDegrees(zAdjustedThrustOutput));
+                thrust.X = MathE.RadiansToDegrees(MathE.RadiansToDegrees(xAdjustedThrustOutput));
+                thrust.Z = MathE.RadiansToDegrees(MathE.RadiansToDegrees(zAdjustedThrustOutput));
 
                 thrust.X += rotation.Z;
                 thrust.Z -= rotation.X;

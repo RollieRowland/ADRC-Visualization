@@ -32,8 +32,8 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public SphericalCoordinate(Vector cartesianCoordinate)
         {
             Radius = Math.Sqrt(Math.Pow(cartesianCoordinate.X, 2) + Math.Pow(cartesianCoordinate.Y, 2) + Math.Pow(cartesianCoordinate.Z, 2));
-            Theta = Misc.RadiansToDegrees(Math.Atan2(cartesianCoordinate.Z, cartesianCoordinate.X)) - 90;//azimuthal rotation, Z/X, adjust as forward z being zero
-            Phi = Misc.RadiansToDegrees(Math.Acos(cartesianCoordinate.Y / Radius));//polar rotation, Y/R
+            Theta = MathE.RadiansToDegrees(Math.Atan2(cartesianCoordinate.Z, cartesianCoordinate.X)) - 90;//azimuthal rotation, Z/X, adjust as forward z being zero
+            Phi = MathE.RadiansToDegrees(Math.Acos(cartesianCoordinate.Y / Radius));//polar rotation, Y/R
             /*
             if (Math.Abs((int)Theta) == 180)
             {

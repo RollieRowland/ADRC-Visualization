@@ -67,7 +67,7 @@ namespace ADRCVisualization.Class_Files
 
                 DOut = KD * ((error - previousError) / dt);
 
-                output = Misc.Constrain(POut + IOut + DOut, min, max);
+                output = MathE.Constrain(POut + IOut + DOut, min, max);
 
                 time = currentTime;
                 previousError = error;
@@ -98,7 +98,7 @@ namespace ADRCVisualization.Class_Files
 
                 DOut = KD * ((error - previousError) / samplingPeriod);
 
-                output = Misc.Constrain(POut + IOut + DOut, min, max);
+                output = MathE.Constrain(POut + IOut + DOut, min, max);
                 
                 previousError = error;
             }

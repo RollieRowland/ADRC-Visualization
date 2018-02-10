@@ -44,9 +44,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
             double sx, sy, sz, cx, cy, cz, cc, cs, sc, ss;
             Vector p = eulerAngles.Order.Permutation;
 
-            eulerAngles.Angles.X = Misc.DegreesToRadians(eulerAngles.Angles.X);
-            eulerAngles.Angles.Y = Misc.DegreesToRadians(eulerAngles.Angles.Y);
-            eulerAngles.Angles.Z = Misc.DegreesToRadians(eulerAngles.Angles.Z);
+            eulerAngles.Angles.X = MathE.DegreesToRadians(eulerAngles.Angles.X);
+            eulerAngles.Angles.Y = MathE.DegreesToRadians(eulerAngles.Angles.Y);
+            eulerAngles.Angles.Z = MathE.DegreesToRadians(eulerAngles.Angles.Z);
 
             if (eulerAngles.Order.FrameTaken == EulerOrder.AxisFrame.Rotating)
             {

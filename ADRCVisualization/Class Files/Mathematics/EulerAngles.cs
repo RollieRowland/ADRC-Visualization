@@ -71,9 +71,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
                 eulerAngles.Angles.Z = temp;
             }
             
-            eulerAngles.Angles.X = Misc.RadiansToDegrees(eulerAngles.Angles.X);
-            eulerAngles.Angles.Y = Misc.RadiansToDegrees(eulerAngles.Angles.Y);
-            eulerAngles.Angles.Z = Misc.RadiansToDegrees(eulerAngles.Angles.Z);
+            eulerAngles.Angles.X = MathE.RadiansToDegrees(eulerAngles.Angles.X);
+            eulerAngles.Angles.Y = MathE.RadiansToDegrees(eulerAngles.Angles.Y);
+            eulerAngles.Angles.Z = MathE.RadiansToDegrees(eulerAngles.Angles.Z);
 
             return eulerAngles;
         }

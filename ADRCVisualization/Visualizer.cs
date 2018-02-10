@@ -113,7 +113,7 @@ namespace ADRCVisualization
             {
                 for (double i = 0; i < 360; i += 1)
                 {
-                    targetPosition = new Vector(Math.Sin(Misc.DegreesToRadians(i)) * 1.5, 0, Math.Cos(Misc.DegreesToRadians(i)) * 1.5);
+                    targetPosition = new Vector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
                     targetRotation = new Vector(i / 4, 0, 0);
 
                     await Task.Delay(15);
@@ -121,7 +121,7 @@ namespace ADRCVisualization
 
                 for (double i = 0; i < 360; i += 1)
                 {
-                    targetPosition = new Vector(Math.Sin(Misc.DegreesToRadians(i)) * 1.5, 0, Math.Cos(Misc.DegreesToRadians(i)) * 1.5);
+                    targetPosition = new Vector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
                     targetRotation = new Vector(180 - i / 4, 0, 0);
 
                     await Task.Delay(15);
@@ -148,7 +148,7 @@ namespace ADRCVisualization
 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(-1, 0, -1.2);
-                targetRotation = new Vector(0, 90, 0);
+                targetRotation = new Vector(0, 45, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(7500);
@@ -402,11 +402,11 @@ namespace ADRCVisualization
             chart1.Series[3].Points.AddXY(quadcopter.ThrusterD.CurrentPosition.X, quadcopter.ThrusterD.CurrentPosition.Z);
             chart1.Series[4].Points.AddXY(quadcopter.ThrusterE.CurrentPosition.X, quadcopter.ThrusterE.CurrentPosition.Z);
 
-            chart1.Series[0].MarkerSize = (int)Misc.Constrain(quadcopter.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[1].MarkerSize = (int)Misc.Constrain(quadcopter.ThrusterB.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[2].MarkerSize = (int)Misc.Constrain(quadcopter.ThrusterC.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[3].MarkerSize = (int)Misc.Constrain(quadcopter.ThrusterD.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[4].MarkerSize = (int)Misc.Constrain(quadcopter.ThrusterE.CurrentPosition.Y + 10, 2, 40);
+            chart1.Series[0].MarkerSize = (int)MathE.Constrain(quadcopter.CurrentPosition.Y + 10, 2, 40);
+            chart1.Series[1].MarkerSize = (int)MathE.Constrain(quadcopter.ThrusterB.CurrentPosition.Y + 10, 2, 40);
+            chart1.Series[2].MarkerSize = (int)MathE.Constrain(quadcopter.ThrusterC.CurrentPosition.Y + 10, 2, 40);
+            chart1.Series[3].MarkerSize = (int)MathE.Constrain(quadcopter.ThrusterD.CurrentPosition.Y + 10, 2, 40);
+            chart1.Series[4].MarkerSize = (int)MathE.Constrain(quadcopter.ThrusterE.CurrentPosition.Y + 10, 2, 40);
 
             chart1.Series[5].Points.AddXY(quadcopter.ThrusterB.TargetPosition.X, quadcopter.ThrusterB.TargetPosition.Z);
             chart1.Series[6].Points.AddXY(quadcopter.ThrusterC.TargetPosition.X, quadcopter.ThrusterC.TargetPosition.Z);

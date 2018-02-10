@@ -106,7 +106,7 @@ namespace ADRCVisualization.Class_Files
                 dateTime = DateTime.Now;
             }
 
-            return Misc.Constrain(output, min, max);
+            return MathE.Constrain(output, min, max);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace ADRCVisualization.Class_Files
                 previousPD = pdValue;
             }
 
-            return Misc.Constrain(output, min, max);
+            return MathE.Constrain(output, min, max);
         }
 
         public override string SetOffset(double offset)

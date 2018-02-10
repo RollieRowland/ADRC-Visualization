@@ -17,9 +17,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
         
         public Matrix(Vector axes)
         {
-            XAxis = new Vector(axes.X, 0, 0);
-            YAxis = new Vector(0, axes.Y, 0);
-            ZAxis = new Vector(0, 0, axes.Z);
+            XAxis = new Vector(axes.X, axes.X, axes.X);
+            YAxis = new Vector(axes.Y, axes.Y, axes.Y);
+            ZAxis = new Vector(axes.Z, axes.Z, axes.Z);
 
             InitialVector = axes;
         }
@@ -145,8 +145,8 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="theta"></param>
         public void RotateX(double theta)
         {
-            double cos = Math.Cos(Misc.DegreesToRadians(theta));
-            double sin = Math.Sin(Misc.DegreesToRadians(theta));
+            double cos = Math.Cos(MathE.DegreesToRadians(theta));
+            double sin = Math.Sin(MathE.DegreesToRadians(theta));
 
             XAxis = new Vector(1, 0,      0).Multiply(XAxis);
             YAxis = new Vector(0, cos, -sin).Multiply(YAxis);
@@ -159,8 +159,8 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="theta"></param>
         public void RotateY(double theta)
         {
-            double cos = Math.Cos(Misc.DegreesToRadians(theta));
-            double sin = Math.Sin(Misc.DegreesToRadians(theta));
+            double cos = Math.Cos(MathE.DegreesToRadians(theta));
+            double sin = Math.Sin(MathE.DegreesToRadians(theta));
 
             XAxis = new Vector(cos,  0,  sin).Multiply(XAxis);
             YAxis = new Vector(0,    1,  0  ).Multiply(YAxis);
@@ -173,8 +173,8 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <param name="theta"></param>
         public void RotateZ(double theta)
         {
-            double cos = Math.Cos(Misc.DegreesToRadians(theta));
-            double sin = Math.Sin(Misc.DegreesToRadians(theta));
+            double cos = Math.Cos(MathE.DegreesToRadians(theta));
+            double sin = Math.Sin(MathE.DegreesToRadians(theta));
 
             XAxis = new Vector(cos, -sin, 0).Multiply(XAxis);
             YAxis = new Vector(sin, cos,  0).Multiply(YAxis);

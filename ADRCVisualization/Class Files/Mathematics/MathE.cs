@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ADRCVisualization.Class_Files.Mathematics
 {
-    class Misc
+    class MathE
     {
         /// <summary>
         /// Constrains the output of the input value to a maximum and minimum value.

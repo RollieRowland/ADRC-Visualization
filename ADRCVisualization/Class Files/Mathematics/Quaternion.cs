@@ -84,9 +84,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Quaternion q = new Quaternion(0, 0, 0, 0);
             double sx, sy, sz, cx, cy, cz, cc, cs, sc, ss;
 
-            eulerAngles.Angles.X = Misc.DegreesToRadians(eulerAngles.Angles.X);
-            eulerAngles.Angles.Y = Misc.DegreesToRadians(eulerAngles.Angles.Y);
-            eulerAngles.Angles.Z = Misc.DegreesToRadians(eulerAngles.Angles.Z);
+            eulerAngles.Angles.X = MathE.DegreesToRadians(eulerAngles.Angles.X);
+            eulerAngles.Angles.Y = MathE.DegreesToRadians(eulerAngles.Angles.Y);
+            eulerAngles.Angles.Z = MathE.DegreesToRadians(eulerAngles.Angles.Z);
 
             if (eulerAngles.Order.FrameTaken == EulerOrder.AxisFrame.Rotating)
             {
@@ -145,7 +145,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Converted quaternion value.</returns>
         public static Quaternion AxisAngleToQuaternion(AxisAngle axisAngle)
         {
-            double rotation = Misc.DegreesToRadians(axisAngle.Rotation);
+            double rotation = MathE.DegreesToRadians(axisAngle.Rotation);
             double scale = Math.Sin(rotation / 2);
 
             return new Quaternion(1, 0, 0, 0)
@@ -550,7 +550,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             }
             else
             {
-                dot = Misc.Constrain(dot, -1, 1);
+                dot = MathE.Constrain(dot, -1, 1);
 
                 double theta0 = Math.Acos(dot);
                 double theta = theta0 * t;
