@@ -19,6 +19,13 @@ namespace ADRCVisualization.Class_Files.Mathematics
             this.Z = Z;
         }
 
+        public Vector(Vector vector)
+        {
+            X = vector.X;
+            Y = vector.Y;
+            Z = vector.Z;
+        }
+
         public Vector Normal(Vector vector)
         {
             double mult = Magnitude(vector) == 0 ? Double.PositiveInfinity : 1 / Magnitude(vector);

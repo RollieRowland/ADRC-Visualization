@@ -28,6 +28,14 @@ namespace ADRCVisualization.Class_Files.Mathematics
             this.Z = Z;
         }
 
+        public Quaternion(Quaternion quaternion)
+        {
+            W = quaternion.W;
+            X = quaternion.X;
+            Y = quaternion.Y;
+            Z = quaternion.Z;
+        }
+
         /// <summary>
         /// Intializes quaternion with vector parameters for imaginary part.
         /// Creates quaternion bivector.
@@ -48,7 +56,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns new vector position coordinate.</returns>
         public Vector RotateVector(Vector coordinate)
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
             Quaternion qv = new Quaternion(0, coordinate.X, coordinate.Y, coordinate.Z);
             Quaternion qr = current * qv * current.MultiplicativeInverse();
 
@@ -69,7 +77,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns new vector position coordinate.</returns>
         public Vector UnrotateVector(Vector coordinate)
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return current.Conjugate().RotateVector(coordinate);
         }
@@ -170,6 +178,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Vector xAxis = new Vector(1, 0, 0);
             Vector yAxis = new Vector(0, 1, 0);
 
+            initial = new Vector(initial);
+            target  = new Vector(target);
+
             double dot = Vector.DotProduct(initial, target);
 
             if (dot < -0.999999)
@@ -216,7 +227,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the combined quaternions.</returns>
         public Quaternion Add(Quaternion quaternion)
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return new Quaternion(0, 0, 0, 0)
             {
@@ -240,7 +251,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the subtracted quaternion.</returns>
         public Quaternion Subtract(Quaternion quaternion)
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return new Quaternion(0, 0, 0, 0)
             {
@@ -264,7 +275,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the scaled quaternion.</returns>
         public Quaternion Multiply(double scale)
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return new Quaternion(0, 0, 0, 0)
             {
@@ -283,7 +294,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the multiplied quaternions.</returns>
         public Quaternion Multiply(Quaternion quaternion)
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return new Quaternion(0, 0, 0, 0)
             {
@@ -317,7 +328,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the scaled quaternion.</returns>
         public Quaternion Divide(double scale)
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return new Quaternion(0, 0, 0, 0)
             {
@@ -337,7 +348,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public Quaternion Divide(Quaternion quaternion)
         {
             double scale = quaternion.W * quaternion.W + quaternion.X * quaternion.X + quaternion.Y * quaternion.Y + quaternion.Z * quaternion.Z;
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return new Quaternion(0, 0, 0, 0)
             {
@@ -370,7 +381,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the absolute value of the input quaternion.</returns>
         public Quaternion Absolute()
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return new Quaternion(0, 0, 0, 0)
             {
@@ -388,7 +399,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the inverse of the quaternion.</returns>
         public Quaternion AdditiveInverse()
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return new Quaternion(0, 0, 0, 0)
             {
@@ -406,7 +417,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the conjugate of the input quaternion.</returns>
         public Quaternion Conjugate()
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return new Quaternion(0, 0, 0, 0)
             {
@@ -425,7 +436,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the scalar power of the input quaternion.</returns>
         public Quaternion Power(double exponent)
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return new Quaternion(0, 0, 0, 0)
             {
@@ -444,7 +455,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the quaternion power of the input quaternion.</returns>
         public Quaternion Power(Quaternion exponent)
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return new Quaternion(0, 0, 0, 0)
             {
@@ -462,7 +473,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the unit quaternion of the current quaternion values.</returns>
         public Quaternion UnitQuaternion()
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             double n = Math.Sqrt(Math.Pow(current.W, 2) + Math.Pow(current.X, 2) + Math.Pow(current.Y, 2) + Math.Pow(current.Z, 2));
 
@@ -480,7 +491,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the norm of the quaternion.</returns>
         public double Normal()
         {
-            Quaternion q = new Quaternion(W, X, Y, Z);
+            Quaternion q = new Quaternion(this);
 
             return Math.Pow(q.W, 2.0) + Math.Pow(q.X, 2.0) + Math.Pow(q.Y, 2.0) + Math.Pow(q.Z, 2.0);
         }
@@ -515,7 +526,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns the multiplicative inverse of the quaternion.</returns>
         public Quaternion MultiplicativeInverse()
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return current.Conjugate().Multiply(1.0 / current.Normal());
         }
@@ -530,7 +541,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Interpolated quaternion.</returns>
         public Quaternion SphericalLinearInterpolation(Quaternion q2, double t)
         {
-            Quaternion q1 = this;
+            Quaternion q1 = new Quaternion(this);
+
+            q2 = new Quaternion(q2);
 
             q1 = q1.UnitQuaternion();
             q2 = q2.UnitQuaternion();
@@ -568,7 +581,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns true if all any of the values are not a number.</returns>
         public bool IsNaN()
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return double.IsNaN(current.W) || double.IsNaN(current.X) || double.IsNaN(current.Y) || double.IsNaN(current.Z);
         }
@@ -580,7 +593,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns true if all values are finite.</returns>
         public bool IsFinite()
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return !double.IsInfinity(current.W) && !double.IsInfinity(current.X) && !double.IsInfinity(current.Y) && !double.IsInfinity(current.Z);
         }
@@ -592,7 +605,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns true if all values are infinite.</returns>
         public bool IsInfinite()
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return double.IsInfinity(current.W) && double.IsInfinity(current.X) && double.IsInfinity(current.Y) && double.IsInfinity(current.Z);
         }
@@ -604,7 +617,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns true if all values are nonzero.</returns>
         public bool IsNonZero()
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return current.W != 0 && current.X != 0 && current.Y != 0 && current.Z != 0;
         }
@@ -617,7 +630,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns true if both quaternions are equal.</returns>
         public bool IsEqual(Quaternion quaternion)
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             return !current.IsNaN() && !quaternion.IsNaN() &&
                     current.W == quaternion.W &&
@@ -628,7 +641,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
         public Quaternion Permutate(Vector permutation)
         {
-            Quaternion current = new Quaternion(W, X, Y, Z);
+            Quaternion current = new Quaternion(this);
 
             double[] perm = new double[3];
 

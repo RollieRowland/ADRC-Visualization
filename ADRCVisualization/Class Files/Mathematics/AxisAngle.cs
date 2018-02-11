@@ -33,6 +33,8 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public static AxisAngle QuaternionToStandardAxisAngle(Quaternion quaternion)
         {
             AxisAngle axisAngle = new AxisAngle(0, 0, 1, 0);
+
+            quaternion = new Quaternion(quaternion);
             quaternion = (Math.Abs(quaternion.W) > 1.0) ? quaternion.UnitQuaternion() : quaternion;
 
             axisAngle.Rotation = MathE.RadiansToDegrees(2.0 * Math.Acos(quaternion.W));
@@ -65,6 +67,8 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns></returns>
         public static AxisAngle QuaternionToCustomAxisAngle(Quaternion quaternion)
         {
+            quaternion = new Quaternion(quaternion);
+
             Vector up = new Vector(0, 1, 0);//up vector
             Vector right = new Vector(1, 0, 0);
             Vector rotatedUp = quaternion.RotateVector(up);//new direction vector

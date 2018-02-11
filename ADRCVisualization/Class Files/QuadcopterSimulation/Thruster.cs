@@ -27,9 +27,11 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
         
         public Thruster(Vector QuadCenterOffset, string name, double samplingPeriod)
         {
-            this.QuadCenterOffset = QuadCenterOffset;
+            this.QuadCenterOffset = new Vector(QuadCenterOffset);
             this.name = name;
             this.samplingPeriod = samplingPeriod;
+
+            Console.WriteLine("Thruster " + name + " initialized at point: " + QuadCenterOffset);
 
             secondaryJoint = new Servo(samplingPeriod, 150, 1);//X
             propellor = new Motor(samplingPeriod, 250, 1);//Y
@@ -45,7 +47,7 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
         public void Calculate(Vector offset)
         {
             //Combine quad rotation output with individual thruster output
-            Vector thrust = offset;
+            Vector thrust = new Vector (offset);
 
             //Disable negative thrust output
             //thrust.Y = thrust.Y < 0 ? 0 : thrust.Y;
@@ -80,6 +82,9 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
 
         public Vector AdjustThrust(Vector thrust, Vector rotation)
         {
+            thrust = new Vector(thrust);
+            rotation = new Vector(rotation);
+
             //Calculate angle offset of combined X and Z vector, given both output angles
             double xThrustAngle = thrust.X - rotation.Z;
             double zThrustAngle = thrust.Z + rotation.X;

@@ -13,7 +13,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
         public EulerAngles(Vector angles, EulerOrder order)
         {
-            Angles = angles;
+            Angles = new Vector(angles);
             Order  = order;
         }
         
@@ -80,6 +80,8 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
         public static EulerAngles QuaternionToEuler(Quaternion q, EulerOrder order)
         {
+            q = new Quaternion(q);
+
             double norm = q.Normal();
             double scale = norm > 0.0 ? 2.0 / norm : 0.0;
             HMatrix hM = new HMatrix();

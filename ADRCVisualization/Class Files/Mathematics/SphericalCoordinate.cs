@@ -25,6 +25,13 @@ namespace ADRCVisualization.Class_Files.Mathematics
             this.Phi    = Phi;
         }
 
+        public SphericalCoordinate(SphericalCoordinate sphericalCoordinate)
+        {
+            Radius = sphericalCoordinate.Radius;
+            Theta  = sphericalCoordinate.Theta;
+            Phi    = sphericalCoordinate.Phi;
+        }
+
         /// <summary>
         /// Creates a spherical coordinate from a cartesian coordinate (or direction vector)
         /// </summary>
