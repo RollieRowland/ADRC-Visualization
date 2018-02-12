@@ -38,6 +38,16 @@ namespace ADRCVisualization.Class_Files.Mathematics
         {
             return radians * (180.0 / Math.PI);
         }
+        
+        public static Vector DegreesToRadians(Vector degrees)
+        {
+            return degrees / (180.0 / Math.PI);
+        }
+
+        public static Vector Vector(Vector radians)
+        {
+            return radians * (180.0 / Math.PI);
+        }
 
         public static string DoubleToString(double value)
         {

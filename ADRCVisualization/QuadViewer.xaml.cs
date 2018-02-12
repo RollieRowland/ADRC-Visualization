@@ -47,6 +47,7 @@ namespace ADRCVisualization
         private ModelVisual3D outerE;
 
         private Vector mainPrevious;
+        private System.Windows.Media.Media3D.Quaternion quadRotPrevious;
 
         private Vector bPrevious;
         private Vector cPrevious;
@@ -141,6 +142,8 @@ namespace ADRCVisualization
             dPrevious = new Vector(0, 0, 0);
             ePrevious = new Vector(0, 0, 0);
 
+            quadRotPrevious = new System.Windows.Media.Media3D.Quaternion(0, 0, 0, 1);
+
             StartTimers();
             //StopTimers();
         }
@@ -179,7 +182,7 @@ namespace ADRCVisualization
             //rotate outer rotations
             //transform entire quad
 
-            Vector mainRotation = quadcopter.CurrentRotation.Multiply(new Vector(-1, 1, 1));
+            Vector mainRotation = quadcopter.CurrentEulerRotation.Multiply(new Vector(-1, 1, 1));
 
             Vector bRotation = quadcopter.ThrusterB.CurrentRotation;
             Vector cRotation = quadcopter.ThrusterC.CurrentRotation;
@@ -187,6 +190,16 @@ namespace ADRCVisualization
             Vector eRotation = quadcopter.ThrusterE.CurrentRotation;
 
             Vector mainRotationRelative = mainRotation.Subtract(mainPrevious);
+
+            /*
+            Class_Files.Mathematics.Quaternion q = new Class_Files.Mathematics.Quaternion(quadcopter.QuatCurrentRotation);
+            AxisAngle axisAngle = AxisAngle.QuaternionToStandardAxisAngle(q);
+
+            System.Windows.Media.Media3D.Quaternion quadRotCurrent = new System.Windows.Media.Media3D.Quaternion(new Vector3D(axisAngle.X, axisAngle.Y, axisAngle.Z), axisAngle.Rotation);
+            System.Windows.Media.Media3D.Quaternion quadRelative = quadRotCurrent - quadRotPrevious;
+
+            Console.WriteLine(quadRotCurrent);
+            */
 
             Vector bRelativeRotation = bRotation.Subtract(bPrevious);
             Vector cRelativeRotation = cRotation.Subtract(cPrevious);
@@ -261,6 +274,7 @@ namespace ADRCVisualization
 
                 /// MAIN ROTATION
 
+                
                 mainXMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(1, 0, 0), mainRotationRelative.Z));
                 mainX.Transform = new MatrixTransform3D(mainXMatrix);
 
@@ -269,6 +283,7 @@ namespace ADRCVisualization
 
                 mainZMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(0, 1, 0), mainRotationRelative.X));
                 mainZ.Transform = new MatrixTransform3D(mainZMatrix);
+                 
             }));
 
             //innerBPrevious2 = innerBPrevious;

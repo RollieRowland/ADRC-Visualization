@@ -89,7 +89,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns>Returns new Quaternion object.</returns>
         public static Quaternion EulerToQuaternion(EulerAngles eulerAngles)
         {
-            Quaternion q = new Quaternion(0, 0, 0, 0);
+            Quaternion q = new Quaternion(1, 0, 0, 0);
             double sx, sy, sz, cx, cy, cz, cc, cs, sc, ss;
 
             eulerAngles.Angles.X = MathE.DegreesToRadians(eulerAngles.Angles.X);
@@ -159,10 +159,128 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return new Quaternion(1, 0, 0, 0)
             {
                 W = Math.Cos(rotation / 2),
-                X = axisAngle.X * scale,
-                Y = axisAngle.Y * scale,
-                Z = axisAngle.Z * scale
+                X = axisAngle.Axis.X * scale,
+                Y = axisAngle.Axis.Y * scale,
+                Z = axisAngle.Axis.Z * scale
             };
+        }
+
+        public static Quaternion DirectionAngleToQuaternion(DirectionAngle directionAngle)
+        {
+            /*
+            Vector up = new Vector(0, 1, 0);//up vector
+            Vector right = new Vector(1, 0, 0);
+            Vector rotatedUp = quaternion.RotateVector(up);//new direction vector
+            Vector rotatedRight = quaternion.RotateVector(right);
+            Quaternion rotationChange = Quaternion.QuaternionFromTwoVectors(up, rotatedUp);
+
+            //rotate forward vector by direction vector rotation
+            Vector rightXZCompensated = rotationChange.UnrotateVector(rotatedRight);//should only be two points on circle, compare against right
+
+            //define angles that define the forward vector, and the rotated then compensated forward vector
+            double rightAngle = MathE.RadiansToDegrees(Math.Atan2(right.Z, right.X));//forward as zero
+            double rightRotatedAngle = MathE.RadiansToDegrees(Math.Atan2(rightXZCompensated.Z, rightXZCompensated.X));//forward as zero
+
+            //angle about the axis defined by the direction of the object
+            double angle = rightAngle - rightRotatedAngle;
+
+            //returns the angle rotated about the rotated up vector as an axis
+            return new DirectionAngle(angle, rotatedUp);
+            */
+
+            Vector right   = new Vector(1, 0, 0);
+            Vector up      = new Vector(0, 1, 0);
+            Vector forward = new Vector(0, 0, 1);
+
+            Vector rotatedRight;
+            Vector rotatedUp = new Vector(directionAngle.Direction);
+            Vector rotatedForward;
+
+            Quaternion rotationChange = QuaternionFromTwoVectors(up, rotatedUp);
+
+            Vector rightAngleRotated = Matrix.RotateVector(new Vector(0, directionAngle.Rotation, 0), right);
+            Vector forwardAngleRotated = Matrix.RotateVector(new Vector(0, directionAngle.Rotation, 0), forward);
+
+            rotatedRight = rotationChange.RotateVector(rightAngleRotated);
+            rotatedForward = rotationChange.RotateVector(forwardAngleRotated);
+
+            return RotationMatrixToQuaternion(rotatedRight, rotatedUp, rotatedForward);
+
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Converts from rotation matrix to quaternion value
+        /// http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
+        /// </summary>
+        /// <param name="X">X Axis</param>
+        /// <param name="Y">Y Axis</param>
+        /// <param name="Z">Z Axis</param>
+        /// <returns>Returns a new quaternion</returns>
+        public static Quaternion RotationMatrixToQuaternion(Vector X, Vector Y, Vector Z)
+        {
+            /*
+            Avoid division by zero - We need to be sure that S is never zero even with possible floating point errors or de-orthogonalised matrix input.
+            Avoid square root of a negative number. - We need to be sure that the tr value chosen is never negative even with possible floating point errors or de-orthogonalised matrix input.
+            Accuracy of dividing by (and square rooting) a very small number. 
+            with floating point numbers, dividing small numbers by small numbers should be reasonably accurate but at the extreme it would loose accuracy.
+            Resilient to a de-orthogonalised matrix
+
+            m00, m01, m02   X.X, X.Y, X.Z
+            m10, m11, m12   Y.X, Y.Y, Y.Z
+            m20, m21, m22   Z.X, Z.Y, Z.Z
+            
+            float tr = m00 + m11 + m22
+
+            if (tr > 0) { 
+              float S = sqrt(tr+1.0) * 2; // S=4*qw 
+              qw = 0.25 * S;
+              qx = (m21 - m12) / S;
+              qy = (m02 - m20) / S; 
+              qz = (m10 - m01) / S; 
+            } else if ((m00 > m11)&(m00 > m22)) { 
+              float S = sqrt(1.0 + m00 - m11 - m22) * 2; // S=4*qx 
+              qw = (m21 - m12) / S;
+              qx = 0.25 * S;
+              qy = (m01 + m10) / S; 
+              qz = (m02 + m20) / S; 
+            } else if (m11 > m22) { 
+              float S = sqrt(1.0 + m11 - m00 - m22) * 2; // S=4*qy
+              qw = (m02 - m20) / S;
+              qx = (m01 + m10) / S; 
+              qy = 0.25 * S;
+              qz = (m12 + m21) / S; 
+            } else { 
+              float S = sqrt(1.0 + m22 - m00 - m11) * 2; // S=4*qz
+              qw = (m10 - m01) / S;
+              qx = (m02 + m20) / S;
+              qy = (m12 + m21) / S;
+              qz = 0.25 * S;
+            }
+            */
+
+            Quaternion q = new Quaternion(1, 0, 0, 0);
+            double matrixTrace = X.X + Y.Y + Z.Z;
+
+            if (matrixTrace > 0)
+            {
+
+            }
+            else if((X.X > Y.Y) && (X.X > Z.Z))
+            {
+
+            }
+            else if (Y.Y > Z.Z)
+            {
+
+            }
+            else
+            {
+
+            }
+
+            throw new NotImplementedException();
+            //return q;
         }
 
         /// <summary>

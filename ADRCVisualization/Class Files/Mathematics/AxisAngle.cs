@@ -9,32 +9,26 @@ namespace ADRCVisualization.Class_Files.Mathematics
     public class AxisAngle
     {
         public double Rotation { get; set; }//
-        public double X { get; set; }//
-        public double Y { get; set; }//
-        public double Z { get; set; }//
+        public Vector Axis { get; set; }//
 
         public AxisAngle(double Rotation, double X, double Y, double Z)
         {
             this.Rotation = Rotation;
-            this.X = X;
-            this.Y = Y;
-            this.Z = Z;
+            Axis = new Vector(X, Y, Z);
+            
         }
 
         public AxisAngle(double Rotation, Vector vector)
         {
             this.Rotation = Rotation;
 
-            X = vector.X;
-            Y = vector.Y;
-            Z = vector.Z;
+            Axis = new Vector(vector);
         }
 
         public static AxisAngle QuaternionToStandardAxisAngle(Quaternion quaternion)
         {
             AxisAngle axisAngle = new AxisAngle(0, 0, 1, 0);
-
-            quaternion = new Quaternion(quaternion);
+            
             quaternion = (Math.Abs(quaternion.W) > 1.0) ? quaternion.UnitQuaternion() : quaternion;
 
             axisAngle.Rotation = MathE.RadiansToDegrees(2.0 * Math.Acos(quaternion.W));
@@ -44,51 +38,27 @@ namespace ADRCVisualization.Class_Files.Mathematics
             if (quaternionCheck >= 0.001)//Prevents division by zero
             {
                 //Normalizes axis
-                axisAngle.X = quaternion.X / quaternionCheck;
-                axisAngle.Y = quaternion.Y / quaternionCheck;
-                axisAngle.Z = quaternion.Z / quaternionCheck;
+                axisAngle.Axis = new Vector(0, 0, 0)
+                {
+                    X = quaternion.X / quaternionCheck,
+                    Y = quaternion.Y / quaternionCheck,
+                    Z = quaternion.Z / quaternionCheck,
+                };
             }
             else
             {
                 //If X is close to zero the axis doesn't matter
-                axisAngle.X = 0.0;
-                axisAngle.Y = 1.0;
-                axisAngle.Z = 0.0;
+                axisAngle.Axis = new Vector(0, 0, 0)
+                {
+                    X = 0.0,
+                    Y = 1.0,
+                    Z = 0.0
+                };
             }
 
             return axisAngle;
         }
-
-        /// <summary>
-        /// This form of axis-angle is a custom type of rotation, the orientation is defined as the up vector of the object pointing at a specific 
-        /// point in cartesian space; defining an axis of rotation, in which the object rotates about.
-        /// </summary>
-        /// <param name="quaternion">Quaternion rotation of the current object.</param>
-        /// <returns></returns>
-        public static AxisAngle QuaternionToCustomAxisAngle(Quaternion quaternion)
-        {
-            quaternion = new Quaternion(quaternion);
-
-            Vector up = new Vector(0, 1, 0);//up vector
-            Vector right = new Vector(1, 0, 0);
-            Vector rotatedUp = quaternion.RotateVector(up);//new direction vector
-            Vector rotatedRight = quaternion.RotateVector(right);
-            Quaternion rotationChange = Quaternion.QuaternionFromTwoVectors(up, rotatedUp);
-            
-            //rotate forward vector by direction vector rotation
-            Vector rightXZCompensated = rotationChange.UnrotateVector(rotatedRight);//should only be two points on circle, compare against right
-            
-            //define angles that define the forward vector, and the rotated then compensated forward vector
-            double rightAngle = MathE.RadiansToDegrees(Math.Atan2(right.Z, right.X));//forward as zero
-            double rightRotatedAngle = MathE.RadiansToDegrees(Math.Atan2(rightXZCompensated.Z, rightXZCompensated.X));//forward as zero
-            
-            //angle about the axis defined by the direction of the object
-            double angle = rightAngle - rightRotatedAngle;
-            
-            //returns the angle rotated about the rotated up vector as an axis
-            return new AxisAngle(angle, rotatedUp);
-        }
-
+        
         /// <summary>
         /// Rotates vector by axis-angle
         /// </summary>
@@ -109,9 +79,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public override string ToString()
         {
             string r = String.Format("{0:0.000}", Rotation).PadLeft(8);
-            string x = String.Format("{0:0.000}", X       ).PadLeft(8);
-            string y = String.Format("{0:0.000}", Y       ).PadLeft(8);
-            string z = String.Format("{0:0.000}", Z       ).PadLeft(8);
+            string x = String.Format("{0:0.000}", Axis.X  ).PadLeft(8);
+            string y = String.Format("{0:0.000}", Axis.Y  ).PadLeft(8);
+            string z = String.Format("{0:0.000}", Axis.Z  ).PadLeft(8);
 
             return r + ": [" + x + " " + y + " " + z + "]";
         }

@@ -32,15 +32,15 @@ namespace ADRCVisualization.Class_Files
 
         public Vector CurrentPosition { get; private set; }
         public Vector TargetPosition { get; private set; }
-        public Vector CurrentRotation { get; private set; }
-        public Vector TargetRotation { get; private set; }
+        public Vector CurrentEulerRotation { get; private set; }
+        public Vector TargetEulerRotation { get; private set; }
 
         public Quaternion QuatCurrentRotation { get; private set; }
         public Quaternion QuatTargetRotation { get; private set; }
 
-        private Vector CurrentVelocity;
+        private Vector currentVelocity;
         private Vector currentAngularVelocity;
-        private Vector CurrentAcceleration;
+        private Vector currentAcceleration;
         private Vector currentAngularAcceleration;
 
         private Vector externalAcceleration;
@@ -63,12 +63,12 @@ namespace ADRCVisualization.Class_Files
 
             CurrentPosition            = new Vector(0, 0, 0);
             TargetPosition             = new Vector(0, 0, 0);
-            CurrentRotation            = new Vector(0, 0, 0);
-            TargetRotation             = new Vector(0, 0, 0);
-            CurrentVelocity            = new Vector(0, 0, 0);
+            CurrentEulerRotation       = new Vector(0, 0, 0);
+            TargetEulerRotation        = new Vector(0, 0, 0);
+            currentVelocity            = new Vector(0, 0, 0);
             currentAngularVelocity     = new Vector(0, 0, 0);
             currentAngularAcceleration = new Vector(0, 0, 0);
-            CurrentAcceleration        = new Vector(0, 0, 0);
+            currentAcceleration        = new Vector(0, 0, 0);
             externalAcceleration       = new Vector(0, 0, 0);
 
             QuatCurrentRotation = new Quaternion(1, 0, 0, 0);
@@ -122,7 +122,7 @@ namespace ADRCVisualization.Class_Files
 
         public void CalculateCombinedThrustVector()
         {
-            Vector rotationOutput = RotationFeedbackController.Calculate(new Vector(0, 0, 0), CurrentRotation.Subtract(TargetRotation), samplingPeriod).Multiply(-1);
+            Vector rotationOutput = RotationFeedbackController.Calculate(new Vector(0, 0, 0), CurrentEulerRotation.Subtract(TargetEulerRotation), samplingPeriod).Multiply(-1);
             Vector positionOutput = PositionFeedbackController.Calculate(new Vector(0, 0, 0), CurrentPosition.Subtract(TargetPosition), samplingPeriod);
             
             Vector thrusterOutputB = new Vector(0, -rotationOutput.X + rotationOutput.Z - rotationOutput.Y, 0);//Thruster output relative to environment origin
@@ -134,9 +134,9 @@ namespace ADRCVisualization.Class_Files
             //CalculateGimbalLockedRotation(ref rotationOutput, ref thrusterOutputB, ref thrusterOutputC, ref thrusterOutputD, ref thrusterOutputE);
 
             //Due to XYZ permutation order of Euler angle
-            positionOutput.X = positionOutput.X + CurrentRotation.Z;//Adjust main joint to rotation
-            positionOutput = Matrix.RotateVector(new Vector(0, CurrentRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
-            positionOutput.Z = positionOutput.Z - CurrentRotation.X;//Adjust secondary joint to rotation
+            positionOutput.X = positionOutput.X + CurrentEulerRotation.Z;//Adjust main joint to rotation
+            positionOutput = Matrix.RotateVector(new Vector(0, CurrentEulerRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
+            positionOutput.Z = positionOutput.Z - CurrentEulerRotation.X;//Adjust secondary joint to rotation
 
             ThrusterB.Calculate(thrusterOutputB.Add(positionOutput));
             ThrusterC.Calculate(thrusterOutputC.Add(positionOutput));
@@ -147,16 +147,16 @@ namespace ADRCVisualization.Class_Files
         private void CalculateGimbalLockedMotion(ref Vector positionControl, ref Vector thrusterOutputB, ref Vector thrusterOutputC, ref Vector thrusterOutputD, ref Vector thrusterOutputE)
         {
             double curvature = 8;// 0.5: |‾ , 1: /, 2, _|
-            double fadeIn = (1.0 / 90.0) * Math.Pow((90.0 - Math.Abs(CurrentRotation.Z % (90.0 * 2) - 90.0)), curvature) / Math.Pow(90, curvature - 1);//0 -> 1, New position control faders, approaches 1 when z rot is -90/90
+            double fadeIn = (1.0 / 90.0) * Math.Pow((90.0 - Math.Abs(CurrentEulerRotation.Z % (90.0 * 2) - 90.0)), curvature) / Math.Pow(90, curvature - 1);//0 -> 1, New position control faders, approaches 1 when z rot is -90/90
             double fadeOut = 1 - fadeIn;//1 -> 0, Rotation magnitude faders, approaches 0 when Z rot is -90/90 degrees
 
             double rotation = 30 * fadeIn;
             
             double magnitude = Math.Sqrt(Math.Pow(positionControl.X, 2) + Math.Pow(positionControl.Z, 2));//Give hypotenuse for origin rotation, magnitude
-            double angle = MathE.RadiansToDegrees(Math.Sign(CurrentRotation.Z) * Math.Atan2(magnitude, 0) - Math.Atan2(positionControl.Z, positionControl.X));//Determine angle of output, -180 -> 180
+            double angle = MathE.RadiansToDegrees(Math.Sign(CurrentEulerRotation.Z) * Math.Atan2(magnitude, 0) - Math.Atan2(positionControl.Z, positionControl.X));//Determine angle of output, -180 -> 180
 
             //Rotation matrix on position control copy
-            Vector RotatedControl = Matrix.RotateVector(new Vector(0, -CurrentRotation.Y, 0), new Vector(positionControl.X, 0, positionControl.Z));
+            Vector RotatedControl = Matrix.RotateVector(new Vector(0, -CurrentEulerRotation.Y, 0), new Vector(positionControl.X, 0, positionControl.Z));
 
             //---- (X-), ++++ (X+), +-+- (Z+), -+-+ (Z-)
             thrusterOutputB.X = thrusterOutputB.X * fadeOut + (RotatedControl.X * fadeIn) + (RotatedControl.Z * fadeIn);
@@ -185,24 +185,24 @@ namespace ADRCVisualization.Class_Files
             EstimateRotation(samplingPeriod);
 
             //calculate rotation matrix
-            ThrusterB.CurrentPosition = QuatCurrentRotation.RotateVector(ThrusterB.QuadCenterOffset).Add(CurrentPosition);
-            ThrusterC.CurrentPosition = QuatCurrentRotation.RotateVector(ThrusterC.QuadCenterOffset).Add(CurrentPosition);
-            ThrusterD.CurrentPosition = QuatCurrentRotation.RotateVector(ThrusterD.QuadCenterOffset).Add(CurrentPosition);
-            ThrusterE.CurrentPosition = QuatCurrentRotation.RotateVector(ThrusterE.QuadCenterOffset).Add(CurrentPosition);
+            ThrusterB.CurrentPosition = QuatCurrentRotation.UnrotateVector(ThrusterB.QuadCenterOffset).Add(CurrentPosition);
+            ThrusterC.CurrentPosition = QuatCurrentRotation.UnrotateVector(ThrusterC.QuadCenterOffset).Add(CurrentPosition);
+            ThrusterD.CurrentPosition = QuatCurrentRotation.UnrotateVector(ThrusterD.QuadCenterOffset).Add(CurrentPosition);
+            ThrusterE.CurrentPosition = QuatCurrentRotation.UnrotateVector(ThrusterE.QuadCenterOffset).Add(CurrentPosition);
         }
 
         public void SetTarget(Vector position, Vector rotation)
         {
             TargetPosition = new Vector(position);
-            TargetRotation = new Vector(rotation);
+            TargetEulerRotation = new Vector(rotation);
 
-            QuatTargetRotation = Quaternion.EulerToQuaternion(new EulerAngles(TargetRotation, EulerConstants.EulerOrderXYZS));
+            QuatTargetRotation = Quaternion.EulerToQuaternion(new EulerAngles(TargetEulerRotation, EulerConstants.EulerOrderXYZS));
 
             //calculate rotation matrix
-            ThrusterB.TargetPosition = QuatTargetRotation.RotateVector(ThrusterB.QuadCenterOffset).Add(TargetPosition);
-            ThrusterC.TargetPosition = QuatTargetRotation.RotateVector(ThrusterC.QuadCenterOffset).Add(TargetPosition);
-            ThrusterD.TargetPosition = QuatTargetRotation.RotateVector(ThrusterD.QuadCenterOffset).Add(TargetPosition);
-            ThrusterE.TargetPosition = QuatTargetRotation.RotateVector(ThrusterE.QuadCenterOffset).Add(TargetPosition);
+            ThrusterB.TargetPosition = QuatTargetRotation.UnrotateVector(ThrusterB.QuadCenterOffset).Add(TargetPosition);
+            ThrusterC.TargetPosition = QuatTargetRotation.UnrotateVector(ThrusterC.QuadCenterOffset).Add(TargetPosition);
+            ThrusterD.TargetPosition = QuatTargetRotation.UnrotateVector(ThrusterD.QuadCenterOffset).Add(TargetPosition);
+            ThrusterE.TargetPosition = QuatTargetRotation.UnrotateVector(ThrusterE.QuadCenterOffset).Add(TargetPosition);
         }
 
         public void ApplyForce(Vector externalAcceleration)
@@ -222,15 +222,21 @@ namespace ADRCVisualization.Class_Files
             TD = QuatCurrentRotation.RotateVector(TD);
             TE = QuatCurrentRotation.RotateVector(TE);
 
+            //current rotation z is the secondary hover angle
+            //current rotation x is the primary hover angle
+            Vector hoverAngles = RotationQuaternionToHoverAngles();
+
+            //Console.WriteLine(CurrentRotation + " " + hoverAngles);
+
             //Adjusts rotation output for Z when rotating about Z - simulated gimbal lock
-            Vector rotationTBX = Matrix.RotateVector(new Vector(0, 0, -CurrentRotation.Z), new Vector(TB.X, 0, 0));
-            Vector rotationTBZ = Matrix.RotateVector(new Vector(-CurrentRotation.Z, 0, 0), new Vector(0, 0, TB.Z));
-            Vector rotationTCX = Matrix.RotateVector(new Vector(0, 0, CurrentRotation.Z), new Vector(TC.X, 0, 0));
-            Vector rotationTCZ = Matrix.RotateVector(new Vector(CurrentRotation.Z, 0, 0), new Vector(0, 0, TC.Z));
-            Vector rotationTDX = Matrix.RotateVector(new Vector(0, 0, CurrentRotation.Z), new Vector(TD.X, 0, 0));
-            Vector rotationTDZ = Matrix.RotateVector(new Vector(CurrentRotation.Z, 0, 0), new Vector(0, 0, TD.Z));
-            Vector rotationTEX = Matrix.RotateVector(new Vector(0, 0, -CurrentRotation.Z), new Vector(TE.X, 0, 0));
-            Vector rotationTEZ = Matrix.RotateVector(new Vector(-CurrentRotation.Z, 0, 0), new Vector(0, 0, TE.Z));
+            Vector rotationTBX = Matrix.RotateVector(new Vector(0, 0, -CurrentEulerRotation.Z), new Vector(TB.X, 0, 0));
+            Vector rotationTBZ = Matrix.RotateVector(new Vector(-CurrentEulerRotation.Z, 0, 0), new Vector(0, 0, TB.Z));
+            Vector rotationTCX = Matrix.RotateVector(new Vector(0, 0, CurrentEulerRotation.Z), new Vector(TC.X, 0, 0));
+            Vector rotationTCZ = Matrix.RotateVector(new Vector(CurrentEulerRotation.Z, 0, 0), new Vector(0, 0, TC.Z));
+            Vector rotationTDX = Matrix.RotateVector(new Vector(0, 0, CurrentEulerRotation.Z), new Vector(TD.X, 0, 0));
+            Vector rotationTDZ = Matrix.RotateVector(new Vector(CurrentEulerRotation.Z, 0, 0), new Vector(0, 0, TD.Z));
+            Vector rotationTEX = Matrix.RotateVector(new Vector(0, 0, -CurrentEulerRotation.Z), new Vector(TE.X, 0, 0));
+            Vector rotationTEZ = Matrix.RotateVector(new Vector(-CurrentEulerRotation.Z, 0, 0), new Vector(0, 0, TE.Z));
 
             //Rotate the Inner joint about the outer joint
             Vector outputTBZ = Matrix.RotateVector(new Vector(0, TB.Z, 0), new Vector(TB.X, 0, 0));
@@ -252,24 +258,21 @@ namespace ADRCVisualization.Class_Files
             Vector thrustSum = TB.Add(TC).Add(TD).Add(TE);
             
             //Rotation output negates when over 90 due to rotation matrix, this solution should be expanded to allow multiple increments
-            if (CurrentRotation.X >= 90 || CurrentRotation.Z <= -90)
+            if (CurrentEulerRotation.X >= 90 || CurrentEulerRotation.Z <= -90)
             {
                 // % 180
                 thrustSum.X *= -1;
             }
 
             //thrustSum.X *= Math.Sign(CurrentRotation.Z % (90.0 * 2));
-            CurrentAcceleration = thrustSum.Add(externalAcceleration);
+            currentAcceleration = thrustSum.Add(externalAcceleration);
 
             //calculate velocity: finalVelocity(vf) = vi + at
-            CurrentVelocity = CurrentVelocity.Add(CurrentAcceleration.Multiply(dT));//.Multiply(airResistance);
+            currentVelocity = currentVelocity.Add(currentAcceleration.Multiply(dT));//.Multiply(airResistance);
 
             //calculate position: displacement(s) = si + vt
-            CurrentPosition = CurrentPosition.Add(CurrentVelocity.Multiply(dT));
+            CurrentPosition = CurrentPosition.Add(currentVelocity.Multiply(dT));
         }
-        
-        public Vector angularVelocity = new Vector(0, 0, 0);
-        public Vector angularAcceleration = new Vector(0, 0, 0);
 
         public void EstimateRotation(double dT)
         {
@@ -286,7 +289,7 @@ namespace ADRCVisualization.Class_Files
 
             double torque = armLength * Math.Sin(MathE.DegreesToRadians(180 - armAngle)) * 5;
 
-            angularAcceleration = new Vector(0, 0, 0)
+            currentAngularAcceleration = new Vector(0, 0, 0)
             {//rigid body forces in world orientation
                 X = (TB.Y + TC.Y - TD.Y - TE.Y) * torque,
                 Y = (TB.X + TC.X - TD.X - TE.X) * torque + (TB.Z - TC.Z - TD.Z + TE.Z) * torque,
@@ -296,21 +299,15 @@ namespace ADRCVisualization.Class_Files
             //TB + TD - (TC + TE)
             Vector differentialThrustRotation = TB.Add(TD).Add(TC.Add(TE).Multiply(-1)).Multiply(0.15);//Relative to world origin
 
-            angularAcceleration = angularAcceleration + differentialThrustRotation;//Eulerian quantity
-
-            angularAcceleration.X = MathE.DegreesToRadians(angularAcceleration.X);
-            angularAcceleration.Y = MathE.DegreesToRadians(angularAcceleration.Y);
-            angularAcceleration.Z = MathE.DegreesToRadians(angularAcceleration.Z);
-
-            angularVelocity = angularVelocity + angularAcceleration * dT;
+            currentAngularAcceleration = currentAngularAcceleration + differentialThrustRotation;//Eulerian quantity
+            currentAngularAcceleration = MathE.DegreesToRadians(currentAngularAcceleration);
+            currentAngularVelocity = currentAngularVelocity + currentAngularAcceleration * dT;
             
-            Quaternion angularRotation = new Quaternion(0.5 * angularVelocity * dT);
+            Quaternion angularRotation = new Quaternion(0.5 * currentAngularVelocity * dT);
 
             QuatCurrentRotation += angularRotation * QuatCurrentRotation;
-
             QuatCurrentRotation = QuatCurrentRotation.UnitQuaternion();
-
-            CurrentRotation = EulerAngles.QuaternionToEuler(QuatCurrentRotation, EulerConstants.EulerOrderXYZS).Angles;
+            CurrentEulerRotation = EulerAngles.QuaternionToEuler(QuatCurrentRotation, EulerConstants.EulerOrderXYZS).Angles;
         }
 
         //Ratio from Y 1 -> -1, amount that rotation matters is highest at 0
@@ -321,15 +318,15 @@ namespace ADRCVisualization.Class_Files
             double primaryJoint = 0;
             double secondaryJoint = 0;
             
-            AxisAngle custAxisAngle = AxisAngle.QuaternionToCustomAxisAngle(QuatCurrentRotation);
-            Vector directionVector = new Vector(custAxisAngle.X, custAxisAngle.Y, custAxisAngle.Z);
+            DirectionAngle custAxisAngle = DirectionAngle.QuaternionToCustomAxisAngle(QuatCurrentRotation);
+            Vector directionVector = new Vector(custAxisAngle.Direction.X, custAxisAngle.Direction.Y, custAxisAngle.Direction.Z);
 
             directionVector = Matrix.RotateVector(new Vector(0, custAxisAngle.Rotation, 0), directionVector);
 
             primaryJoint = directionVector.X * 90;//ratio upscaled to angle
             secondaryJoint = directionVector.Z * 90;//ratio upscaled to angle
 
-            return new Vector(primaryJoint, 0, secondaryJoint);
+            return new Vector(secondaryJoint, 0, -primaryJoint);
         }
 
         private bool DetectAgitation()

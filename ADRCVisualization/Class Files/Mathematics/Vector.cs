@@ -120,7 +120,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
         public Vector Normalize()
         {
-            Vector vector = new Vector(X, Y, Z);
+            Vector vector = new Vector(this);
             double length = vector.GetLength();
 
             if (length == 1) return vector;
