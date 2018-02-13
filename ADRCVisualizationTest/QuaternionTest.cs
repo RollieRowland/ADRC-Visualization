@@ -468,7 +468,32 @@ namespace ADRCVisualizationTest
             Assert.AreEqual(0, eulerConvertedZ.Y, 0.01, "180 Z Rotation" + eulerConvertedZ);
             Assert.AreEqual(1, eulerConvertedZ.Z, 0.01, "180 Z Rotation" + eulerConvertedZ);
         }
+        
+        [TestMethod]
+        public void TestRotationMatrixQuaternionConversions()
+        {
+            RotationMatrixQuaternionConversion(new Quaternion(0.9239,  0.3827,  0,       0     ));
+            RotationMatrixQuaternionConversion(new Quaternion(0.9239, -0.3827,  0,       0     ));
+            RotationMatrixQuaternionConversion(new Quaternion(0.9239,  0,       0.3827,  0     ));
+            RotationMatrixQuaternionConversion(new Quaternion(0.9239,  0,      -0.3827,  0     ));
+            RotationMatrixQuaternionConversion(new Quaternion(0.9239,  0,       0,       0.3827));
+            RotationMatrixQuaternionConversion(new Quaternion(0.9239,  0,       0,      -0.3827));
+            RotationMatrixQuaternionConversion(new Quaternion(0.6533,  0.2706,  0.6533,  0.2706));
+            RotationMatrixQuaternionConversion(new Quaternion(0.6533, -0.2706,  0.6533, -0.2706));
+            RotationMatrixQuaternionConversion(new Quaternion(0.6533, -0.2706, -0.6533,  0.2706));
+        }
 
-        //Test all individual functions in quaternion class
+        public void RotationMatrixQuaternionConversion(Quaternion init)
+        {
+            RotationMatrix rM = RotationMatrix.QuaternionToMatrixRotation(init);
+            Quaternion post = Quaternion.RotationMatrixToQuaternionEfficient(rM);
+
+            Console.WriteLine(init + " |  " + post + " | " + (init - post));
+            
+            Assert.AreEqual(init.W, post.W, 0.01, "DAQC W" + (init - post));
+            Assert.AreEqual(init.X, post.X, 0.01, "DAQC X" + (init - post));
+            Assert.AreEqual(init.Y, post.Y, 0.01, "DAQC Y" + (init - post));
+            Assert.AreEqual(init.Z, post.Z, 0.01, "DAQC Z" + (init - post));
+        }
     }
 }

@@ -111,10 +111,11 @@ namespace ADRCVisualization
 
             while (true)
             {
+                /*
                 for (double i = 0; i < 360; i += 1)
                 {
                     targetPosition = new Vector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
-                    targetRotation = new Vector(i / 4, 0, 0);
+                    targetRotation = new Vector(i / 6, 0, 0);
 
                     await Task.Delay(15);
                 }
@@ -122,10 +123,11 @@ namespace ADRCVisualization
                 for (double i = 0; i < 360; i += 1)
                 {
                     targetPosition = new Vector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
-                    targetRotation = new Vector(180 - i / 4, 0, 0);
+                    targetRotation = new Vector(60 - i / 8, 0, 0);
 
                     await Task.Delay(15);
                 }
+                */
                 
                 targetPosition = new Vector(1, 0, 1.2);
                 targetRotation = new Vector(0, 0, 0);
@@ -136,12 +138,6 @@ namespace ADRCVisualization
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(-1, 0, 1.2);
                 targetRotation = new Vector(90, 0, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(7500);
-
-                targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new Vector(0, 0, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(7500);

@@ -92,7 +92,7 @@
     <Compile Include="Class Files\Mathematics\EulerConstants.cs" />
     <Compile Include="Class Files\Mathematics\EulerOrder.cs" />
     <Compile Include="Class Files\Mathematics\HMatrix.cs" />
-    <Compile Include="Class Files\Mathematics\Matrix.cs" />
+    <Compile Include="Class Files\Mathematics\RotationMatrix.cs" />
     <Compile Include="Class Files\Mathematics\MathE.cs" />
     <Compile Include="Class Files\Mathematics\Quaternion.cs" />
     <Compile Include="Class Files\Mathematics\SphericalCoordinate.cs" />

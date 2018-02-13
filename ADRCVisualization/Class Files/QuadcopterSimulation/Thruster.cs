@@ -70,7 +70,7 @@ namespace ADRCVisualization.Class_Files.QuadcopterSimulation
             Vector thrustVector = new Vector(0, propellor.GetOutput(), 0);
             Vector rotationVector = new Vector(-primaryJoint.GetAngle(), 0, secondaryJoint.GetAngle());
 
-            thrustVector = Matrix.RotateVector(rotationVector, thrustVector);
+            thrustVector = RotationMatrix.RotateVector(rotationVector, thrustVector);
 
             return thrustVector;
         }

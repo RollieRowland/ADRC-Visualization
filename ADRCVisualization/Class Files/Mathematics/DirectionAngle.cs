@@ -18,11 +18,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Direction = new Vector(X, Y, Z);
         }
 
-        public DirectionAngle(double Rotation, Vector vector)
+        public DirectionAngle(double Rotation, Vector direction)
         {
             this.Rotation = Rotation;
 
-            Direction = new Vector(vector);
+            Direction = new Vector(direction);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="quaternion">Quaternion rotation of the current object.</param>
         /// <returns></returns>
-        public static DirectionAngle QuaternionToCustomAxisAngle(Quaternion quaternion)
+        public static DirectionAngle QuaternionToDirectionAngle(Quaternion quaternion)
         {
             Vector up = new Vector(0, 1, 0);//up vector
             Vector right = new Vector(1, 0, 0);

@@ -85,51 +85,11 @@ namespace ADRCVisualizationTest
             testContextInstance.WriteLine(aa + " | " + axisAngle);
 
             Assert.AreEqual(axisAngle.Rotation, aa.Rotation, 0.1,  "Bad translation in R rotation " + aa);
-            Assert.AreEqual(axisAngle.X,        aa.X,        0.05, "Bad translation in X dimension" + aa);
-            Assert.AreEqual(axisAngle.Y,        aa.Y,        0.05, "Bad translation in Y dimension" + aa);
-            Assert.AreEqual(axisAngle.Z,        aa.Z,        0.05, "Bad translation in Z dimension" + aa);
+            Assert.AreEqual(axisAngle.Axis.X,   aa.Axis.X,   0.05, "Bad translation in X dimension" + aa);
+            Assert.AreEqual(axisAngle.Axis.Y,   aa.Axis.Y,   0.05, "Bad translation in Y dimension" + aa);
+            Assert.AreEqual(axisAngle.Axis.Z,   aa.Axis.Z,   0.05, "Bad translation in Z dimension" + aa);
         }
         
 
-        [TestMethod]
-        public void TestCustomAxisAngleQuaternionConversions()
-        {
-            Console.WriteLine("X Axis");
-
-            for (int i = -180; i <= 180; i += 30)
-            {
-                for (int k = -180; k <= 180; k += 30)
-                {
-                    Console.WriteLine(AxisAngle.QuaternionToCustomAxisAngle(Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, k, 0), EulerConstants.EulerOrderYXZS))));
-                }
-            }
-
-            Console.WriteLine("Z Axis");
-
-            for (int i = -180; i <= 180; i += 30)
-            {
-                for (int k = -180; k <= 180; k += 30)
-                {
-                    Console.WriteLine(AxisAngle.QuaternionToCustomAxisAngle(Quaternion.EulerToQuaternion(new EulerAngles(new Vector(0, k, i), EulerConstants.EulerOrderYZXS))));
-                }
-            }
-
-            Console.WriteLine("Test Cases");
-
-            TestCustomAxisAngleQuaternion(new AxisAngle(0,  new Vector(0, 0.707, 0.707)),  new Quaternion(0.9239, 0.3827, 0, 0)); //XYZ: 45, 0, 0
-            TestCustomAxisAngleQuaternion(new AxisAngle(0,  new Vector(-0.707, 0.707, 0)),  new Quaternion(0.9239, 0, 0,  0.3827));//XYZ: 0,   0,   45
-            TestCustomAxisAngleQuaternion(new AxisAngle(0,  new Vector(0.707, 0.707, 0)), new Quaternion(0.9239, 0, 0, -0.3827));//XYZ: 0, 0,   -45
-            TestCustomAxisAngleQuaternion(new AxisAngle(90, new Vector(0, 0.707, 0.707)), new Quaternion(0.6533, 0.2706, 0.6533, 0.2706));//YXZ: 0, 90, 45
-        }
-
-        public void TestCustomAxisAngleQuaternion(AxisAngle expected, Quaternion q)
-        {
-            AxisAngle nonStandardAA = AxisAngle.QuaternionToCustomAxisAngle(q);
-            
-            Assert.AreEqual(expected.Rotation, nonStandardAA.Rotation, 0.1,  "Bad translation in R rotation " + nonStandardAA);
-            Assert.AreEqual(expected.X,        nonStandardAA.X,        0.05, "Bad translation in X dimension" + nonStandardAA);
-            Assert.AreEqual(expected.Y,        nonStandardAA.Y,        0.05, "Bad translation in Y dimension" + nonStandardAA);
-            Assert.AreEqual(expected.Z,        nonStandardAA.Z,        0.05, "Bad translation in Z dimension" + nonStandardAA);
-        }
     }
 }
