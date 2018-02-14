@@ -766,6 +766,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return current;
         }
 
+        public Vector GetBiVector()
+        {
+            return new Vector(X, Y, Z);
+        }
+
         public override string ToString()
         {
             string w = String.Format("{0:0.000}", W).PadLeft(7);

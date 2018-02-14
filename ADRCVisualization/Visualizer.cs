@@ -153,7 +153,7 @@ namespace ADRCVisualization
                 targetRotation = new Vector(0, 0, 0);
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(10000);
+                await Task.Delay(5000);
                 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(1, 0, -1.2);

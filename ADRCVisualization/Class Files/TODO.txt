@@ -102,4 +102,11 @@ Thrust vector from quaternion?
 Multiply quaternions to rotate
 
 
-Rotate 
+Replace ADRC with custom feedback control (SISO)
+-direct automated tuning
+-fourier analysis on input signal to estimate future state of the system based on previous state
+-put in 4th dim
+-stochastic control
+-obtain solid results at one plant specification and scale up and down
+-feedforward control
+-use filtering methods for excluding rapid impulses in system state
