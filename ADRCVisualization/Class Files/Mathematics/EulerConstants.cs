@@ -8,7 +8,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
 {
     public static class EulerConstants
     {
-        //Static frame of reference, intertial reference frame
+        //Static frame of reference, inertial reference frame
         public readonly static EulerOrder EulerOrderXYZS = new EulerOrder(EulerOrder.Axis.X, EulerOrder.Parity.Even, EulerOrder.AxisRepitition.No,  EulerOrder.AxisFrame.Static, new Vector(0, 1, 2));
         public readonly static EulerOrder EulerOrderXYXS = new EulerOrder(EulerOrder.Axis.X, EulerOrder.Parity.Even, EulerOrder.AxisRepitition.Yes, EulerOrder.AxisFrame.Static, new Vector(0, 1, 2));
         public readonly static EulerOrder EulerOrderXZYS = new EulerOrder(EulerOrder.Axis.X, EulerOrder.Parity.Odd,  EulerOrder.AxisRepitition.No,  EulerOrder.AxisFrame.Static, new Vector(0, 2, 1));

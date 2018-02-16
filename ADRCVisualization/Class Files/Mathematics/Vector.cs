@@ -124,7 +124,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             double length = vector.GetLength();
 
             if (length == 1) return vector;
-            if (length == 0) return new Vector(1, 0, 0);
+            if (length == 0) return new Vector(0, 1, 0);
 
             return new Vector(vector.X / length, vector.Y / length, vector.Z / length);
         }
@@ -133,39 +133,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         {
             return Math.Sqrt(Math.Pow(X, 2) + Math.Pow(Y, 2) + Math.Pow(Z, 2));
         }
-
-        public Vector RotateEuler(double pitch, double roll, double yaw)
-        {
-            var cosa = Math.Cos(yaw);
-            var sina = Math.Sin(yaw);
-
-            var cosb = Math.Cos(pitch);
-            var sinb = Math.Sin(pitch);
-
-            var cosc = Math.Cos(roll);
-            var sinc = Math.Sin(roll);
-
-            var Axx = cosa * cosb;
-            var Axy = cosa * sinb * sinc - sina * cosc;
-            var Axz = cosa * sinb * cosc + sina * sinc;
-
-            var Ayx = sina * cosb;
-            var Ayy = sina * sinb * sinc + cosa * cosc;
-            var Ayz = sina * sinb * cosc - cosa * sinc;
-
-            var Azx = -sinb;
-            var Azy = cosb * sinc;
-            var Azz = cosb * cosc;
-
-            X = Axx * X + Axy * Y + Axz * Z;
-            Y = Ayx * X + Ayy * Y + Ayz * Z;
-            Z = Azx * X + Azy * Y + Azz * Z;
-
-            return new Vector(Axx * X + Axy * Y + Axz * Z,
-                              Ayx * X + Ayy * Y + Ayz * Z,
-                              Azx * X + Azy * Y + Azz * Z);
-        }
-
+        
         public static double CalculateEuclideanDistance(Vector one, Vector two)
         {
             return Math.Sqrt(Math.Pow(one.X - two.X, 2) + Math.Pow(one.Y - two.Y, 2) + Math.Pow(one.Z - two.Z, 2));
@@ -177,7 +145,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             string y = String.Format("{0:0.000}", Y).PadLeft(7);
             string z = String.Format("{0:0.000}", Z).PadLeft(7);
             
-            return x + " " + y + " " + z;
+            return "[" + x + " " + y + " " + z + "]";
         }
     }
 }

@@ -30,9 +30,7 @@ namespace ADRCVisualization
 
         private Timer t1;
 
-        private ModelVisual3D mainX;
-        private ModelVisual3D mainY;
-        private ModelVisual3D mainZ;
+        private ModelVisual3D main;
 
         private ModelVisual3D innerB;
         private ModelVisual3D outerB;
@@ -47,12 +45,13 @@ namespace ADRCVisualization
         private ModelVisual3D outerE;
 
         private Vector mainPrevious;
-        private System.Windows.Media.Media3D.Quaternion quadRotPrevious;
+        private Class_Files.Mathematics.Quaternion quadRotPrevious;
 
         private Vector bPrevious;
         private Vector cPrevious;
         private Vector dPrevious;
         private Vector ePrevious;
+        private Matrix3D initialMainRot;
 
 
         public QuadViewer()
@@ -90,9 +89,7 @@ namespace ADRCVisualization
             Model3D innerEModel = import.Load(directory + "InnerE.stl");
             Model3D outerEModel = import.Load(directory + "OuterE.stl");
             
-            mainX = new ModelVisual3D();
-            mainY = new ModelVisual3D();
-            mainZ = new ModelVisual3D();
+            main = new ModelVisual3D();
 
             innerB = new ModelVisual3D();
             outerB = new ModelVisual3D();
@@ -106,7 +103,7 @@ namespace ADRCVisualization
             innerE = new ModelVisual3D();
             outerE = new ModelVisual3D();
 
-            mainX.Content = mainModel;
+            main.Content = mainModel;
 
             innerB.Content = innerBModel;
             outerB.Content = outerBModel;
@@ -125,15 +122,14 @@ namespace ADRCVisualization
             outerD.Children.Add(innerD);
             outerE.Children.Add(innerE);
 
-            mainX.Children.Add(outerB);
-            mainX.Children.Add(outerC);
-            mainX.Children.Add(outerD);
-            mainX.Children.Add(outerE);
+            main.Children.Add(outerB);
+            main.Children.Add(outerC);
+            main.Children.Add(outerD);
+            main.Children.Add(outerE);
 
-            mainY.Children.Add(mainX);
-            mainZ.Children.Add(mainY);
+            initialMainRot = main.Transform.Value;
 
-            viewPort3D.Children.Add(mainZ);
+            viewPort3D.Children.Add(main);
             
             mainPrevious = new Vector(0, 0, 0);
 
@@ -142,7 +138,7 @@ namespace ADRCVisualization
             dPrevious = new Vector(0, 0, 0);
             ePrevious = new Vector(0, 0, 0);
 
-            quadRotPrevious = new System.Windows.Media.Media3D.Quaternion(0, 0, 0, 1);
+            quadRotPrevious = new Class_Files.Mathematics.Quaternion(1, 0, 0, 0);
 
             StartTimers();
             //StopTimers();
@@ -182,14 +178,17 @@ namespace ADRCVisualization
             //rotate outer rotations
             //transform entire quad
 
-            Vector mainRotation = quadcopter.CurrentEulerRotation.Multiply(new Vector(-1, 1, 1));
+            Class_Files.Mathematics.Quaternion quadRotCurrent = quadcopter.QuatCurrentRotation;
+
+            //Vector mainRotation = quadcopter.CurrentEulerRotation.Multiply(new Vector(-1, 1, 1));
+            Vector mainRotation = (2 * (quadRotPrevious - quadRotCurrent) * quadRotCurrent.Conjugate() / quadcopter.samplingPeriod).GetBiVector();
 
             Vector bRotation = quadcopter.ThrusterB.CurrentRotation;
             Vector cRotation = quadcopter.ThrusterC.CurrentRotation;
             Vector dRotation = quadcopter.ThrusterD.CurrentRotation;
             Vector eRotation = quadcopter.ThrusterE.CurrentRotation;
 
-            Vector mainRotationRelative = mainRotation.Subtract(mainPrevious);
+            Vector mainRotationRelative = mainRotation.Multiply(Math.PI).Multiply(new Vector(1, -1, -1));//.Subtract(mainPrevious);
 
             /*
             Class_Files.Mathematics.Quaternion q = new Class_Files.Mathematics.Quaternion(quadcopter.QuatCurrentRotation);
@@ -208,9 +207,7 @@ namespace ADRCVisualization
 
             Dispatcher.BeginInvoke((Action)(() =>
             {
-                Matrix3D mainXMatrix = mainX.Transform.Value;
-                Matrix3D mainYMatrix = mainY.Transform.Value;
-                Matrix3D mainZMatrix = mainZ.Transform.Value;
+                Matrix3D mainMatrix = initialMainRot;
 
                 Matrix3D innerBMatrix = innerB.Transform.Value;
                 Matrix3D outerBMatrix = outerB.Transform.Value;
@@ -273,26 +270,18 @@ namespace ADRCVisualization
                 outerE.Transform = new MatrixTransform3D(outerEMatrix);
 
                 /// MAIN ROTATION
-
-                
-                mainXMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(1, 0, 0), mainRotationRelative.Z));
-                mainX.Transform = new MatrixTransform3D(mainXMatrix);
-
-                mainYMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(0, 0, 1), mainRotationRelative.Y));
-                mainY.Transform = new MatrixTransform3D(mainYMatrix);
-
-                mainZMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(new Vector3D(0, 1, 0), mainRotationRelative.X));
-                mainZ.Transform = new MatrixTransform3D(mainZMatrix);
-                 
+                mainMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(quadRotCurrent.Z, -quadRotCurrent.X, -quadRotCurrent.Y, quadRotCurrent.W));
+                main.Transform = new MatrixTransform3D(mainMatrix);
             }));
 
             //innerBPrevious2 = innerBPrevious;
-            mainPrevious = new Vector(mainRotation.X, mainRotation.Y, mainRotation.Z);
+            mainPrevious = new Vector(mainRotation);
+            quadRotPrevious = new Class_Files.Mathematics.Quaternion(quadRotCurrent);
 
-            bPrevious = new Vector(bRotation.X, bRotation.Y, bRotation.Z);
-            cPrevious = new Vector(cRotation.X, cRotation.Y, cRotation.Z);
-            dPrevious = new Vector(dRotation.X, dRotation.Y, dRotation.Z);
-            ePrevious = new Vector(eRotation.X, eRotation.Y, eRotation.Z);
+            bPrevious = new Vector(bRotation);
+            cPrevious = new Vector(cRotation);
+            dPrevious = new Vector(dRotation);
+            ePrevious = new Vector(eRotation);
         }
     }
 }

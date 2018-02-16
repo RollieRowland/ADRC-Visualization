@@ -183,7 +183,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             rotatedRight = rotationChange.RotateVector(rightAngleRotated);
             rotatedForward = rotationChange.RotateVector(forwardAngleRotated);
 
-            return RotationMatrixToQuaternionEfficient(new RotationMatrix(rotatedRight, rotatedUp, rotatedForward));
+            return RotationMatrixToQuaternion(new RotationMatrix(rotatedRight, rotatedUp, rotatedForward));
         }
 
         /// <summary>
@@ -287,9 +287,6 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Vector tempV = new Vector(0, 0, 0);
             Vector xAxis = new Vector(1, 0, 0);
             Vector yAxis = new Vector(0, 1, 0);
-
-            initial = new Vector(initial);
-            target  = new Vector(target);
 
             double dot = Vector.DotProduct(initial, target);
 
@@ -778,7 +775,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             string y = String.Format("{0:0.000}", Y).PadLeft(7);
             string z = String.Format("{0:0.000}", Z).PadLeft(7);
 
-            return w + " " + x + " " + y + " " + z;
+            return "[" + w + " " + x + " " + y + " " + z + "]";
         }
 
     }

@@ -14,15 +14,20 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public DirectionAngle(double Rotation, double X, double Y, double Z)
         {
             this.Rotation = Rotation;
-
-            Direction = new Vector(X, Y, Z);
+            Direction = new Vector(X, Y, Z).Normalize();
         }
 
         public DirectionAngle(double Rotation, Vector direction)
         {
             this.Rotation = Rotation;
 
-            Direction = new Vector(direction);
+            Direction = new Vector(direction).Normalize();
+        }
+
+        public DirectionAngle(DirectionAngle directionAngle)
+        {
+            Rotation = directionAngle.Rotation;
+            Direction = new Vector(directionAngle.Direction).Normalize();
         }
 
         /// <summary>

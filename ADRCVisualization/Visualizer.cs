@@ -31,7 +31,7 @@ namespace ADRCVisualization
         private Turbulence turbulence = new Turbulence(10, 100);
 
         private Vector targetPosition;
-        private Vector targetRotation;
+        private DirectionAngle targetRotation;
 
         public Visualizer()
         {
@@ -50,7 +50,7 @@ namespace ADRCVisualization
             quad.CalculateCurrent();
             
             targetPosition = new Vector(0, 0, 0);
-            targetRotation = new Vector(0, 0, 0);
+            targetRotation = new DirectionAngle(0, 0, 1, 0);
 
             quad.SetTarget(targetPosition, targetRotation);
 
@@ -130,229 +130,55 @@ namespace ADRCVisualization
                 */
                 
                 targetPosition = new Vector(1, 0, 1.2);
-                targetRotation = new Vector(0, 0, 0);
+                targetRotation = new DirectionAngle(0, 0, 1, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(3000);
                 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new Vector(90, 0, 0);
+                targetRotation = new DirectionAngle(0, 0, 0, 1);//90, 0, 0
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(7500);
 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(-1, 0, -1.2);
-                targetRotation = new Vector(0, 90, 0);
+                targetRotation = new DirectionAngle(45, 0, 1, 0);//0, 45, 0
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(7500);
 
                 targetPosition = new Vector(-1, 0, -1.2);
-                targetRotation = new Vector(0, 0, 0);
+                targetRotation = new DirectionAngle(0, 0, 1, 0);//0, 0, 0
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(5000);
                 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(1, 0, -1.2);
-                targetRotation = new Vector(0, 0, 90);
+                targetRotation = new DirectionAngle(0, 1, 0, 0);//0, 0, 90
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(10000);
 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new Vector(0, 0, 90);
+                targetRotation = new DirectionAngle(0, 1, 0, 0);//0, 0, 90
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(6000);
 
                 //////////////////////////////////////////////////
                 targetPosition = new Vector(1, 0, 1.2);
-                targetRotation = new Vector(0, 0, 0);
+                targetRotation = new DirectionAngle(0, 0, 1, 0);//0, 0, 0
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(6000);
             }
         }
-
-        private async void SetTargetCircle()
-        {
-            quad.SetTarget(targetPosition, targetRotation);
-
-            while (true)
-            {
-                targetPosition = new Vector(0, 0, 1.5);
-
-                await Task.Delay(1000);
-
-                for (double i = 0; i < 360; i += 0.025)
-                {
-                    targetPosition = new Vector(Math.Sin(i)*1.5, 0, Math.Cos(i)*1.5);
-
-                    await Task.Delay(1);
-                }
-            }
-        }
-
-        private async void SetTargets()
-        {
-            quad.SetTarget(targetPosition, targetRotation);
-
-            double angle = 90;
-
-            while (true)
-            {
-                targetPosition = new Vector(1, 0, 1.2);
-                targetRotation = new Vector(0, 0, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(3000);
-
-                //////////////////////////////////////////////////
-                targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new Vector(0, 0, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(3000);
-
-                targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new Vector(angle, 0, 0);
-                Console.WriteLine("Target Set");
-                
-                await Task.Delay(6000);
-
-                targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new Vector(0, 0, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(7000);
-
-                //////////////////////////////////////////////////
-                targetPosition = new Vector(1, 0, -1.2);
-                targetRotation = new Vector(0, 0, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(3000);
-
-                targetPosition = new Vector(1, 0, -1.2);
-                targetRotation = new Vector(0, 0, angle);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(6000);
-
-                targetPosition = new Vector(1, 0, -1.2);
-                targetRotation = new Vector(0, 0, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(7000);
-                
-                //////////////////////////////////////////////////
-                targetPosition = new Vector(-1, 0, -1.2);
-                targetRotation = new Vector(0, angle, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(6000);
-
-                targetPosition = new Vector(-1, 0, -1.2);
-                targetRotation = new Vector(0, 0, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(7000);
-            }
-        }
-
-        private async void SetTargetPositions()
-        {
-            quad.SetTarget(targetPosition, targetRotation);
-
-            while (true)
-            {
-                targetPosition = new Vector(1, 0, 1.2);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(4500);
-
-                targetPosition = new Vector(-1, 0, 1.2);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(4500);
-                targetPosition = new Vector(1, 0, -1.2);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(4500);
-
-                targetPosition = new Vector(-1, 0, -1.2);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(4500);
-            }
-        }
-
-        private async void SetTargetsTrack()
-        {
-            quad.SetTarget(targetPosition, targetRotation);
-
-            while (true)
-            {
-                targetPosition = new Vector(1, 0, 1.2);
-                targetRotation = new Vector(0, 45, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(4500);
-
-                targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new Vector(0, 135, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(4500);
-                targetPosition = new Vector(-1, 0, -1.2);
-                targetRotation = new Vector(0, 225, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(4500);
-
-                targetPosition = new Vector(1, 0, -1.2);
-                targetRotation = new Vector(0, 315, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(4500);
-            }
-        }
-
-        private async void SetTargetRotations()
-        {
-            quad.SetTarget(targetPosition, targetRotation);
-
-            targetRotation = new Vector(0, 0, 0);
-            Console.WriteLine("Target Set");
-
-            await Task.Delay(1000);
-
-            while (true)
-            {
-                //////////////////////////////////////////////////
-                targetRotation = new Vector(30, 0, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(7500);
-                
-                //////////////////////////////////////////////////
-                targetRotation = new Vector(0, 0, 30);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(7500);
-                
-                //////////////////////////////////////////////////
-                targetRotation = new Vector(0, 90, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(7500);
-            }
-        }
-
+        
+        
         private void SetChartPositions(Quadcopter quadcopter)
         {
             chart1.ChartAreas[0].AxisX.Maximum = 2;
@@ -484,8 +310,9 @@ namespace ADRCVisualization
             Double.TryParse(xRotationTB.Text, out double x);
             Double.TryParse(yRotationTB.Text, out double y);
             Double.TryParse(zRotationTB.Text, out double z);
+            Double.TryParse(rRotationTB.Text, out double r);
 
-            targetRotation = new Vector(x, y, z);
+            targetRotation = new DirectionAngle(r, x, y, z);
         }
     }
 }
