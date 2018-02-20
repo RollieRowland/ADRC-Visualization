@@ -91,6 +91,7 @@
     <Compile Include="Class Files\Mathematics\EulerAngles.cs" />
     <Compile Include="Class Files\Mathematics\EulerConstants.cs" />
     <Compile Include="Class Files\Mathematics\EulerOrder.cs" />
+    <Compile Include="Class Files\Mathematics\TriangleWaveFader.cs" />
     <Compile Include="Class Files\Mathematics\HMatrix.cs" />
     <Compile Include="Class Files\Mathematics\RotationMatrix.cs" />
     <Compile Include="Class Files\Mathematics\MathE.cs" />

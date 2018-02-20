@@ -179,8 +179,7 @@ namespace ADRCVisualization
             //transform entire quad
 
             Class_Files.Mathematics.Quaternion quadRotCurrent = quadcopter.QuatCurrentRotation;
-
-            //Vector mainRotation = quadcopter.CurrentEulerRotation.Multiply(new Vector(-1, 1, 1));
+            
             Vector mainRotation = (2 * (quadRotPrevious - quadRotCurrent) * quadRotCurrent.Conjugate() / quadcopter.samplingPeriod).GetBiVector();
 
             Vector bRotation = quadcopter.ThrusterB.CurrentRotation;
@@ -188,17 +187,7 @@ namespace ADRCVisualization
             Vector dRotation = quadcopter.ThrusterD.CurrentRotation;
             Vector eRotation = quadcopter.ThrusterE.CurrentRotation;
 
-            Vector mainRotationRelative = mainRotation.Multiply(Math.PI).Multiply(new Vector(1, -1, -1));//.Subtract(mainPrevious);
-
-            /*
-            Class_Files.Mathematics.Quaternion q = new Class_Files.Mathematics.Quaternion(quadcopter.QuatCurrentRotation);
-            AxisAngle axisAngle = AxisAngle.QuaternionToStandardAxisAngle(q);
-
-            System.Windows.Media.Media3D.Quaternion quadRotCurrent = new System.Windows.Media.Media3D.Quaternion(new Vector3D(axisAngle.X, axisAngle.Y, axisAngle.Z), axisAngle.Rotation);
-            System.Windows.Media.Media3D.Quaternion quadRelative = quadRotCurrent - quadRotPrevious;
-
-            Console.WriteLine(quadRotCurrent);
-            */
+            Vector mainRotationRelative = mainRotation.Multiply(Math.PI).Multiply(new Vector(1, -1, -1));
 
             Vector bRelativeRotation = bRotation.Subtract(bPrevious);
             Vector cRelativeRotation = cRotation.Subtract(cPrevious);
@@ -273,8 +262,7 @@ namespace ADRCVisualization
                 mainMatrix.Rotate(new System.Windows.Media.Media3D.Quaternion(quadRotCurrent.Z, -quadRotCurrent.X, -quadRotCurrent.Y, quadRotCurrent.W));
                 main.Transform = new MatrixTransform3D(mainMatrix);
             }));
-
-            //innerBPrevious2 = innerBPrevious;
+            
             mainPrevious = new Vector(mainRotation);
             quadRotPrevious = new Class_Files.Mathematics.Quaternion(quadRotCurrent);
 

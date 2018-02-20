@@ -169,12 +169,13 @@ namespace ADRCVisualization.Class_Files
             ThrusterE.Calculate(thrusterOutputE.Add(positionOutput));
         }
 
+        private TriangleWaveFader gimbalLockFader = new TriangleWaveFader(8, 90);
+
         private void CalculateGimbalLockedMotion(ref Vector positionControl, ref Vector thrusterOutputB, ref Vector thrusterOutputC, ref Vector thrusterOutputD, ref Vector thrusterOutputE)
         {
             Vector hoverAngles = RotationQuaternionToHoverAngles();
-
-            double curvature = 8;// 0.5: |‾ , 1: /, 2, _|
-            double fadeIn = (1.0 / 90.0) * Math.Pow((90.0 - Math.Abs(hoverAngles.Z % (90.0 * 2) - 90.0)), curvature) / Math.Pow(90, curvature - 1);//0 -> 1, New position control faders, approaches 1 when z rot is -90/90
+            
+            double fadeIn = gimbalLockFader.CalculateRatio(hoverAngles.Z);//0 -> 1, New position control faders, approaches 1 when z rot is -90/90
             double fadeOut = 1 - fadeIn;//1 -> 0, Rotation magnitude faders, approaches 0 when Z rot is -90/90 degrees
 
             double rotation = 40 * fadeIn;
@@ -367,6 +368,8 @@ namespace ADRCVisualization.Class_Files
             CurrentEulerRotation = EulerAngles.QuaternionToEuler(QuatCurrentRotation, EulerConstants.EulerOrderXYZS).Angles * new Vector(1, -1, 1);
         }
 
+        private TriangleWaveFader hoverAngles = new TriangleWaveFader(2, 90);
+
         //Ratio from Y 1 -> -1, amount of rotation importance is highest at 0
         //
         //Quaternion rotation to hover
@@ -374,28 +377,31 @@ namespace ADRCVisualization.Class_Files
         {
             double primaryJoint = 0;
             double secondaryJoint = 0;
-            Quaternion quat90 = Quaternion.EulerToQuaternion(new EulerAngles(new Vector(0, 90, 0), EulerConstants.EulerOrderXYZS));//z as forward
-            Quaternion rotation = quat90.Multiply(QuatCurrentRotation);
-            DirectionAngle directionAngle = DirectionAngle.QuaternionToDirectionAngle(rotation);
+            DirectionAngle directionAngle = DirectionAngle.QuaternionToDirectionAngle(QuatCurrentRotation);
+
+            directionAngle.Direction = RotationMatrix.RotateVector(new Vector(0, -90, 0), directionAngle.Direction);
+
             Vector directionVector = new Vector(directionAngle.Direction);
 
-            //directionVector = RotationMatrix.RotateVector(new Vector(0, directionAngle.Rotation - 90, 0), directionVector);
+            directionVector = RotationMatrix.RotateVector(new Vector(0, directionAngle.Rotation, 0), directionVector);
 
-            //Console.WriteLine(directionAngle);
-            Console.WriteLine(ThrusterB.CurrentPosition + " " + ThrusterD.CurrentPosition);
-
-            //arctan2 of z,x will give the direction that it is facing starting at x1,z0. Add 90 so it starts at x0,z1
+            //arctan2 of z, x will give the direction that it is facing starting at x1, z0. Add 90 so it starts at x0, z1
 
             double radius = 1 - Math.Abs(directionVector.Y);
             //position on circle is dependent by sign of Y coordinate
 
+            //when Y coordinate vector dips below 0, the secondary and primary joints no longer produce the correct angle results
+
             if (radius > 0)
             {
                 //These are cartesian coordinates, convert them to the angle from 1, 0 to the point it is at
-                primaryJoint = MathE.RadiansToDegrees(Math.Asin(directionVector.X));
-                secondaryJoint = MathE.RadiansToDegrees(Math.Asin(directionVector.Z));
+                secondaryJoint = MathE.RadiansToDegrees(Math.Asin(directionVector.Z));// * Math.Sign(directionVector.Y);
+                primaryJoint = MathE.RadiansToDegrees(Math.Asin(directionVector.X));// + directionAngle.Rotation;
+
+                //secondaryJoint = Math.Sign(directionVector.Y) == -1 ? 180 - secondaryJoint : secondaryJoint;
             }
 
+            Console.WriteLine(primaryJoint + " " + secondaryJoint + " " + hoverAngles.CalculateRatio(directionAngle.Rotation));
 
             return new Vector(primaryJoint, 0, secondaryJoint);
         }
