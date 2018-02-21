@@ -59,10 +59,12 @@ namespace ADRCVisualizationTest
 
             Console.WriteLine("Test Cases");
 
-            DirectionAngleQuaternion(new DirectionAngle(0, new Vector(0, 0.707, 0.707)), new Quaternion(0.9239, 0.3827, 0, 0)); //XYZ: 45, 0, 0
-            DirectionAngleQuaternion(new DirectionAngle(0, new Vector(-0.707, 0.707, 0)), new Quaternion(0.9239, 0, 0, 0.3827));//XYZ: 0,   0,   45
-            DirectionAngleQuaternion(new DirectionAngle(0, new Vector(0.707, 0.707, 0)), new Quaternion(0.9239, 0, 0, -0.3827));//XYZ: 0, 0,   -45
+            DirectionAngleQuaternion(new DirectionAngle(0,  new Vector(0, 0.707, 0.707)), new Quaternion(0.9239, 0.3827, 0, 0)); //XYZ: 45, 0, 0
+            DirectionAngleQuaternion(new DirectionAngle(0,  new Vector(-0.707, 0.707, 0)), new Quaternion(0.9239, 0, 0, 0.3827));//XYZ: 0,   0,   45
+            DirectionAngleQuaternion(new DirectionAngle(0,  new Vector(0.707, 0.707, 0)), new Quaternion(0.9239, 0, 0, -0.3827));//XYZ: 0, 0,   -45
             DirectionAngleQuaternion(new DirectionAngle(90, new Vector(0, 0.707, 0.707)), new Quaternion(0.6533, 0.2706, 0.6533, 0.2706));//YXZ: 0, 90, 45
+            DirectionAngleQuaternion(new DirectionAngle(0,  new Vector(0, 1, 0)), new Quaternion(1, 0, 0, 0));//YXZ: 0, 90, 45
+            DirectionAngleQuaternion(new DirectionAngle(0,  new Vector(0, -1, 0)), new Quaternion(0, 1, 0, 0));//YXZ: 0, 90, 45
         }
 
         public void DirectionAngleQuaternion(DirectionAngle expected, Quaternion q)

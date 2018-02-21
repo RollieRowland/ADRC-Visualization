@@ -49,9 +49,21 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return radians * (180.0 / Math.PI);
         }
 
-        public static string DoubleToString(double value)
+        public static string DoubleToCleanString(double value)
         {
-            return String.Format("{0:0.00}", value).PadLeft(7);
+            return String.Format("{0:0.00}", value).PadLeft(8);
+        }
+
+        public static void CleanPrint(params double[] values)
+        {
+            string fullString = "";
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                fullString += DoubleToCleanString(values[i]) + " ";
+            }
+
+            Console.WriteLine(fullString);
         }
     }
 }

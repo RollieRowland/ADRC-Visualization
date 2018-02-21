@@ -180,7 +180,7 @@ namespace ADRCVisualization
 
             Class_Files.Mathematics.Quaternion quadRotCurrent = quadcopter.QuatCurrentRotation;
             
-            Vector mainRotation = (2 * (quadRotPrevious - quadRotCurrent) * quadRotCurrent.Conjugate() / quadcopter.samplingPeriod).GetBiVector();
+            Vector mainRotation = (2 * (quadRotPrevious - quadRotCurrent) * quadRotCurrent.Conjugate() / quadcopter.SamplingPeriod).GetBiVector();
 
             Vector bRotation = quadcopter.ThrusterB.CurrentRotation;
             Vector cRotation = quadcopter.ThrusterC.CurrentRotation;

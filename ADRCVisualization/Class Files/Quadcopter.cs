@@ -49,13 +49,13 @@ namespace ADRCVisualization.Class_Files
 
         private double armLength;
         private double armAngle;
-        public double samplingPeriod { get; private set; }
+        public double SamplingPeriod { get; private set; }
 
         public Quadcopter(double armLength, double armAngle, double samplingPeriod)
         {
             this.armLength = armLength;
             this.armAngle = armAngle;
-            this.samplingPeriod = samplingPeriod;
+            this.SamplingPeriod = samplingPeriod;
 
             CalculateArmPositions(armLength, armAngle);
             lastMeasurementTime = DateTime.Now;
@@ -117,24 +117,24 @@ namespace ADRCVisualization.Class_Files
             double XLength = ArmLength * Math.Cos(MathE.DegreesToRadians(ArmAngle));
             double ZLength = ArmLength * Math.Sin(MathE.DegreesToRadians(ArmAngle));
 
-            Console.WriteLine("Quad Arm Length X:" + XLength + " Z:" + ZLength + " Period:" + samplingPeriod);
+            Console.WriteLine("Quad Arm Length X:" + XLength + " Z:" + ZLength + " Period:" + SamplingPeriod);
 
-            ThrusterB = new Thruster(new Vector(-XLength, 0,  ZLength), "TB", samplingPeriod);
-            ThrusterC = new Thruster(new Vector( XLength, 0,  ZLength), "TC", samplingPeriod);
-            ThrusterD = new Thruster(new Vector( XLength, 0, -ZLength), "TD", samplingPeriod);
-            ThrusterE = new Thruster(new Vector(-XLength, 0, -ZLength), "TE", samplingPeriod);
+            ThrusterB = new Thruster(new Vector(-XLength, 0,  ZLength), "TB", SamplingPeriod);
+            ThrusterC = new Thruster(new Vector( XLength, 0,  ZLength), "TC", SamplingPeriod);
+            ThrusterD = new Thruster(new Vector( XLength, 0, -ZLength), "TD", SamplingPeriod);
+            ThrusterE = new Thruster(new Vector(-XLength, 0, -ZLength), "TE", SamplingPeriod);
         }
 
         public void CalculateCombinedThrustVector()
         {
             //Omega = 2 * (qt - qc) * qc^-1 / dt -> only bivector quantity, real value is disregarded
-            Vector change = (2 * (QuatTargetRotation - QuatCurrentRotation) * QuatCurrentRotation.Conjugate() / samplingPeriod).GetBiVector();
+            Vector change = (2 * (QuatTargetRotation - QuatCurrentRotation) * QuatCurrentRotation.Conjugate() / SamplingPeriod).GetBiVector();
             //change = (CurrentEulerRotation - TargetEulerRotation) * -1;
 
             //Console.WriteLine(change + " " + QuatTargetRotation + " " + QuatCurrentRotation);
             
-            Vector rotationOutput = RotationFeedbackController.Calculate(new Vector(0, 0, 0), change, samplingPeriod);
-            Vector positionOutput = PositionFeedbackController.Calculate(new Vector(0, 0, 0), CurrentPosition.Subtract(TargetPosition), samplingPeriod);
+            Vector rotationOutput = RotationFeedbackController.Calculate(new Vector(0, 0, 0), change, SamplingPeriod);
+            Vector positionOutput = PositionFeedbackController.Calculate(new Vector(0, 0, 0), CurrentPosition.Subtract(TargetPosition), SamplingPeriod);
 
             rotationOutput = rotationOutput.Multiply(new Vector(1, 1, 1));
             positionOutput = new Vector(0, 0, 0);
@@ -154,6 +154,8 @@ namespace ADRCVisualization.Class_Files
             //Add in after position calculation is fixed
 
             //positionOutput = RotationMatrix.RotateVector(new Vector(0, -CurrentEulerRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
+
+            //ROTATE or UNROTATE position output by current quaternion rotation
 
             //Due to XYZ permutation order of Euler angle
             positionOutput.X = positionOutput.X + hoverAngles.Z;//Adjust main joint to rotation
@@ -204,9 +206,9 @@ namespace ADRCVisualization.Class_Files
 
         public void CalculateCurrent()
         {
-            //EstimatePosition(samplingPeriod);
-            //EstimatePositionFix(samplingPeriod);
-            EstimateRotation(samplingPeriod);
+            //EstimatePosition(SamplingPeriod);
+            //EstimatePositionFix(SamplingPeriod);
+            EstimateRotation(SamplingPeriod);
 
             //calculate rotation matrix
             ThrusterB.CurrentPosition = QuatCurrentRotation.RotateVector(ThrusterB.QuadCenterOffset).Add(CurrentPosition);
@@ -387,21 +389,45 @@ namespace ADRCVisualization.Class_Files
 
             //arctan2 of z, x will give the direction that it is facing starting at x1, z0. Add 90 so it starts at x0, z1
 
-            double radius = 1 - Math.Abs(directionVector.Y);
-            //position on circle is dependent by sign of Y coordinate
-
             //when Y coordinate vector dips below 0, the secondary and primary joints no longer produce the correct angle results
+            
+            //directionVector.X = Math.Sign(directionVector.Y) == -1 ? directionVector.X + 1 : directionVector.X;
+            //directionVector.Z = Math.Sign(directionVector.Y) == -1 ? directionVector.Z + 1 : directionVector.Z;
 
-            if (radius > 0)
-            {
-                //These are cartesian coordinates, convert them to the angle from 1, 0 to the point it is at
-                secondaryJoint = MathE.RadiansToDegrees(Math.Asin(directionVector.Z));// * Math.Sign(directionVector.Y);
-                primaryJoint = MathE.RadiansToDegrees(Math.Asin(directionVector.X));// + directionAngle.Rotation;
+            //
+            //1 + (1 - directionVector.X)
 
-                //secondaryJoint = Math.Sign(directionVector.Y) == -1 ? 180 - secondaryJoint : secondaryJoint;
-            }
+            //These are cartesian coordinates, convert them to the angle from 1, 0 to the point it is at
+            secondaryJoint = MathE.RadiansToDegrees(Math.Asin(directionVector.Z));// * Math.Sign(directionVector.Y);
+            primaryJoint   = MathE.RadiansToDegrees(Math.Asin(directionVector.X));// + directionAngle.Rotation;
 
-            Console.WriteLine(primaryJoint + " " + secondaryJoint + " " + hoverAngles.CalculateRatio(directionAngle.Rotation));
+            double radius = (Math.Pow(secondaryJoint, 2) + Math.Pow(primaryJoint, 2)) / 90;//distance between points with top down view on unit sphere
+
+            //max value is the radius, scale up XZ values
+            //ratio between X and Z, take atan2
+            //use angle
+
+            //determine the maximum value of the primary or secondary joint at any rotation
+            //use radius to normalize the vector to be the default positions on the unit sphere when not at the default orientation
+            //
+
+            //atan2 of XZ
+            //convert to ratio between XZ dimensions
+
+            //double angle = Math.Atan2(directionVector.Z, directionVector.X);
+
+            double sMax = 90 * (Math.Cos(MathE.DegreesToRadians(primaryJoint)));
+            double pMax = 90 * (Math.Cos(MathE.DegreesToRadians(secondaryJoint)));//value 90 will decrease as the yaw rotation changes
+            //secondaryJoint * scaling factor
+
+            MathE.CleanPrint(sMax, Math.Abs(secondaryJoint), Math.Sign(secondaryJoint), Math.Sign(directionVector.Y) == -1 ? (sMax + sMax - Math.Abs(secondaryJoint)) * Math.Sign(secondaryJoint) : secondaryJoint);
+
+            //the sign of the parameter flips the directionality when it is not on its own axis
+
+            secondaryJoint = Math.Sign(directionVector.Y) == -1 ? (sMax + sMax - Math.Abs(secondaryJoint)) * Math.Sign(secondaryJoint) : secondaryJoint;
+            //primaryJoint   = Math.Sign(directionVector.Y) == -1 ? (pMax + pMax - Math.Abs(primaryJoint))   * Math.Sign(primaryJoint)   : primaryJoint;
+
+            //MathE.CleanPrint(Math.Sign(directionVector.Y), primaryJoint, secondaryJoint, pMax, sMax);
 
             return new Vector(primaryJoint, 0, secondaryJoint);
         }
