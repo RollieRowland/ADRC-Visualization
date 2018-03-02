@@ -149,7 +149,7 @@ namespace ADRCVisualization.Class_Files
             //CalculateGimbalLockedMotion(ref positionOutput, ref thrusterOutputB, ref thrusterOutputC, ref thrusterOutputD, ref thrusterOutputE);
             //CalculateGimbalLockedRotation(ref rotationOutput, ref thrusterOutputB, ref thrusterOutputC, ref thrusterOutputD, ref thrusterOutputE);
 
-            Vector hoverAngles = RotationQuaternionToHoverAngles();
+            Vector hoverAngles = RotationQuaternionToHoverAngles(QuatCurrentRotation);
 
             //Add in after position calculation is fixed
 
@@ -175,7 +175,7 @@ namespace ADRCVisualization.Class_Files
 
         private void CalculateGimbalLockedMotion(ref Vector positionControl, ref Vector thrusterOutputB, ref Vector thrusterOutputC, ref Vector thrusterOutputD, ref Vector thrusterOutputE)
         {
-            Vector hoverAngles = RotationQuaternionToHoverAngles();
+            Vector hoverAngles = RotationQuaternionToHoverAngles(QuatCurrentRotation);
             
             double fadeIn = gimbalLockFader.CalculateRatio(hoverAngles.Z);//0 -> 1, New position control faders, approaches 1 when z rot is -90/90
             double fadeOut = 1 - fadeIn;//1 -> 0, Rotation magnitude faders, approaches 0 when Z rot is -90/90 degrees
@@ -250,7 +250,7 @@ namespace ADRCVisualization.Class_Files
             
             //current rotation x is the primary hover angle
             //current rotation z is the secondary hover angle
-            Vector hoverAngles = RotationQuaternionToHoverAngles();
+            Vector hoverAngles = RotationQuaternionToHoverAngles(QuatCurrentRotation);
             
             //Adjusts rotation output for Z when rotating about Z - simulated gimbal lock
             Vector rotationTBX = RotationMatrix.RotateVector(new Vector(0, 0, -hoverAngles.Z), new Vector(TB.X, 0, 0));
@@ -375,11 +375,11 @@ namespace ADRCVisualization.Class_Files
         //Ratio from Y 1 -> -1, amount of rotation importance is highest at 0
         //
         //Quaternion rotation to hover
-        private Vector RotationQuaternionToHoverAngles()
+        public static Vector RotationQuaternionToHoverAngles(Quaternion rotation)
         {
             double primaryJoint = 0;
             double secondaryJoint = 0;
-            DirectionAngle directionAngle = DirectionAngle.QuaternionToDirectionAngle(QuatCurrentRotation);
+            DirectionAngle directionAngle = DirectionAngle.QuaternionToDirectionAngle(rotation);
 
             directionAngle.Direction = RotationMatrix.RotateVector(new Vector(0, -90, 0), directionAngle.Direction);
 
@@ -416,11 +416,11 @@ namespace ADRCVisualization.Class_Files
 
             //double angle = Math.Atan2(directionVector.Z, directionVector.X);
 
-            double sMax = 90 * (Math.Cos(MathE.DegreesToRadians(primaryJoint)));
+            double sMax = 90 * (Math.Cos(MathE.DegreesToRadians(primaryJoint)));//cos of the primary joint just gives the input of the direction vector
             double pMax = 90 * (Math.Cos(MathE.DegreesToRadians(secondaryJoint)));//value 90 will decrease as the yaw rotation changes
             //secondaryJoint * scaling factor
 
-            MathE.CleanPrint(sMax, Math.Abs(secondaryJoint), Math.Sign(secondaryJoint), Math.Sign(directionVector.Y) == -1 ? (sMax + sMax - Math.Abs(secondaryJoint)) * Math.Sign(secondaryJoint) : secondaryJoint);
+            //MathE.CleanPrint(sMax, Math.Abs(secondaryJoint), Math.Sign(secondaryJoint), Math.Sign(directionVector.Y) == -1 ? (sMax + sMax - Math.Abs(secondaryJoint)) * Math.Sign(secondaryJoint) : secondaryJoint);
 
             //the sign of the parameter flips the directionality when it is not on its own axis
 
