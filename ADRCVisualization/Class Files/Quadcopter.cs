@@ -157,10 +157,13 @@ namespace ADRCVisualization.Class_Files
 
             //ROTATE or UNROTATE position output by current quaternion rotation
 
+            positionOutput = QuatCurrentRotation.RotateVector(positionOutput);
+
             //Due to XYZ permutation order of Euler angle
             positionOutput.X = positionOutput.X + hoverAngles.Z;//Adjust main joint to rotation
-            positionOutput = RotationMatrix.RotateVector(new Vector(0, CurrentEulerRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
+            //positionOutput = RotationMatrix.RotateVector(new Vector(0, CurrentEulerRotation.Y, 0), positionOutput);//adjust thruster output to quad frame, only Y dimension
             positionOutput.Z = positionOutput.Z - hoverAngles.X;//Adjust secondary joint to rotation
+
 
             //positionOutput.X = 0;
             //positionOutput.Z = 0;
@@ -399,9 +402,18 @@ namespace ADRCVisualization.Class_Files
 
             //These are cartesian coordinates, convert them to the angle from 1, 0 to the point it is at
             secondaryJoint = MathE.RadiansToDegrees(Math.Asin(directionVector.Z));// * Math.Sign(directionVector.Y);
-            primaryJoint   = MathE.RadiansToDegrees(Math.Asin(directionVector.X));// + directionAngle.Rotation;
+            //primaryJoint   = MathE.RadiansToDegrees(Math.Asin(directionVector.X));// + directionAngle.Rotation;
 
-            double radius = (Math.Pow(secondaryJoint, 2) + Math.Pow(primaryJoint, 2)) / 90;//distance between points with top down view on unit sphere
+            //secondaryJoint = MathE.RadiansToDegrees(Math.Atan2(directionVector.Z, directionVector.Y));
+            primaryJoint = MathE.RadiansToDegrees(Math.Atan2(directionVector.X, directionVector.Y));
+
+            Console.WriteLine(MathE.DoubleToCleanString(primaryJoint) + "  " + MathE.DoubleToCleanString(secondaryJoint) + "  " + MathE.DoubleToCleanString(directionVector.Y));
+
+            //secondaryJoint = -sC.Phi;
+            //primaryJoint = sC.Theta;
+
+
+            //double radius = (Math.Pow(secondaryJoint, 2) + Math.Pow(primaryJoint, 2)) / 90;//distance between points with top down view on unit sphere
 
             //max value is the radius, scale up XZ values
             //ratio between X and Z, take atan2
@@ -416,15 +428,15 @@ namespace ADRCVisualization.Class_Files
 
             //double angle = Math.Atan2(directionVector.Z, directionVector.X);
 
-            double sMax = 90 * (Math.Cos(MathE.DegreesToRadians(primaryJoint)));//cos of the primary joint just gives the input of the direction vector
-            double pMax = 90 * (Math.Cos(MathE.DegreesToRadians(secondaryJoint)));//value 90 will decrease as the yaw rotation changes
+            //double sMax = 90 * (Math.Cos(MathE.DegreesToRadians(primaryJoint)));//cos of the primary joint just gives the input of the direction vector
+            //double pMax = 90 * (Math.Cos(MathE.DegreesToRadians(secondaryJoint)));//value 90 will decrease as the yaw rotation changes
             //secondaryJoint * scaling factor
 
             //MathE.CleanPrint(sMax, Math.Abs(secondaryJoint), Math.Sign(secondaryJoint), Math.Sign(directionVector.Y) == -1 ? (sMax + sMax - Math.Abs(secondaryJoint)) * Math.Sign(secondaryJoint) : secondaryJoint);
 
             //the sign of the parameter flips the directionality when it is not on its own axis
 
-            secondaryJoint = Math.Sign(directionVector.Y) == -1 ? (sMax + sMax - Math.Abs(secondaryJoint)) * Math.Sign(secondaryJoint) : secondaryJoint;
+            //secondaryJoint = Math.Sign(directionVector.Y) == -1 ? (sMax + sMax - Math.Abs(secondaryJoint)) * Math.Sign(secondaryJoint) : secondaryJoint;
             //primaryJoint   = Math.Sign(directionVector.Y) == -1 ? (pMax + pMax - Math.Abs(primaryJoint))   * Math.Sign(primaryJoint)   : primaryJoint;
 
             //MathE.CleanPrint(Math.Sign(directionVector.Y), primaryJoint, secondaryJoint, pMax, sMax);

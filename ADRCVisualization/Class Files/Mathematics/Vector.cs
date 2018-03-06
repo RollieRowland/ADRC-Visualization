@@ -306,6 +306,17 @@ namespace ADRCVisualization.Class_Files.Mathematics
         {
             return Math.Sqrt(Math.Pow(one.X - two.X, 2) + Math.Pow(one.Y - two.Y, 2) + Math.Pow(one.Z - two.Z, 2));
         }
+        public override bool Equals(System.Object obj)
+        {
+            var vector = obj as Vector;
+
+            if (vector == null)
+            {
+                return false;
+            }
+            
+            return IsEqual(this, vector);
+        }
 
         /// <summary>
         /// 

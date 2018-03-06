@@ -94,5 +94,10 @@ namespace ADRCVisualization.Class_Files.Mathematics
 
             Console.WriteLine(fullString);
         }
+
+        public static void Atan3(double y, double x, double previousAngle)
+        {
+
+        }
     }
 }

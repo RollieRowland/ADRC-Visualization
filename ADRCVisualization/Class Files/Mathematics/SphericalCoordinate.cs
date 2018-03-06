@@ -55,7 +55,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         public static SphericalCoordinate VectorToSphericalCoordinate(Vector cartesianCoordinate)
         {
             double radius = Math.Sqrt(Math.Pow(cartesianCoordinate.X, 2) + Math.Pow(cartesianCoordinate.Y, 2) + Math.Pow(cartesianCoordinate.Z, 2));
-            
+
             return new SphericalCoordinate(0, 0, 0)
             {
                 Radius = radius,
