@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Mathematics">
+      <UniqueIdentifier>{3fa9c329-eda2-419b-92a9-3e7bde6dafbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FeedbackControl">
+      <UniqueIdentifier>{92934890-2b65-408f-82a6-46f119542d0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FeedbackControl\ADRC">
+      <UniqueIdentifier>{3f0bacf0-f7a4-4b72-bb15-f5e0c0d4a50b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Filters">
+      <UniqueIdentifier>{2ed87666-d79f-4acd-9317-2f8515eec0ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Quadcopter">
+      <UniqueIdentifier>{592b1334-bc53-431b-9280-185c083bcecd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Quadcopter">
+      <UniqueIdentifier>{6d5ae97a-0a0a-4afe-b42b-d0b04b8bc6e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Mathematics">
+      <UniqueIdentifier>{e17a53dd-041d-484b-bc47-112daa8fcdcc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MPU6050.cpp">
+      <Filter>Source Files\Quadcopter</Filter>
+    </ClCompile>
+    <ClCompile Include="Motor.cpp">
+      <Filter>Source Files\Quadcopter</Filter>
+    </ClCompile>
+    <ClCompile Include="Servo.cpp">
+      <Filter>Source Files\Quadcopter</Filter>
+    </ClCompile>
+    <ClCompile Include="Thruster.cpp">
+      <Filter>Source Files\Quadcopter</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Thruster.h">
+      <Filter>Header Files\Quadcopter</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="Servo.h">
+      <Filter>Header Files\Quadcopter</Filter>
+    </ClInclude>
+    <ClInclude Include="Motor.h">
+      <Filter>Header Files\Quadcopter</Filter>
+    </ClInclude>
+    <ClInclude Include="MPU6050.h">
+      <Filter>Header Files\Quadcopter</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

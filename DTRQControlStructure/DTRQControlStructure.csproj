@@ -38,9 +38,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="fftwlib">
-      <HintPath>.\fftwlib.dll</HintPath>
-    </Reference>
     <Reference Include="HelixToolkit, Version=1.0.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.1.0.0\lib\portable-net45+win8+wpa81+wp8\HelixToolkit.dll</HintPath>
     </Reference>
@@ -74,16 +71,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class Files\FeedbackControl\AdaptivePID.cs" />
-    <Compile Include="Class Files\FeedbackControl\ADRC\AbstractMath.cs" />
     <Compile Include="Class Files\FeedbackControl\ADRC\ADRC.cs" />
-    <Compile Include="Class Files\BitmapModifier.cs" />
     <Compile Include="Class Files\FeedbackControl\ADRC\ExtendedStateObserver.cs" />
     <Compile Include="Class Files\FeedbackControl\FeedbackController.cs" />
     <Compile Include="Class Files\FeedbackControl\QuaternionFeedbackController.cs" />
     <Compile Include="Class Files\FeedbackControl\VectorFeedbackController.cs" />
     <Compile Include="Class Files\Filters\VectorKalmanFilter.cs" />
-    <Compile Include="Class Files\FourierTransforms\FourierBitmap.cs" />
-    <Compile Include="Class Files\FourierTransforms\FourierTransform.cs" />
     <Compile Include="Class Files\Filters\KalmanFilter.cs" />
     <Compile Include="Class Files\Mathematics\Acceleration.cs" />
     <Compile Include="Class Files\Mathematics\AxisAngle.cs" />
@@ -106,13 +99,8 @@
     <Compile Include="Class Files\QuadcopterSimulation\Motor.cs" />
     <Compile Include="Class Files\QuadcopterSimulation\Servo.cs" />
     <Compile Include="Class Files\QuadcopterSimulation\Thruster.cs" />
-    <Compile Include="Class Files\Solvers\GeneticAlgorithmSolver.cs" />
-    <Compile Include="Class Files\Solvers\NeuralNetworkSolver.cs" />
     <Compile Include="Class Files\FeedbackControl\ADRC\NonlinearCombiner.cs" />
     <Compile Include="Class Files\FeedbackControl\PID.cs" />
-    <Compile Include="Class Files\Solvers\SimulatedAnnealingSolver.cs" />
-    <Compile Include="Class Files\FeedbackControl\ADRC\TrackingDifferentiator.cs" />
-    <Compile Include="Class Files\Solvers\Solver.cs" />
     <Compile Include="QuadViewer.xaml.cs">
       <DependentUpon>QuadViewer.xaml</DependentUpon>
     </Compile>
@@ -153,7 +141,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Class Files\TODO.txt" />
-    <None Include="Resources\asdfsdfs.png" />
     <None Include="Resources\InnerB.stl" />
     <None Include="Resources\InnerC.stl" />
     <None Include="Resources\InnerD.stl" />
@@ -163,7 +150,6 @@
     <None Include="Resources\OuterC.stl" />
     <None Include="Resources\OuterD.stl" />
     <None Include="Resources\OuterE.stl" />
-    <None Include="Resources\test12.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="QuadViewer.xaml">

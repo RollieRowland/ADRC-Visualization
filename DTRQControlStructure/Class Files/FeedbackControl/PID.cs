@@ -8,7 +8,7 @@ using ADRCVisualization.Class_Files.FeedbackControl;
 
 namespace ADRCVisualization.Class_Files
 {
-    class PID : FeedbackController
+    public class PID : FeedbackController
     {
         public double KP { get; set; }
         public double KI { get; set; }

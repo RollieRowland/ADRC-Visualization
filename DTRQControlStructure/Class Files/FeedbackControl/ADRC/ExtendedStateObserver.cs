@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ADRCVisualization.Class_Files
 {
     //ESO
-    class ExtendedStateObserver
+    public class ExtendedStateObserver
     {
         /*
             //INPUTS: b0/u, y

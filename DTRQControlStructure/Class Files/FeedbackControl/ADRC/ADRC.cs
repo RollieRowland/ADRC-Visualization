@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ADRCVisualization.Class_Files.Mathematics;
 using ADRCVisualization.Class_Files.FeedbackControl;
 
 namespace ADRCVisualization.Class_Files
 {
-    class ADRC : FeedbackController
+    public class ADRC : FeedbackController
     {
         public PID PID { get; set; }
         public double MaxOutput { get; set; }

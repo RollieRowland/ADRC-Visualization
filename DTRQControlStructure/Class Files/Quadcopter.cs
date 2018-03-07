@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ADRCVisualization.Class_Files.QuadcopterSimulation;
 using ADRCVisualization.Class_Files.Mathematics;
 using ADRCVisualization.Class_Files.FeedbackControl;

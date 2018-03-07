@@ -7,7 +7,6 @@ C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\bin\Debug\AD
 C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
 C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
 C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\bin\Debug\HelixToolkit.Wpf.dll
-C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\bin\Debug\fftwlib.dll
 C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\bin\Debug\HelixToolkit.dll
 C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\bin\Debug\ADRCVisualization.pdb
 C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\bin\Debug\ADRCVisualization.exe.config
@@ -21,3 +20,4 @@ C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\obj\Debug\DT
 C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\obj\Debug\DTRQDependencyTest.csproj.CoreCompileInputs.cache
 C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\obj\Debug\ADRCVisualizationTest.dll
 C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\obj\Debug\ADRCVisualizationTest.pdb
+C:\Users\steve\source\repos\DTRQControlStructure\DTRQDependencyTest\obj\Debug\DTRQDependencyTest.csproj.CopyComplete
