@@ -259,7 +259,9 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// <returns></returns>
         public static Vector CrossProduct(Vector vectorO, Vector vectorT)
         {
-            return new Vector(((vectorO.Y * vectorT.Z) - (vectorO.Z * vectorT.Y)), ((vectorO.Z * vectorT.X) - (vectorO.X * vectorT.Z)), ((vectorO.X * vectorT.Y) - (vectorO.Y * vectorT.X)));
+            return new Vector(((vectorO.Y * vectorT.Z) - (vectorO.Z * vectorT.Y)), 
+                              ((vectorO.Z * vectorT.X) - (vectorO.X * vectorT.Z)), 
+                              ((vectorO.X * vectorT.Y) - (vectorO.Y * vectorT.X)));
         }
 
         /// <summary>

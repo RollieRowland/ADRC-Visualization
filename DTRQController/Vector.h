@@ -1,13 +1,15 @@
 #pragma once
 #include <string>
+#include <math.h>
+#include <Math.h>
 
 using namespace std;
 
 typedef struct Vector3D
 {
-	double X;
-	double Y;
-	double Z;
+	double X = 0.0;
+	double Y = 0.0;
+	double Z = 0.0;
 
 	Vector3D(const Vector3D& vector);
 	Vector3D(double x, double y, double z);

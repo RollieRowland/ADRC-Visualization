@@ -118,6 +118,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Math.cpp" />
     <ClCompile Include="Motor.cpp" />
     <ClCompile Include="MPU6050.cpp" />
     <ClCompile Include="Quaternion.cpp" />
@@ -126,6 +127,8 @@
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EulerOrder.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="Motor.h" />
     <ClInclude Include="MPU6050.h" />
     <ClInclude Include="Quaternion.h" />
