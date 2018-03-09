@@ -70,7 +70,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\steve\source\repos\DTRQControlStructure\DTRQController;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQController;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

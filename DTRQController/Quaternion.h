@@ -3,10 +3,10 @@
 #include <math.h>
 #include <Math.h>
 #include <Vector.h>
-#include <EulerAngles.h>
-#include <AxisAngle.h>
-#include <DirectionAngle.h>
-#include <RotationMatrix.h>
+//#include <EulerAngles.h>
+//#include <AxisAngle.h>
+//#include <DirectionAngle.h>
+//#include <RotationMatrix.h>
 
 using namespace std;
 
