@@ -81,33 +81,6 @@ namespace ADRCVisualization.Class_Files.Mathematics
             ZAxis = new Vector(Z, Z, Z);
         }
         
-        /// <summary>
-        /// Rotate about arbitrary axis
-        /// </summary>
-        /// <param name="axis"></param>
-        /// <param name="theta"></param>
-        public RotationMatrix(Vector axis, double theta)
-        {
-            Vector u = axis.Normalize();
-
-            double sin = Math.Sin(theta);
-            double cos = Math.Cos(theta);
-
-            double uxy = u.X * u.Y * (1 - cos);
-            double uyz = u.Y * u.Z * (1 - cos);
-            double uxz = u.X * u.Z * (1 - cos);
-            double ux2 = u.X * u.X * (1 - cos);
-            double uy2 = u.Y * u.Y * (1 - cos);
-            double uz2 = u.Z * u.Z * (1 - cos);
-
-            double uxsin = u.X * sin;
-            double uysin = u.Y * sin;
-            double uzsin = u.Z * sin;
-
-            XAxis = new Vector(cos + ux2, uxy + uzsin, uxz - uysin);
-            YAxis = new Vector(uxy - uzsin, cos + uy2, uyz + uxsin);
-            ZAxis = new Vector(uxz + uysin, uyz - uxsin, cos + uz2);
-        }
 
         /// <summary>
         /// Rotation with the right-hand rule

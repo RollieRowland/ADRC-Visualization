@@ -64,7 +64,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
         /// </summary>
         /// <param name="radians"></param>
         /// <returns></returns>
-        public static Vector Vector(Vector radians)
+        public static Vector RadiansToDegrees(Vector radians)
         {
             return radians * (180.0 / Math.PI);
         }

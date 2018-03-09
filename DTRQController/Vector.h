@@ -11,6 +11,7 @@ typedef struct Vector3D
 	double Y = 0.0;
 	double Z = 0.0;
 
+	Vector3D();
 	Vector3D(const Vector3D& vector);
 	Vector3D(double x, double y, double z);
 	Vector3D Normal();
@@ -100,7 +101,11 @@ typedef struct Vector3D
 		return this->Multiply(vector);
 	}
 
-	Vector3D operator  /(Vector3D vector) {
-		return this->Divide(vector);
+	Vector3D operator  *(double value) {
+		return this->Multiply(value);
+	}
+
+	Vector3D operator  /(double value) {
+		return this->Divide(value);
 	}
 } Vector3D;

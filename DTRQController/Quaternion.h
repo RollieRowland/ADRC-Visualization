@@ -3,10 +3,10 @@
 #include <math.h>
 #include <Math.h>
 #include <Vector.h>
-//#include <EulerAngles.h>
-//#include <AxisAngle.h>
-//#include <DirectionAngle.h>
-//#include <RotationMatrix.h>
+#include <EulerAngles.h>
+#include <AxisAngle.h>
+#include <DirectionAngle.h>
+#include <RotationMatrix.h>
 
 using namespace std;
 
@@ -24,13 +24,6 @@ typedef struct Quaternion {
 	Vector3D UnrotateVector(Vector3D coordinate);
 	Vector3D GetBiVector();
 
-	Quaternion EulerToQuaternion(EulerAngles eulerAngles);
-	Quaternion AxisAngleToQuaternion(AxisAngle axisAngle);
-	Quaternion DirectionAngleToQuaternion(DirectionAngle directionAngle);
-	Quaternion RotationMatrixToQuaternion(RotationMatrix rotationMatrix);
-	Quaternion QuaternionFromDirectionVectors(Vector3D initial, Vector3D final);
-	Quaternion SphericalInterpolation(Quaternion quaternion, double ratio);
-
 	Quaternion Add(Quaternion quaternion);
 	Quaternion Subtract(Quaternion quaternion);
 	Quaternion Multiply(Quaternion quaternion);
@@ -46,8 +39,9 @@ typedef struct Quaternion {
 	Quaternion MultiplicativeInverse();
 	Quaternion Conjugate();
 	Quaternion UnitQuaternion();
-	Quaternion Normal();
 	Quaternion Magnitude();
+
+	double Normal();
 
 	bool IsNan();
 	bool IsFinite();
@@ -58,6 +52,13 @@ typedef struct Quaternion {
 	string ToString();
 
 	//Static functions
+	static Quaternion EulerToQuaternion(EulerAngles eulerAngles);
+	static Quaternion AxisAngleToQuaternion(AxisAngle axisAngle);
+	static Quaternion DirectionAngleToQuaternion(DirectionAngle directionAngle);
+	static Quaternion RotationMatrixToQuaternion(RotationMatrix rotationMatrix);
+	static Quaternion QuaternionFromDirectionVectors(Vector3D initial, Vector3D final);
+	static Quaternion SphericalInterpolation(Quaternion quaternion, double ratio);
+
 	static Quaternion Add(Quaternion q1, Quaternion q2) {
 		return q1.Add(q2);
 	}

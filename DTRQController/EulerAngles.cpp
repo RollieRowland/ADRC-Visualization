@@ -1,0 +1,93 @@
+#include <EulerAngles.h>
+#include <EulerConstants.h>
+#include <Math.h>
+
+EulerAngles::EulerAngles() {
+	Angles = Vector3D(0, 0, 0);
+	Order = EulerConstants::EulerOrderXYZS;
+}
+
+EulerAngles::EulerAngles(Vector3D angles, EulerOrder order) {
+	Angles = angles;
+	Order = order;
+}
+
+EulerAngles EulerAngles::HMatrixToEuler(HMatrix hM, EulerOrder order) {
+	EulerAngles eulerAngles = EulerAngles(Vector3D(0, 0, 0), order);
+	Vector3D p = order.Permutation;
+
+	if (order.InitialAxisRepetition == EulerOrder::AxisRepetition::Yes)
+	{
+		double sy = sqrt(pow(hM(p.X, p.Y), 2) + pow(hM(p.X, p.Z), 2));
+
+		if (sy > 32 * numeric_limits<double>::epsilon())//16 * float.Epsilon
+		{
+			eulerAngles.Angles.X = atan2(hM(p.X, p.Y), hM(p.X, p.Z));
+			eulerAngles.Angles.Y = atan2(sy, hM(p.X, p.X));
+			eulerAngles.Angles.Z = atan2(hM(p.Y, p.X), -hM(p.Z, p.X));
+		}
+		else
+		{
+			eulerAngles.Angles.X = atan2(-hM(p.Y, p.Z), hM(p.Y, p.Y));
+			eulerAngles.Angles.Y = atan2(sy, hM(p.X, p.X));
+			eulerAngles.Angles.Z = 0;
+		}
+	}
+	else
+	{
+		double cy = sqrt(pow(hM(p.X, p.X), 2) + pow(hM(p.Y, p.X), 2));
+
+		if (cy > 32 * numeric_limits<double>::epsilon())
+		{
+			eulerAngles.Angles.X = atan2(hM(p.Z, p.Y), hM(p.Z, p.Z));
+			eulerAngles.Angles.Y = atan2(-hM(p.Z, p.X), cy);
+			eulerAngles.Angles.Z = atan2(hM(p.Y, p.X), hM(p.X, p.X));
+		}
+		else
+		{
+			eulerAngles.Angles.X = atan2(-hM(p.Y, p.Z), hM(p.Y, p.Y));
+			eulerAngles.Angles.Y = atan2(-hM(p.Z, p.X), cy);
+			eulerAngles.Angles.Z = 0;
+		}
+	}
+
+	if (order.AxisPermutation == EulerOrder::Parity::Odd)
+	{
+		eulerAngles.Angles.X = -eulerAngles.Angles.X;
+		eulerAngles.Angles.Y = -eulerAngles.Angles.Y;
+		eulerAngles.Angles.Z = -eulerAngles.Angles.Z;
+	}
+
+	if (order.FrameTaken == EulerOrder::AxisFrame::Rotating)
+	{
+		double temp = eulerAngles.Angles.X;
+		eulerAngles.Angles.X = eulerAngles.Angles.Z;
+		eulerAngles.Angles.Z = temp;
+	}
+
+	eulerAngles.Angles.X = Math::RadiansToDegrees(eulerAngles.Angles.X);
+	eulerAngles.Angles.Y = Math::RadiansToDegrees(eulerAngles.Angles.Y);
+	eulerAngles.Angles.Z = Math::RadiansToDegrees(eulerAngles.Angles.Z);
+
+	return eulerAngles;
+}
+
+EulerAngles EulerAngles::QuaternionToEuler(Quaternion q, EulerOrder order) {
+	double norm = q.Normal();
+	double scale = norm > 0.0 ? 2.0 / norm : 0.0;
+	HMatrix hM = HMatrix();
+
+	Vector3D s = Vector3D(q.X * scale, q.Y * scale, q.Z * scale);
+	Vector3D w = Vector3D(q.W * s.X, q.W * s.Y, q.W * s.Z);
+	Vector3D x = Vector3D(q.X * s.X, q.X * s.Y, q.X * s.Z);
+	Vector3D y = Vector3D(0.0, q.Y * s.Y, q.Y * s.Z);
+	Vector3D z = Vector3D(0.0, 0.0, q.Z * s.Z);
+
+	//0X, 1Y, 2Z, 3W
+	hM(0, 0) = 1.0 - (y.Y + z.Z);   hM(0, 1) = x.Y - w.Z;           hM(0, 2) = x.Z + w.Y;           hM(0, 3) = 0.0;
+	hM(1, 0) = x.Y + w.Z;           hM(1, 1) = 1.0 - (x.X + z.Z);   hM(1, 2) = y.Z - w.X;           hM(1, 3) = 0.0;
+	hM(2, 0) = x.Z - w.Y;           hM(2, 1) = y.Z + w.X;           hM(2, 2) = 1.0 - (x.X + y.Y);   hM(2, 3) = 0.0;
+	hM(3, 0) = 0.0;                 hM(3, 1) = 0.0;                 hM(3, 2) = 0.0;                 hM(3, 3) = 1.0;
+
+	return HMatrixToEuler(hM, order);
+}

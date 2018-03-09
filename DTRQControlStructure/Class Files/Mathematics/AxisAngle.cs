@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ADRCVisualization.Class_Files.Mathematics
 {
@@ -69,11 +65,6 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Quaternion q = Quaternion.AxisAngleToQuaternion(this);
 
             return q.RotateVector(v);
-        }
-
-        private double RotateAxis(double angle, double axis)
-        {
-            throw new NotImplementedException();
         }
 
         public override string ToString()

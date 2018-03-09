@@ -74,7 +74,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             sc = sx * cz;
             ss = sx * sz;
 
-            if (eulerAngles.Order.InitialAxisRepitition == EulerOrder.AxisRepitition.Yes)
+            if (eulerAngles.Order.InitialAxisRepetition == EulerOrder.AxisRepetition.Yes)
             {
                 hM[p.X, p.X] = cy; hM[p.X, p.Y] = sy * sx; hM[p.X, p.Z] = sy * cx; hM[0, 3] = 0;
                 hM[p.Y, p.X] = sy * sz; hM[p.Y, p.Y] = -cy * ss + cc; hM[p.Y, p.Z] = -cy * cs - sc; hM[1, 3] = 0;

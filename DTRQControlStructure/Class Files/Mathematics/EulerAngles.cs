@@ -22,7 +22,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             EulerAngles eulerAngles = new EulerAngles(new Vector(0, 0, 0), order);
             Vector p = order.Permutation;
 
-            if (order.InitialAxisRepitition == EulerOrder.AxisRepitition.Yes)
+            if (order.InitialAxisRepetition == EulerOrder.AxisRepetition.Yes)
             {
                 double sy = Math.Sqrt(Math.Pow(hM[p.X, p.Y], 2) + Math.Pow(hM[p.X, p.Z], 2));
 

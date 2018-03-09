@@ -117,6 +117,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AxisAngle.cpp" />
+    <ClCompile Include="DirectionAngle.cpp" />
+    <ClCompile Include="EulerAngles.cpp" />
+    <ClCompile Include="EulerConstants.cpp" />
+    <ClCompile Include="EulerOrder.cpp" />
+    <ClCompile Include="HMatrix.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Motor.cpp" />
@@ -127,11 +133,17 @@
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AxisAngle.h" />
+    <ClInclude Include="DirectionAngle.h" />
+    <ClInclude Include="EulerAngles.h" />
+    <ClInclude Include="EulerConstants.h" />
     <ClInclude Include="EulerOrder.h" />
+    <ClInclude Include="HMatrix.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Motor.h" />
     <ClInclude Include="MPU6050.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="RotationMatrix.h" />
     <ClInclude Include="Servo.h" />
     <ClInclude Include="Thruster.h" />
     <ClInclude Include="Vector.h" />

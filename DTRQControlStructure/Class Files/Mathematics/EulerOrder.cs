@@ -10,15 +10,15 @@ namespace ADRCVisualization.Class_Files.Mathematics
     {
         public Axis InitialAxis { get; }
         public Parity AxisPermutation { get; }
-        public AxisRepitition InitialAxisRepitition { get; }
+        public AxisRepetition InitialAxisRepetition { get; }
         public AxisFrame FrameTaken { get; }
         public Vector Permutation { get; }
 
-        public EulerOrder(Axis axis, Parity parity, AxisRepitition axisRepitition, AxisFrame axisFrame, Vector permutation)
+        public EulerOrder(Axis axis, Parity parity, AxisRepetition axisRepetition, AxisFrame axisFrame, Vector permutation)
         {
             InitialAxis = axis;
             AxisPermutation = parity;
-            InitialAxisRepitition = axisRepitition;
+            InitialAxisRepetition = axisRepetition;
             FrameTaken = axisFrame;
             Permutation = permutation;
         }
@@ -36,7 +36,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             Odd
         };
 
-        public enum AxisRepitition
+        public enum AxisRepetition
         {
             Yes,
             No

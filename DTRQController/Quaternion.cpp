@@ -98,11 +98,11 @@ Quaternion Quaternion::UnitQuaternion() {
 
 }
 
-Quaternion Quaternion::Normal() {
+Quaternion Quaternion::Magnitude() {
 
 }
 
-Quaternion Quaternion::Magnitude() {
+double Quaternion::Normal() {
 
 }
 

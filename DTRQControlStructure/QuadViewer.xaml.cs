@@ -62,7 +62,7 @@ namespace ADRCVisualization
 
             ModelImporter import = new ModelImporter();
 
-            string directory = @"C:\Users\steve\source\repos\DTRQControlStructure\DTRQControlStructure\Resources\";
+            string directory = @"C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQControlStructure\Resources\";
             //directory = @"..\..\Resources\";
 
             import.DefaultMaterial = new DiffuseMaterial(new SolidColorBrush(Colors.MediumSlateBlue));

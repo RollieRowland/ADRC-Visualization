@@ -133,7 +133,7 @@ namespace ADRCVisualization.Class_Files
             Vector positionOutput = PositionFeedbackController.Calculate(new Vector(0, 0, 0), CurrentPosition.Subtract(TargetPosition), SamplingPeriod);
 
             rotationOutput = rotationOutput.Multiply(new Vector(1, 1, 1));
-            positionOutput = new Vector(0, 0, 0);
+            //positionOutput = new Vector(0, 0, 0);
 
             //Console.WriteLine(rotationOutput + " " + CurrentEulerRotation);
 
@@ -206,7 +206,7 @@ namespace ADRCVisualization.Class_Files
         public void CalculateCurrent()
         {
             //EstimatePosition(SamplingPeriod);
-            //EstimatePositionFix(SamplingPeriod);
+            EstimatePositionFix(SamplingPeriod);
             EstimateRotation(SamplingPeriod);
 
             //calculate rotation matrix

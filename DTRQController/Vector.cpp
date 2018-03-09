@@ -1,5 +1,11 @@
 #include <Vector.h>
 
+Vector3D::Vector3D() {
+	this->X = 0.0;
+	this->Y = 0.0;
+	this->Z = 0.0;
+}
+
 Vector3D::Vector3D(const Vector3D& vector) {
 	this->X = vector.X;
 	this->Y = vector.Y;
