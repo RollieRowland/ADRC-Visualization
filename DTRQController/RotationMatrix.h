@@ -33,7 +33,6 @@ public:
 	bool IsEqual(RotationMatrix rM);
 	double Determinant();
 
-	static RotationMatrix QuaternionToRotationMatrix(Quaternion quaternion);
 	static Vector3D RotateVector(Vector3D rotate, Vector3D coordinates);
 
 	string ToString();

@@ -9,7 +9,5 @@ typedef struct DirectionAngle {
 	DirectionAngle(double rotation, double x, double y, double z);
 	DirectionAngle(double rotation, Vector3D direction);
 
-	static DirectionAngle QuaternionToDirectionAngle(Quaternion quaternion);
-
 	string ToString();
 } DirectionAngle;

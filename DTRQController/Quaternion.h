@@ -16,6 +16,7 @@ typedef struct Quaternion {
 	double Y = 0.0;
 	double Z = 0.0;
 
+	Quaternion();
 	Quaternion(const Quaternion& quaternion);
 	Quaternion(Vector3D vector);
 	Quaternion(double W, double X, double Y, double Z);

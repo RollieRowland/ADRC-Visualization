@@ -121,7 +121,7 @@ namespace ADRCVisualization.Class_Files.Mathematics
             sc = sx * cz;
             ss = sx * sz;
 
-            if (eulerAngles.Order.InitialAxisRepitition == EulerOrder.AxisRepitition.Yes)
+            if (eulerAngles.Order.InitialAxisRepetition == EulerOrder.AxisRepetition.Yes)
             {
                 q.X = cy * (cs + sc);
                 q.Y = sy * (cc + ss);

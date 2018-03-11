@@ -2,6 +2,7 @@
 #include <EulerOrder.h>
 
 typedef struct EulerConstants {
+public:
 	//Static frame of reference, inertial reference frame
 	static EulerOrder EulerOrderXYZS;
 	static EulerOrder EulerOrderXYXS;

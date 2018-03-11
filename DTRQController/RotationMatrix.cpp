@@ -140,18 +140,6 @@ double RotationMatrix::Determinant() {
 		ZAxis.X * (XAxis.Y * YAxis.Z - YAxis.Y * XAxis.Z);
 }
 
-RotationMatrix RotationMatrix::QuaternionToRotationMatrix(Quaternion quaternion) {
-	Vector3D X = Vector3D(1, 0, 0);
-	Vector3D Y = Vector3D(0, 1, 0);
-	Vector3D Z = Vector3D(0, 0, 1);
-
-	return RotationMatrix(
-		quaternion.RotateVector(X),
-		quaternion.RotateVector(Y),
-		quaternion.RotateVector(Z)
-	);
-}
-
 Vector3D RotationMatrix::RotateVector(Vector3D rotate, Vector3D coordinates) {
 	//calculate rotation matrix
 	RotationMatrix matrix = RotationMatrix(coordinates);

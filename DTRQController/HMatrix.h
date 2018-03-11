@@ -11,5 +11,4 @@ typedef struct HMatrix {
 	HMatrix(int x, int y) : hierarchicalMatrix(x, vector<double>(y, double())) {}
 
 	double& operator() (int x, int y) { return hierarchicalMatrix[x][y]; }
-	HMatrix EulerToHMatrix(EulerAngles eulerAngles);
 } HMatrix;

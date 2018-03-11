@@ -84,6 +84,9 @@
     <ClCompile Include="RotationMatrix.cpp">
       <Filter>Source Files\Mathematics</Filter>
     </ClCompile>
+    <ClCompile Include="Rotation.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Thruster.h">
@@ -126,6 +129,9 @@
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
     <ClInclude Include="RotationMatrix.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="Rotation.h">
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
   </ItemGroup>

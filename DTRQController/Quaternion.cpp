@@ -1,5 +1,12 @@
 #include <Quaternion.h>
 
+Quaternion::Quaternion() {
+	this->W = 1.0;
+	this->X = 1.0;
+	this->Y = 1.0;
+	this->Z = 1.0;
+}
+
 Quaternion::Quaternion(const Quaternion& quaternion) {
 
 }
@@ -15,9 +22,11 @@ Quaternion::Quaternion(double W, double X, double Y, double Z) {
 Vector3D Quaternion::RotateVector(Vector3D coordinate) {
 
 }
+
 Vector3D Quaternion::UnrotateVector(Vector3D coordinate) {
 
 }
+
 Vector3D Quaternion::GetBiVector() {
 
 }

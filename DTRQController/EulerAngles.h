@@ -11,7 +11,4 @@ typedef struct EulerAngles {
 	EulerAngles();
 	EulerAngles(Vector3D angles, EulerOrder order);
 
-	static EulerAngles HMatrixToEuler(HMatrix hM, EulerOrder order);
-	static EulerAngles QuaternionToEuler(Quaternion q, EulerOrder order);
-
 } EulerAngles;

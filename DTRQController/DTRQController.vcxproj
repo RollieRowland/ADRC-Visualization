@@ -128,6 +128,7 @@
     <ClCompile Include="Motor.cpp" />
     <ClCompile Include="MPU6050.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="Rotation.cpp" />
     <ClCompile Include="RotationMatrix.cpp" />
     <ClCompile Include="Servo.cpp" />
     <ClCompile Include="Thruster.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="Motor.h" />
     <ClInclude Include="MPU6050.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="Rotation.h" />
     <ClInclude Include="RotationMatrix.h" />
     <ClInclude Include="Servo.h" />
     <ClInclude Include="Thruster.h" />
