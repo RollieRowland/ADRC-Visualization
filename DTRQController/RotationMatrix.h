@@ -15,6 +15,7 @@ public:
 	Vector3D ZAxis;
 
 	RotationMatrix(Vector3D axes);
+	RotationMatrix(Vector3D X, Vector3D Y, Vector3D Z);
 	
 	Vector3D ConvertCoordinateToVector();
 	void ReadjustMatrix();

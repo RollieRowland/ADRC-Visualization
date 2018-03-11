@@ -112,12 +112,12 @@ typedef struct Quaternion {
 		return quaternion.UnitQuaternion();
 	}
 
-	static Quaternion Normal(Quaternion quaternion) {
-		return quaternion.Normal();
-	}
-
 	static Quaternion Magnitude(Quaternion quaternion) {
 		return quaternion.Magnitude();
+	}
+
+	static double Normal(Quaternion quaternion) {
+		return quaternion.Normal();
 	}
 
 	//Operator overloads
