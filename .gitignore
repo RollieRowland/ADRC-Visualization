@@ -6,3 +6,12 @@ DTRQDependencyTest/bin/
 TestResults/
 
 DTRQControlStructure/obj/
+
+DTRQDependencyTest/obj/
+
+.vs/
+
+Debug/
+
+DTRQController/Debug/
+
