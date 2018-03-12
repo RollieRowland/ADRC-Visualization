@@ -117,39 +117,58 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ADRC.cpp" />
     <ClCompile Include="AxisAngle.cpp" />
     <ClCompile Include="DirectionAngle.cpp" />
     <ClCompile Include="EulerAngles.cpp" />
     <ClCompile Include="EulerConstants.cpp" />
     <ClCompile Include="EulerOrder.cpp" />
+    <ClCompile Include="ExtendedStateObserver.cpp" />
     <ClCompile Include="HMatrix.cpp" />
+    <ClCompile Include="KalmanFilter.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Motor.cpp" />
     <ClCompile Include="MPU6050.cpp" />
+    <ClCompile Include="NonlinearCombiner.cpp" />
+    <ClCompile Include="PID.cpp" />
+    <ClCompile Include="Quadcopter.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Rotation.cpp" />
     <ClCompile Include="RotationMatrix.cpp" />
     <ClCompile Include="Servo.cpp" />
     <ClCompile Include="Thruster.cpp" />
+    <ClCompile Include="TriangleWaveFader.cpp" />
     <ClCompile Include="Vector.cpp" />
+    <ClCompile Include="VectorFeedbackController.cpp" />
+    <ClCompile Include="VectorKalmanFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ADRC.h" />
     <ClInclude Include="AxisAngle.h" />
     <ClInclude Include="DirectionAngle.h" />
     <ClInclude Include="EulerAngles.h" />
     <ClInclude Include="EulerConstants.h" />
     <ClInclude Include="EulerOrder.h" />
+    <ClInclude Include="ExtendedStateObserver.h" />
+    <ClInclude Include="FeedbackController.h" />
     <ClInclude Include="HMatrix.h" />
+    <ClInclude Include="KalmanFilter.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Motor.h" />
     <ClInclude Include="MPU6050.h" />
+    <ClInclude Include="NonlinearCombiner.h" />
+    <ClInclude Include="PID.h" />
+    <ClInclude Include="Quadcopter.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Rotation.h" />
     <ClInclude Include="RotationMatrix.h" />
     <ClInclude Include="Servo.h" />
     <ClInclude Include="Thruster.h" />
+    <ClInclude Include="TriangleWaveFader.h" />
     <ClInclude Include="Vector.h" />
+    <ClInclude Include="VectorFeedbackController.h" />
+    <ClInclude Include="VectorKalmanFilter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

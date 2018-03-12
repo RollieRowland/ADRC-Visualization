@@ -89,6 +89,14 @@ typedef struct Vector3D
 		return !(this->IsEqual(vector));
 	}
 
+	Vector3D operator  =(Vector3D vector) {
+		this->X = vector.X;
+		this->Y = vector.Y;
+		this->Z = vector.Z;
+
+		return *this;
+	}
+
 	Vector3D operator  +(Vector3D vector) {
 		return this->Add(vector);
 	}

@@ -37,6 +37,9 @@
     <Filter Include="Header Files\FeedbackControl">
       <UniqueIdentifier>{a12e8ffb-c4c0-4eb2-8cec-272718375bdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\FeedbackControl\ADRC">
+      <UniqueIdentifier>{e521ad4f-b448-4f94-aca0-6ef911ed4d5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -87,6 +90,33 @@
     <ClCompile Include="Rotation.cpp">
       <Filter>Source Files\Mathematics</Filter>
     </ClCompile>
+    <ClCompile Include="TriangleWaveFader.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
+    <ClCompile Include="ADRC.cpp">
+      <Filter>Source Files\FeedbackControl\ADRC</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtendedStateObserver.cpp">
+      <Filter>Source Files\FeedbackControl\ADRC</Filter>
+    </ClCompile>
+    <ClCompile Include="NonlinearCombiner.cpp">
+      <Filter>Source Files\FeedbackControl\ADRC</Filter>
+    </ClCompile>
+    <ClCompile Include="PID.cpp">
+      <Filter>Source Files\FeedbackControl</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorFeedbackController.cpp">
+      <Filter>Source Files\FeedbackControl</Filter>
+    </ClCompile>
+    <ClCompile Include="KalmanFilter.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorKalmanFilter.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
+    <ClCompile Include="Quadcopter.cpp">
+      <Filter>Source Files\Quadcopter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Thruster.h">
@@ -133,6 +163,36 @@
     </ClInclude>
     <ClInclude Include="Rotation.h">
       <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="TriangleWaveFader.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="FeedbackController.h">
+      <Filter>Header Files\FeedbackControl</Filter>
+    </ClInclude>
+    <ClInclude Include="PID.h">
+      <Filter>Header Files\FeedbackControl</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorFeedbackController.h">
+      <Filter>Header Files\FeedbackControl</Filter>
+    </ClInclude>
+    <ClInclude Include="ADRC.h">
+      <Filter>Header Files\FeedbackControl\ADRC</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtendedStateObserver.h">
+      <Filter>Header Files\FeedbackControl\ADRC</Filter>
+    </ClInclude>
+    <ClInclude Include="NonlinearCombiner.h">
+      <Filter>Header Files\FeedbackControl\ADRC</Filter>
+    </ClInclude>
+    <ClInclude Include="KalmanFilter.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorKalmanFilter.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="Quadcopter.h">
+      <Filter>Header Files\Quadcopter</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

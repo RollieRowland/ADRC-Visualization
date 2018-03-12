@@ -23,34 +23,60 @@ Vector3D Vector3D::Normal() {
 }
 
 Vector3D Vector3D::Add(Vector3D vector) {
-	return Vector3D(this->X + vector.X, this->Y + vector.Y, this->Z + vector.Z);
+	return Vector3D{
+		this->X + vector.X,
+		this->Y + vector.Y,
+		this->Z + vector.Z 
+	};
 }
 
 Vector3D Vector3D::Subtract(Vector3D vector) {
-	return Vector3D(this->X - vector.X, this->Y - vector.Y, this->Z - vector.Z);
+	return Vector3D {
+		this->X - vector.X,
+		this->Y - vector.Y,
+		this->Z - vector.Z 
+	};
 }
 
 Vector3D Vector3D::Multiply(Vector3D vector) {
-	return Vector3D(this->X * vector.X, this->Y * vector.Y, this->Z * vector.Z);
+	return Vector3D {
+		this->X * vector.X,
+		this->Y * vector.Y,
+		this->Z * vector.Z 
+	};
 }
 
 Vector3D Vector3D::Divide(Vector3D vector) {
-	return Vector3D(this->X / vector.X, this->Y / vector.Y, this->Z / vector.Z);
+	return Vector3D {
+		this->X / vector.X,
+		this->Y / vector.Y,
+		this->Z / vector.Z 
+	};
 }
 
 Vector3D Vector3D::Multiply(double scalar) {
-	return Vector3D(this->X * scalar, this->Y * scalar, this->Z * scalar);
+	return Vector3D {
+		this->X * scalar,
+		this->Y * scalar,
+		this->Z * scalar }
+	;
 }
 
 Vector3D Vector3D::Divide(double scalar) {
-	return Vector3D(this->X / scalar, this->Y / scalar, this->Z / scalar);
+	return Vector3D {
+		this->X / scalar,
+		this->Y / scalar,
+		this->Z / scalar
+	};
 
 }
 
 Vector3D Vector3D::CrossProduct(Vector3D vector) {
-	return Vector3D((this->Y * vector.Z) - (this->Z * vector.Y),
-					(this->Z * vector.X) - (this->X * vector.Z), 
-					(this->X * vector.Y) - (this->Y * vector.X));
+	return Vector3D {
+		(this->Y * vector.Z) - (this->Z * vector.Y),
+		(this->Z * vector.X) - (this->X * vector.Z),
+		(this->X * vector.Y) - (this->Y * vector.X) 
+	};
 }
 
 Vector3D Vector3D::Normalize() {
@@ -60,7 +86,11 @@ Vector3D Vector3D::Normalize() {
 	if (length == 1) return vector;
 	if (length == 0) return Vector3D(0, 1, 0);
 
-	return Vector3D(vector.X / length, vector.Y / length, vector.Z / length);
+	return Vector3D {
+		vector.X / length,
+		vector.Y / length,
+		vector.Z / length 
+	};
 
 }
 

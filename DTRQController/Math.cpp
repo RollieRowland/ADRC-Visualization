@@ -55,3 +55,19 @@ void Math::CleanPrint(int values, ...) {
 
 	cout << printOut << endl;
 }
+
+bool Math::IsNaN(double value) {
+	return value != value;
+}
+
+bool Math::IsInfinite(double value) {
+	return value == numeric_limits<double>::infinity();
+}
+
+bool Math::IsFinite(double value) {
+	return value != numeric_limits<double>::infinity();
+}
+
+int Math::Sign(double value) {
+		return (0 < value) - (value < 0);
+}

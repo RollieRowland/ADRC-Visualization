@@ -3,10 +3,7 @@
 #include <math.h>
 #include <Math.h>
 #include <Vector.h>
-#include <EulerAngles.h>
-#include <AxisAngle.h>
-#include <DirectionAngle.h>
-#include <RotationMatrix.h>
+#include <Rotation.h>
 
 using namespace std;
 
@@ -28,9 +25,10 @@ typedef struct Quaternion {
 	Quaternion Add(Quaternion quaternion);
 	Quaternion Subtract(Quaternion quaternion);
 	Quaternion Multiply(Quaternion quaternion);
+	Quaternion Multiply(double scalar);
 	Quaternion Divide(Quaternion quaternion);
+	Quaternion Divide(double scalar);
 	Quaternion Power(Quaternion quaternion);
-	Quaternion DotProduct(Quaternion quaternion);
 
 	Quaternion Power(double exponent);
 	Quaternion Permutate(Vector3D permutation);
@@ -40,11 +38,12 @@ typedef struct Quaternion {
 	Quaternion MultiplicativeInverse();
 	Quaternion Conjugate();
 	Quaternion UnitQuaternion();
-	Quaternion Magnitude();
 
+	double Magnitude();
+	double DotProduct(Quaternion quaternion);
 	double Normal();
 
-	bool IsNan();
+	bool IsNaN();
 	bool IsFinite();
 	bool IsInfinite();
 	bool IsNonZero();
@@ -53,12 +52,8 @@ typedef struct Quaternion {
 	string ToString();
 
 	//Static functions
-	static Quaternion EulerToQuaternion(EulerAngles eulerAngles);
-	static Quaternion AxisAngleToQuaternion(AxisAngle axisAngle);
-	static Quaternion DirectionAngleToQuaternion(DirectionAngle directionAngle);
-	static Quaternion RotationMatrixToQuaternion(RotationMatrix rotationMatrix);
 	static Quaternion QuaternionFromDirectionVectors(Vector3D initial, Vector3D final);
-	static Quaternion SphericalInterpolation(Quaternion quaternion, double ratio);
+	static Quaternion SphericalInterpolation(Quaternion q1, Quaternion q2, double ratio);
 
 	static Quaternion Add(Quaternion q1, Quaternion q2) {
 		return q1.Add(q2);
@@ -80,7 +75,7 @@ typedef struct Quaternion {
 		return q1.Power(q2);
 	}
 
-	static Quaternion DotProduct(Quaternion q1, Quaternion q2) {
+	static double DotProduct(Quaternion q1, Quaternion q2) {
 		return q1.DotProduct(q2);
 	}
 
@@ -113,7 +108,7 @@ typedef struct Quaternion {
 		return quaternion.UnitQuaternion();
 	}
 
-	static Quaternion Magnitude(Quaternion quaternion) {
+	static double Magnitude(Quaternion quaternion) {
 		return quaternion.Magnitude();
 	}
 
@@ -128,6 +123,15 @@ typedef struct Quaternion {
 
 	bool operator !=(Quaternion quaternion) {
 		return !(this->IsEqual(quaternion));
+	}
+
+	Quaternion operator =(Quaternion quaternion) {
+		this->W = quaternion.W;
+		this->X = quaternion.X;
+		this->Y = quaternion.Y;
+		this->Z = quaternion.Z;
+		
+		return *this;
 	}
 
 	Quaternion operator  +(Quaternion quaternion) {
@@ -145,5 +149,8 @@ typedef struct Quaternion {
 	Quaternion operator  /(Quaternion quaternion) {
 		return this->Divide(quaternion);
 	}
+
+	friend Quaternion operator *(double scalar, Quaternion q);
+	friend Quaternion operator *(Quaternion q, double scalar);
 
 } Quaternion;

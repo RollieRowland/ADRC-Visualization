@@ -6,6 +6,7 @@
 #include <math.h>
 #include <Vector.h>
 #include <stdarg.h>
+#include <cmath>
 
 using namespace std;
 
@@ -19,4 +20,8 @@ typedef struct Math {
 	static Vector3D RadiansToDegrees(Vector3D radians);
 	static string DoubleToCleanString(double value);
 	static void CleanPrint(int values, ...);
+	static bool IsNaN(double);
+	static bool IsInfinite(double);
+	static bool IsFinite(double);
+	static int Sign(double);
 } Math;

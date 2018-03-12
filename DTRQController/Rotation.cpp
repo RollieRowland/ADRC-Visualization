@@ -60,7 +60,7 @@ Quaternion Rotation::DirectionAngleToQuaternion(DirectionAngle directionAngle) {
 }
 
 Quaternion Rotation::RotationMatrixToQuaternion(RotationMatrix rM) {
-	Quaternion q = Quaternion(1, 0, 0, 0);
+	Quaternion q = Quaternion();
 
 	Vector3D X = Vector3D(rM.XAxis);
 	Vector3D Y = Vector3D(rM.YAxis);
