@@ -21,4 +21,6 @@ double ADRC::Calculate(double setpoint, double processVariable, double dT) {
 
 	output.Previous = output.Current;
 	output.Current = nlc.Combine(currentOutput, plant, state, precision);
+
+	return output.Current;
 }

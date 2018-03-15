@@ -117,9 +117,9 @@ bool Vector3D::IsEqual(Vector3D vector) {
 }
 
 std::string Vector3D::ToString() {
-	std::string x = Math::DoubleToCleanString(this->X);
-	std::string y = Math::DoubleToCleanString(this->Y);
-	std::string z = Math::DoubleToCleanString(this->Z);
+	std::string x = Mathematics::DoubleToCleanString(this->X);
+	std::string y = Mathematics::DoubleToCleanString(this->Y);
+	std::string z = Mathematics::DoubleToCleanString(this->Z);
 
 	return "[" + x + ", " + y + ", " + z + "]";
 }

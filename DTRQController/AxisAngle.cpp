@@ -11,10 +11,10 @@ AxisAngle::AxisAngle(double rotation, Vector3D axis) {
 }
 
 std::string AxisAngle::ToString() {
-	std::string r = Math::DoubleToCleanString(Rotation);
-	std::string x = Math::DoubleToCleanString(Axis.X);
-	std::string y = Math::DoubleToCleanString(Axis.Y);
-	std::string z = Math::DoubleToCleanString(Axis.Z);
+	std::string r = Mathematics::DoubleToCleanString(Rotation);
+	std::string x = Mathematics::DoubleToCleanString(Axis.X);
+	std::string y = Mathematics::DoubleToCleanString(Axis.Y);
+	std::string z = Mathematics::DoubleToCleanString(Axis.Z);
 
 	return r + ": [" + x + " " + y + " " + z + "]";
 }

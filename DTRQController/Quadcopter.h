@@ -1,7 +1,7 @@
 #pragma once
 
 #include <ADRC.h>
-#include <Math.h>
+#include <Mathematics.h>
 #include <MPU6050.h>
 #include <Rotation.h>
 #include <Thruster.h>
@@ -45,6 +45,6 @@ public:
 	void CalculateCombinedThrustVector();
 	void SetTarget(Vector3D position, Rotation rotation);
 	void GetCurrent();
-	void SimulateCurrent(Vector3D position, Rotation rotation);
+	void SimulateCurrent(Vector3D externalAcceleration);
 	Vector3D RotationQuaternionToHoverAngles(Rotation rotation);
 };

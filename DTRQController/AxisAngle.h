@@ -1,8 +1,7 @@
 #pragma once
 
+#include <Mathematics.h>
 #include <Vector.h>
-#include <Quaternion.h>
-#include <Math.h>
 
 typedef struct AxisAngle {
 public:

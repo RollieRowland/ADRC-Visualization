@@ -48,6 +48,6 @@ double ExtendedStateObserver::NonlinearFunction(double eta, double alpha, double
 	}
 	else
 	{
-		return pow(abs(eta), alpha) * Math::Sign(eta);
+		return pow(abs(eta), alpha) * Mathematics::Sign(eta);
 	}
 }

@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Math.h>
+#include <Mathematics.h>
 #include <FeedbackController.h>
 
-class PID : public FeedbackController {
+class PID : virtual public FeedbackController {
 private:
 	double integral;
 	double error;
@@ -16,5 +16,5 @@ private:
 public:
 	PID();
 	PID(double kp, double ki, double kd);
-	virtual double Calculate(double setpoint, double processVariable, double dT);
+	double Calculate(double setpoint, double processVariable, double dT);
 };

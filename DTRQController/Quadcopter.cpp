@@ -75,7 +75,8 @@ void Quadcopter::SetTarget(Vector3D position, Rotation rotation) {
 	TE.TargetPosition = TargetRotation.GetQuaternion().RotateVector(TE.ThrusterOffset).Add(TargetPosition);
 }
 
-void Quadcopter::SimulateCurrent(Vector3D position, Rotation rotation) {
+void Quadcopter::SimulateCurrent(Vector3D externalAcceleration) {
+	this->externalAcceleration = externalAcceleration;
 	EstimatePosition();
 	EstimateRotation();
 
@@ -128,7 +129,7 @@ void Quadcopter::EstimateRotation() {
 	TDO = CurrentRotation.GetQuaternion().RotateVector(TDO);
 	TEO = CurrentRotation.GetQuaternion().RotateVector(TEO);
 
-	double torque = armLength * sin(Math::DegreesToRadians(180 - armAngle)) * 5;
+	double torque = armLength * sin(Mathematics::DegreesToRadians(180 - armAngle)) * 5;
 
 	//calculate current inertia tensor
 	currentAngularAcceleration = Vector3D {
@@ -140,7 +141,7 @@ void Quadcopter::EstimateRotation() {
 
 	//TB + TD - (TC + TE)
 	Vector3D differentialThrustRotation = TBO.Add(TDO).Add(TCO.Add(TEO).Multiply(-1)).Multiply(0.15);
-	currentAngularAcceleration = Math::DegreesToRadians(currentAngularAcceleration);
+	currentAngularAcceleration = Vector3D::DegreesToRadians(currentAngularAcceleration);
 	currentAngularVelocity = currentAngularVelocity + currentAngularAcceleration * dT;
 
 	Quaternion angularRotation = Quaternion(currentAngularVelocity * dT * 0.5);
@@ -161,23 +162,23 @@ Vector3D Quadcopter::RotationQuaternionToHoverAngles(Rotation rotation) {
 	directionVector = RotationMatrix::RotateVector(Vector3D(0, directionAngle.Rotation, 0), directionVector);
 
 	//These are cartesian coordinates, convert them to the angle from 1, 0 to the point it is at
-	outerJoint = Math::RadiansToDegrees(asin(directionVector.Z));
-	innerJoint = Math::RadiansToDegrees(atan2(directionVector.X, directionVector.Y));
+	outerJoint = Mathematics::RadiansToDegrees(asin(directionVector.Z));
+	innerJoint = Mathematics::RadiansToDegrees(atan2(directionVector.X, directionVector.Y));
 
-	cout << Math::DoubleToCleanString(outerJoint) + "  " + 
-		    Math::DoubleToCleanString(innerJoint) + "  " + 
-		    Math::DoubleToCleanString(directionVector.Y);
+	std::cout << Mathematics::DoubleToCleanString(outerJoint) + "  " +
+				 Mathematics::DoubleToCleanString(innerJoint) + "  " +
+				 Mathematics::DoubleToCleanString(directionVector.Y) << std::endl;
 
 	return Vector3D(outerJoint, 0, innerJoint);
 }
 
 void Quadcopter::CalculateArmPositions(double armLength, double armAngle) {
-	double XLength = armLength * cos(Math::DegreesToRadians(armAngle));
-	double ZLength = armLength * sin(Math::DegreesToRadians(armAngle));
+	double XLength = armLength * cos(Mathematics::DegreesToRadians(armAngle));
+	double ZLength = armLength * sin(Mathematics::DegreesToRadians(armAngle));
 
-	cout << "Quad Arm Length X:" + Math::DoubleToCleanString(XLength) + 
-		    " Z:" + Math::DoubleToCleanString(ZLength) + 
-		    " Period:" + Math::DoubleToCleanString(dT) << endl;
+	std::cout << "Quad Arm Length X:" + Mathematics::DoubleToCleanString(XLength) +
+		    " Z:" + Mathematics::DoubleToCleanString(ZLength) +
+		    " Period:" + Mathematics::DoubleToCleanString(dT) << std::endl;
 
 	TB = Thruster(Vector3D(-XLength, 0,  ZLength), "TB");
 	TC = Thruster(Vector3D( XLength, 0,  ZLength), "TC");
@@ -196,7 +197,7 @@ void Quadcopter::CalculateGimbalLockedMotion(Vector3D &positionControl, Vector3D
 	double rotation = 40 * fadeIn;
 
 	double magnitude = sqrt(pow(positionControl.X, 2) + pow(positionControl.Z, 2));//Give hypotenuse for origin rotation, magnitude
-	double angle = Math::RadiansToDegrees(Math::Sign(hoverAngles.Z) * atan2(magnitude, 0) - atan2(positionControl.Z, positionControl.X));//Determine angle of output, -180 -> 180
+	double angle = Mathematics::RadiansToDegrees(Mathematics::Sign(hoverAngles.Z) * atan2(magnitude, 0) - atan2(positionControl.Z, positionControl.X));//Determine angle of output, -180 -> 180
 																													  //Rotation matrix on position control copy
 	//Vector3D RotatedControl = RotationMatrix::RotateVector(Vector3D(0, CurrentEulerRotation.Y, 0), Vector3D(positionControl.X, 0, positionControl.Z));
 	Vector3D rotatedControl = CurrentRotation.GetQuaternion().RotateVector(positionControl);
@@ -218,8 +219,8 @@ void Quadcopter::CalculateGimbalLockedMotion(Vector3D &positionControl, Vector3D
 }
 
 void Quadcopter::GetCurrent() {
-	CurrentPosition = mpu.GetCurrentPosition();
-	CurrentRotation = mpu.GetCurrentRotation();
+	//CurrentPosition = mpu.GetCurrentPosition();
+	//CurrentRotation = mpu.GetCurrentRotation();
 
 	TB.CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TB.ThrusterOffset).Add(CurrentPosition);
 	TC.CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TC.ThrusterOffset).Add(CurrentPosition);

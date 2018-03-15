@@ -1,13 +1,13 @@
 #pragma once
 
+#include <AxisAngle.h>
+#include <DirectionAngle.h>
+#include <EulerAngles.h>
+#include <EulerConstants.h>
+#include <HMatrix.h>
 #include <Quaternion.h>
 #include <RotationMatrix.h>
-#include <DirectionAngle.h>
-#include <AxisAngle.h>
-#include <EulerAngles.h>
 #include <Vector.h>
-#include <HMatrix.h>
-#include <EulerConstants.h>
 
 class Rotation {
 private:
@@ -20,6 +20,7 @@ private:
 	Quaternion HierarchicalMatrixToQuaternion(HMatrix hMatrix);
 	EulerAngles HierarchicalMatrixToEulerAngles(HMatrix hM, EulerOrder order);
 	HMatrix EulerAnglesToHierarchicalMatrix(EulerAngles eulerAngles);
+	Quaternion QuaternionFromDirectionVectors(Vector3D initial, Vector3D target);
 public:
 	Rotation();
 	Rotation(Quaternion quaternion);
@@ -28,6 +29,7 @@ public:
 	Rotation(RotationMatrix rotationMatrix);
 	Rotation(EulerAngles eulerAngles);
 	Rotation(HMatrix hMatrix);
+	Rotation(Vector3D initial, Vector3D target);
 
 	Quaternion GetQuaternion();
 	AxisAngle GetAxisAngle();

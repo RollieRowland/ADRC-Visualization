@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Math.h>
+#include <Mathematics.h>
 #include <ExtendedStateObserver.h>
 
 class NonlinearCombiner {

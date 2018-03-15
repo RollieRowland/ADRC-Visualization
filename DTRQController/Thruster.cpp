@@ -7,7 +7,7 @@ Thruster::Thruster() {
 	this->CurrentPosition = Vector3D(0, 0, 0);
 	this->TargetPosition = Vector3D(0, 0, 0);
 	this->CurrentRotation = Vector3D(0, 0, 0);
-	this->Disable = false;
+	this->disable = false;
 }
 
 Thruster::Thruster(Vector3D thrusterOffset, std::string name) {
@@ -17,7 +17,7 @@ Thruster::Thruster(Vector3D thrusterOffset, std::string name) {
 	this->CurrentPosition = Vector3D(0, 0, 0);
 	this->TargetPosition = Vector3D(0, 0, 0);
 	this->CurrentRotation = Vector3D(0, 0, 0);
-	this->Disable = false;
+	this->disable = false;
 }
 
 Vector3D Thruster::ReturnThrustVector() {
@@ -37,9 +37,9 @@ void Thruster::SetThrusterOutputs(Vector3D output) {
 	//Disable negative thrust output
 	CheckIfDisabled();
 
-	output.X = Disable ? 0 : output.X;
-	output.Y = Disable ? 0 : output.Y;
-	output.Z = Disable ? 0 : output.Z;
+	output.X = disable ? 0 : output.X;
+	output.Y = disable ? 0 : output.Y;
+	output.Z = disable ? 0 : output.Z;
 
 	//Sets current rotation of thruster for use in the visualization of the quad
 	CurrentRotation = Vector3D(-outerJoint.GetAngle(), 0, -innerJoint.GetAngle());
@@ -52,9 +52,9 @@ void Thruster::SetThrusterOutputs(Vector3D output) {
 
 bool Thruster::CheckIfDisabled() {
 	//setDisabled if dshot
-	rotor.CheckESC();
+	return rotor.CheckESC();
 }
 
 bool Thruster::IsDisabled() {
-	return IsDisabled;
+	return disable;
 }

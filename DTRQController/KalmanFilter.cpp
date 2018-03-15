@@ -11,7 +11,7 @@ KalmanFilter::KalmanFilter(double gain, int memory) {
 }
 
 double KalmanFilter::Filter(double value) {
-	int i = 0;
+	int count = 0;
 	double sum = 0;
 	double avg;
 	double gainInverse = (1 - gain);
@@ -24,10 +24,12 @@ double KalmanFilter::Filter(double value) {
 
 	for (std::vector <double>::iterator i = values.begin(); i != values.end(); ++i) {
 		sum += value;
-		i++;
+		count++;
 	}
 
-	avg = sum / i;
+	if (count > 0) {
+		avg = sum / count;
+	}
 
 	return (gain * value) + (gainInverse * avg);
 }

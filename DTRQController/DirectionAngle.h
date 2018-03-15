@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Vector.h>
-#include <Quaternion.h>
 
 typedef struct DirectionAngle {
 public:

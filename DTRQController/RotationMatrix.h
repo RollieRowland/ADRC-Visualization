@@ -1,8 +1,7 @@
 #pragma once
 
+#include <Mathematics.h>
 #include <Vector.h>
-#include <Math.h>
-#include <Quaternion.h>
 
 typedef struct RotationMatrix {
 private:

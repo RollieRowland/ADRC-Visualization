@@ -11,10 +11,10 @@ DirectionAngle::DirectionAngle(double rotation, Vector3D direction) {
 }
 
 std::string DirectionAngle::ToString() {
-	std::string r = Math::DoubleToCleanString(Rotation);
-	std::string x = Math::DoubleToCleanString(Direction.X);
-	std::string y = Math::DoubleToCleanString(Direction.Y);
-	std::string z = Math::DoubleToCleanString(Direction.Z);
+	std::string r = Mathematics::DoubleToCleanString(Rotation);
+	std::string x = Mathematics::DoubleToCleanString(Direction.X);
+	std::string y = Mathematics::DoubleToCleanString(Direction.Y);
+	std::string z = Mathematics::DoubleToCleanString(Direction.Z);
 
 	return r + ": [" + x + " " + y + " " + z + "]";
 }

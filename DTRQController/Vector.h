@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Math.h>
+#include <Mathematics.h>
 
 typedef struct Vector3D {
 public:
@@ -27,6 +27,14 @@ public:
 	double CalculateEuclideanDistance(Vector3D vector);
 	bool IsEqual(Vector3D vector);
 	std::string ToString();
+
+	static Vector3D DegreesToRadians(Vector3D degrees) {
+		return degrees / (180.0 / Mathematics::PI);
+	}
+
+	static Vector3D RadiansToDegrees(Vector3D radians) {
+		return radians * (180.0 / Mathematics::PI);
+	}
 
 	//Static function declaractions
 	static Vector3D Normal(Vector3D vector) {

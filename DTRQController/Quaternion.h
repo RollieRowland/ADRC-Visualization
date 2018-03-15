@@ -1,8 +1,7 @@
 #pragma once
 
-#include <Math.h>
+#include <Mathematics.h>
 #include <Vector.h>
-#include <Rotation.h>
 
 typedef struct Quaternion {
 public:
@@ -50,7 +49,6 @@ public:
 	std::string ToString();
 
 	//Static functions
-	static Quaternion QuaternionFromDirectionVectors(Vector3D initial, Vector3D final);
 	static Quaternion SphericalInterpolation(Quaternion q1, Quaternion q2, double ratio);
 
 	static Quaternion Add(Quaternion q1, Quaternion q2) {
@@ -148,9 +146,6 @@ public:
 		return this->Divide(quaternion);
 	}
 
-	Quaternion operator  *(double value) {
-		return this->Multiply(value);
-	}
 
 	Quaternion operator  /(double value) {
 		return this->Divide(value);

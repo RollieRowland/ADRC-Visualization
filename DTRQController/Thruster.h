@@ -4,6 +4,7 @@
 #include <Servo.h>
 #include <Motor.h>
 #include <RotationMatrix.h>
+#include <string>
 
 class Thruster {
 private:
@@ -11,7 +12,8 @@ private:
 	Servo innerJoint;
 	Motor rotor;
 	std::string name;
-	bool Disable;
+	bool disable;
+
 	bool CheckIfDisabled();
 public:
 	Vector3D TargetPosition;

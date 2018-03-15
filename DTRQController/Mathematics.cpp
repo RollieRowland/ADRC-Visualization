@@ -1,8 +1,8 @@
-#include <Math.h>
+#include <Mathematics.h>
 
-double Math::PI = atan(1) * 4;
+double Mathematics::PI = atan(1) * 4;
 
-double Math::Constrain(double value, double minimum, double maximum) {
+double Mathematics::Constrain(double value, double minimum, double maximum) {
 	if (value > maximum)
 	{
 		value = maximum;
@@ -15,23 +15,15 @@ double Math::Constrain(double value, double minimum, double maximum) {
 	return value;
 }
 
-double Math::DegreesToRadians(double degrees) {
+double Mathematics::DegreesToRadians(double degrees) {
 	return degrees / (180.0 / PI);
 }
 
-double Math::RadiansToDegrees(double radians) {
+double Mathematics::RadiansToDegrees(double radians) {
 	return radians * (180.0 / PI);
 }
 
-Vector3D Math::DegreesToRadians(Vector3D degrees) {
-	return degrees / (180.0 / PI);
-}
-
-Vector3D Math::RadiansToDegrees(Vector3D radians) {
-	return radians * (180.0 / PI);
-}
-
-std::string Math::DoubleToCleanString(double value) {
+std::string Mathematics::DoubleToCleanString(double value) {
 	std::stringstream stream;
 
 	stream << std::fixed << std::setprecision(2) << std::setw(10) << value;
@@ -39,7 +31,7 @@ std::string Math::DoubleToCleanString(double value) {
 	return stream.str();
 }
 
-void Math::CleanPrint(int values, ...) {
+void Mathematics::CleanPrint(int values, ...) {
 	va_list valueList;
 	std::string printOut = "";
 
@@ -47,7 +39,7 @@ void Math::CleanPrint(int values, ...) {
 
 	for (int i = 0; i <= values; i++) {
 		double value = va_arg(valueList, double);
-		printOut += Math::DoubleToCleanString(value);
+		printOut += Mathematics::DoubleToCleanString(value);
 	}
 
 	va_end(valueList);
@@ -55,18 +47,18 @@ void Math::CleanPrint(int values, ...) {
 	std::cout << printOut << std::endl;
 }
 
-bool Math::IsNaN(double value) {
+bool Mathematics::IsNaN(double value) {
 	return value != value;
 }
 
-bool Math::IsInfinite(double value) {
+bool Mathematics::IsInfinite(double value) {
 	return value == std::numeric_limits<double>::infinity();
 }
 
-bool Math::IsFinite(double value) {
+bool Mathematics::IsFinite(double value) {
 	return value != std::numeric_limits<double>::infinity();
 }
 
-int Math::Sign(double value) {
+int Mathematics::Sign(double value) {
 		return (0 < value) - (value < 0);
 }

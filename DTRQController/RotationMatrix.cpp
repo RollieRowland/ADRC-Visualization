@@ -64,8 +64,8 @@ void RotationMatrix::Rotate(Vector3D rotation) {
 }
 
 void RotationMatrix::RotateX(double theta) {
-	double cosine = cos(Math::DegreesToRadians(theta));
-	double sine = sin(Math::DegreesToRadians(theta));
+	double cosine = cos(Mathematics::DegreesToRadians(theta));
+	double sine = sin(Mathematics::DegreesToRadians(theta));
 
 	XAxis = Vector3D(1, 0, 0).Multiply(XAxis);
 	YAxis = Vector3D(0, cosine, -sine).Multiply(YAxis);
@@ -73,8 +73,8 @@ void RotationMatrix::RotateX(double theta) {
 }
 
 void RotationMatrix::RotateY(double theta) {
-	double cosine = cos(Math::DegreesToRadians(theta));
-	double sine = sin(Math::DegreesToRadians(theta));
+	double cosine = cos(Mathematics::DegreesToRadians(theta));
+	double sine = sin(Mathematics::DegreesToRadians(theta));
 
 	XAxis = Vector3D(cosine, 0, sine).Multiply(XAxis);
 	YAxis = Vector3D(0, 1, 0).Multiply(YAxis);
@@ -82,8 +82,8 @@ void RotationMatrix::RotateY(double theta) {
 }
 
 void RotationMatrix::RotateZ(double theta) {
-	double cosine = cos(Math::DegreesToRadians(theta));
-	double sine = sin(Math::DegreesToRadians(theta));
+	double cosine = cos(Mathematics::DegreesToRadians(theta));
+	double sine = sin(Mathematics::DegreesToRadians(theta));
 
 	XAxis = Vector3D(cosine, -sine, 0).Multiply(XAxis);
 	YAxis = Vector3D(sine, cosine, 0).Multiply(YAxis);

@@ -30,11 +30,11 @@ double NonlinearCombiner::SetPointJumpPrevention(double target, double targetDer
 	y = target + a0;
 
 	a1 = sqrt(d * (d + 8 * abs(y)));
-	a2 = a0 + Math::Sign(y) * (a1 - d) / 2;
-	sy = (Math::Sign(y + d) - Math::Sign(y - d)) / 2;//returns 1, or -1
+	a2 = a0 + Mathematics::Sign(y) * (a1 - d) / 2;
+	sy = (Mathematics::Sign(y + d) - Mathematics::Sign(y - d)) / 2;//returns 1, or -1
 
 	a = (a0 + y - a2) * sy + a2;
-	sa = (Math::Sign(a + d) - Math::Sign(a - d)) / 2;//returns 1, or -1
+	sa = (Mathematics::Sign(a + d) - Mathematics::Sign(a - d)) / 2;//returns 1, or -1
 
-	return -r0 * ((a / d) - Math::Sign(a)) * sa - r0 * Math::Sign(a);
+	return -r0 * ((a / d) - Mathematics::Sign(a)) * sa - r0 * Mathematics::Sign(a);
 }

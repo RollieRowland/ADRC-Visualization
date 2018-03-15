@@ -28,17 +28,17 @@
     <Filter Include="Source Files\Quadcopter">
       <UniqueIdentifier>{592b1334-bc53-431b-9280-185c083bcecd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Quadcopter">
-      <UniqueIdentifier>{6d5ae97a-0a0a-4afe-b42b-d0b04b8bc6e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Mathematics">
-      <UniqueIdentifier>{e17a53dd-041d-484b-bc47-112daa8fcdcc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\FeedbackControl">
       <UniqueIdentifier>{a12e8ffb-c4c0-4eb2-8cec-272718375bdc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\FeedbackControl\ADRC">
       <UniqueIdentifier>{e521ad4f-b448-4f94-aca0-6ef911ed4d5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Quadcopter">
+      <UniqueIdentifier>{6d5ae97a-0a0a-4afe-b42b-d0b04b8bc6e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Mathematics">
+      <UniqueIdentifier>{e17a53dd-041d-484b-bc47-112daa8fcdcc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -61,9 +61,6 @@
       <Filter>Source Files\Mathematics</Filter>
     </ClCompile>
     <ClCompile Include="Quaternion.cpp">
-      <Filter>Source Files\Mathematics</Filter>
-    </ClCompile>
-    <ClCompile Include="Math.cpp">
       <Filter>Source Files\Mathematics</Filter>
     </ClCompile>
     <ClCompile Include="EulerAngles.cpp">
@@ -117,6 +114,9 @@
     <ClCompile Include="Quadcopter.cpp">
       <Filter>Source Files\Quadcopter</Filter>
     </ClCompile>
+    <ClCompile Include="Mathematics.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Thruster.h">
@@ -135,9 +135,6 @@
       <Filter>Header Files\Quadcopter</Filter>
     </ClInclude>
     <ClInclude Include="Quaternion.h">
-      <Filter>Header Files\Mathematics</Filter>
-    </ClInclude>
-    <ClInclude Include="Math.h">
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
     <ClInclude Include="EulerOrder.h">
@@ -193,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="Quadcopter.h">
       <Filter>Header Files\Quadcopter</Filter>
+    </ClInclude>
+    <ClInclude Include="Mathematics.h">
+      <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

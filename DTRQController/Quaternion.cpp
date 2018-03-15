@@ -54,49 +54,6 @@ Vector3D Quaternion::GetBiVector() {
 	};
 }
 
-Quaternion Quaternion::QuaternionFromDirectionVectors(Vector3D initial, Vector3D final) {
-	Quaternion q = Quaternion(1, 0, 0, 0);
-	Vector3D tempV = Vector3D(0, 0, 0);
-	Vector3D xAxis = Vector3D(1, 0, 0);
-	Vector3D yAxis = Vector3D(0, 1, 0);
-
-	double dot = Vector3D::DotProduct(initial, final);
-
-	if (dot < -0.999999)
-	{
-		tempV = Vector3D::CrossProduct(xAxis, initial);
-
-		if (tempV.GetLength() < 0.000001)
-		{
-			tempV = Vector3D::CrossProduct(yAxis, initial);
-		}
-
-		tempV = tempV.Normalize();
-
-		q = Rotation(AxisAngle(Math::PI, tempV)).GetQuaternion();
-	}
-	else if (dot > 0.999999)
-	{
-		q.W = 1;
-		q.X = 0;
-		q.Y = 0;
-		q.Z = 0;
-	}
-	else
-	{
-		tempV = Vector3D::CrossProduct(initial, final);
-
-		q.W = 1 + dot;
-		q.X = tempV.X;
-		q.Y = tempV.Y;
-		q.Z = tempV.Z;
-
-		q = q.UnitQuaternion();
-	}
-
-	return q;
-}
-
 Quaternion Quaternion::SphericalInterpolation(Quaternion q1, Quaternion q2, double ratio) {
 	q1 = q1.UnitQuaternion();
 	q2 = q2.UnitQuaternion();
@@ -116,7 +73,7 @@ Quaternion Quaternion::SphericalInterpolation(Quaternion q1, Quaternion q2, doub
 	}
 	else
 	{
-		dot = Math::Constrain(dot, -1, 1);
+		dot = Mathematics::Constrain(dot, -1, 1);
 
 		double theta0 = acos(dot);
 		double theta = theta0 * ratio;
@@ -234,7 +191,18 @@ Quaternion Quaternion::Power(double exponent) {
 }
 
 Quaternion Quaternion::Permutate(Vector3D permutation) {
+	Quaternion current = Quaternion(this->W, this->X, this->Y, this->Z);
+	double perm[3];
 
+	perm[(int)permutation.X] = current.X;
+	perm[(int)permutation.Y] = current.Y;
+	perm[(int)permutation.Z] = current.Z;
+
+	current.X = perm[0];
+	current.Y = perm[1];
+	current.Z = perm[2];
+
+	return current;
 }
 
 Quaternion Quaternion::Absolute() {
@@ -311,19 +279,19 @@ double Quaternion::Normal() {
 bool Quaternion::IsNaN() {
 	Quaternion current = Quaternion(this->W, this->X, this->Y, this->Z);
 
-	return Math::IsNaN(current.W) || Math::IsNaN(current.X) || Math::IsNaN(current.Y) || Math::IsNaN(current.Z);
+	return Mathematics::IsNaN(current.W) || Mathematics::IsNaN(current.X) || Mathematics::IsNaN(current.Y) || Mathematics::IsNaN(current.Z);
 }
 
 bool Quaternion::IsFinite() {
 	Quaternion current = Quaternion(this->W, this->X, this->Y, this->Z);
 
-	return Math::IsInfinite(current.W) || Math::IsInfinite(current.X) || Math::IsInfinite(current.Y) || Math::IsInfinite(current.Z);
+	return Mathematics::IsInfinite(current.W) || Mathematics::IsInfinite(current.X) || Mathematics::IsInfinite(current.Y) || Mathematics::IsInfinite(current.Z);
 }
 
 bool Quaternion::IsInfinite() {
 	Quaternion current = Quaternion(this->W, this->X, this->Y, this->Z);
 
-	return Math::IsFinite(current.W) || Math::IsFinite(current.X) || Math::IsFinite(current.Y) || Math::IsFinite(current.Z);
+	return Mathematics::IsFinite(current.W) || Mathematics::IsFinite(current.X) || Mathematics::IsFinite(current.Y) || Mathematics::IsFinite(current.Z);
 }
 
 bool Quaternion::IsNonZero() {
@@ -343,10 +311,10 @@ bool Quaternion::IsEqual(Quaternion quaternion) {
 }
 
 std::string Quaternion::ToString() {
-	std::string w = Math::DoubleToCleanString(this->W);
-	std::string x = Math::DoubleToCleanString(this->X);
-	std::string y = Math::DoubleToCleanString(this->Y);
-	std::string z = Math::DoubleToCleanString(this->Z);
+	std::string w = Mathematics::DoubleToCleanString(this->W);
+	std::string x = Mathematics::DoubleToCleanString(this->X);
+	std::string y = Mathematics::DoubleToCleanString(this->Y);
+	std::string z = Mathematics::DoubleToCleanString(this->Z);
 	
 	return "[" + w + ", " + x + ", " + y + ", " + z + "]";
 	
