@@ -19,7 +19,7 @@ Vector3D::Vector3D(double X, double Y, double Z) {
 }
 
 Vector3D Vector3D::Normal() {
-	return Multiply(this->Magnitude() == 0 ? numeric_limits<double>::infinity() : 1 / this->Magnitude());
+	return Multiply(this->Magnitude() == 0 ? std::numeric_limits<double>::infinity() : 1 / this->Magnitude());
 }
 
 Vector3D Vector3D::Add(Vector3D vector) {
@@ -116,10 +116,10 @@ bool Vector3D::IsEqual(Vector3D vector) {
 	return (this->X == vector.X) && (this->Y == vector.Y) && (this->Z == vector.Z);
 }
 
-string Vector3D::ToString() {
-	string x = Math::DoubleToCleanString(this->X);
-	string y = Math::DoubleToCleanString(this->Y);
-	string z = Math::DoubleToCleanString(this->Z);
+std::string Vector3D::ToString() {
+	std::string x = Math::DoubleToCleanString(this->X);
+	std::string y = Math::DoubleToCleanString(this->Y);
+	std::string z = Math::DoubleToCleanString(this->Z);
 
 	return "[" + x + ", " + y + ", " + z + "]";
 }

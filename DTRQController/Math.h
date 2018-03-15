@@ -3,14 +3,15 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
-#include <math.h>
+//#include <math.h>
 #include <Vector.h>
 #include <stdarg.h>
-#include <cmath>
+#include <iostream>
+#include <vector>
+//#include <cmath>
 
-using namespace std;
-
-typedef struct Math {
+class Math {
+public:
 	static double PI;
 
 	static double Constrain(double value, double minimum, double maximum);
@@ -18,10 +19,10 @@ typedef struct Math {
 	static double RadiansToDegrees(double radians);
 	static Vector3D DegreesToRadians(Vector3D degrees);
 	static Vector3D RadiansToDegrees(Vector3D radians);
-	static string DoubleToCleanString(double value);
+	static std::string DoubleToCleanString(double value);
 	static void CleanPrint(int values, ...);
 	static bool IsNaN(double);
 	static bool IsInfinite(double);
 	static bool IsFinite(double);
 	static int Sign(double);
-} Math;
+};

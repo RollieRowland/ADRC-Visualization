@@ -1,5 +1,4 @@
 #include <Math.h>
-#include <iostream>
 
 double Math::PI = atan(1) * 4;
 
@@ -32,17 +31,17 @@ Vector3D Math::RadiansToDegrees(Vector3D radians) {
 	return radians * (180.0 / PI);
 }
 
-string Math::DoubleToCleanString(double value) {
-	stringstream stream;
+std::string Math::DoubleToCleanString(double value) {
+	std::stringstream stream;
 
-	stream << fixed << setprecision(2) << setw(10) << value;
+	stream << std::fixed << std::setprecision(2) << std::setw(10) << value;
 
 	return stream.str();
 }
 
 void Math::CleanPrint(int values, ...) {
 	va_list valueList;
-	string printOut = "";
+	std::string printOut = "";
 
 	va_start(valueList, values);
 
@@ -53,7 +52,7 @@ void Math::CleanPrint(int values, ...) {
 
 	va_end(valueList);
 
-	cout << printOut << endl;
+	std::cout << printOut << std::endl;
 }
 
 bool Math::IsNaN(double value) {
@@ -61,11 +60,11 @@ bool Math::IsNaN(double value) {
 }
 
 bool Math::IsInfinite(double value) {
-	return value == numeric_limits<double>::infinity();
+	return value == std::numeric_limits<double>::infinity();
 }
 
 bool Math::IsFinite(double value) {
-	return value != numeric_limits<double>::infinity();
+	return value != std::numeric_limits<double>::infinity();
 }
 
 int Math::Sign(double value) {

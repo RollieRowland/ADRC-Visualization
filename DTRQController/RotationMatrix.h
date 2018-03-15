@@ -1,6 +1,6 @@
 #pragma once
+
 #include <Vector.h>
-#include <math.h>
 #include <Math.h>
 #include <Quaternion.h>
 
@@ -35,5 +35,5 @@ public:
 
 	static Vector3D RotateVector(Vector3D rotate, Vector3D coordinates);
 
-	string ToString();
+	std::string ToString();
 } RotationMatrix;

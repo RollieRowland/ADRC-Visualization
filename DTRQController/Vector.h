@@ -1,12 +1,9 @@
 #pragma once
-#include <string>
-#include <math.h>
+
 #include <Math.h>
 
-using namespace std;
-
-typedef struct Vector3D
-{
+typedef struct Vector3D {
+public:
 	double X = 0.0;
 	double Y = 0.0;
 	double Z = 0.0;
@@ -29,7 +26,7 @@ typedef struct Vector3D
 	double DotProduct(Vector3D vector);
 	double CalculateEuclideanDistance(Vector3D vector);
 	bool IsEqual(Vector3D vector);
-	string ToString();
+	std::string ToString();
 
 	//Static function declaractions
 	static Vector3D Normal(Vector3D vector) {
@@ -107,6 +104,10 @@ typedef struct Vector3D
 
 	Vector3D operator  *(Vector3D vector) {
 		return this->Multiply(vector);
+	}
+
+	Vector3D operator  /(Vector3D vector) {
+		return this->Divide(vector);
 	}
 
 	Vector3D operator  *(double value) {

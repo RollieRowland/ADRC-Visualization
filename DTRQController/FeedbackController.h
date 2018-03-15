@@ -1,5 +1,6 @@
 #pragma once
 
-typedef struct FeedbackController {
+class FeedbackController {
+public:
 	virtual double Calculate(double setpoint, double processVariable, double dT);
-} FeedbackController;
+};

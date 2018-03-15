@@ -1,5 +1,9 @@
 #include <NonlinearCombiner.h>
 
+NonlinearCombiner::NonlinearCombiner() {
+	this->amplificationCoefficient = 1;
+	this->dampingCoefficient = 1;
+}
 
 NonlinearCombiner::NonlinearCombiner(double amplification, double damping) {
 	this->amplificationCoefficient = amplification;

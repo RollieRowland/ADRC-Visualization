@@ -16,3 +16,7 @@ EulerOrder::EulerOrder(Axis axis, Parity parity, AxisRepetition axisRepetition, 
 	FrameTaken = axisFrame;
 	Permutation = permutation;
 }
+
+std::string EulerOrder::ToString() {
+	return Permutation.ToString();
+}

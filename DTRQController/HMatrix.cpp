@@ -1,7 +1,4 @@
 #include <HMatrix.h>
-#include <math.h>
-#include <Math.h>
-
 
 HMatrix::HMatrix() {
 	for (int i = 0; i < 3; i++)
@@ -13,6 +10,6 @@ HMatrix::HMatrix() {
 	}
 }
 
-HMatrix::HMatrix(vector<vector<double>> hMatrix) {
+HMatrix::HMatrix(std::vector<std::vector<double>> hMatrix) {
 	hierarchicalMatrix = hMatrix;
 }

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <math.h>
+#include <Math.h>
 
-typedef struct ExtendedStateObserver {
+class ExtendedStateObserver {
 public:
 	typedef struct State {
 		double Z1;
@@ -22,6 +22,7 @@ public:
 		}
 	} State;
 
+	ExtendedStateObserver();
 	ExtendedStateObserver(bool linear);
 	State ObserveState(double samplingPeriod, double u, double b0, double processVariable);
 
@@ -32,4 +33,4 @@ private:
 	bool linear;
 	double NonlinearFunction(double eta, double alpha, double delta);
 
-} ExtendedStateObserver;
+};

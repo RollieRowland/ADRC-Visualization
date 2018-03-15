@@ -1,14 +1,16 @@
 #pragma once
+
 #include <EulerAngles.h>
 #include <EulerOrder.h>
-#include <vector>
+#include <Math.h>
 
 typedef struct HMatrix {
-	vector<vector<double>> hierarchicalMatrix;
+public:
+	std::vector<std::vector<double>> hierarchicalMatrix;
 
 	HMatrix();
-	HMatrix(vector<vector<double>> hMatrix);
-	HMatrix(int x, int y) : hierarchicalMatrix(x, vector<double>(y, double())) {}
+	HMatrix(std::vector<std::vector<double>> hMatrix);
+	HMatrix(int x, int y) : hierarchicalMatrix(x, std::vector<double>(y, double())) {}
 
 	double& operator() (int x, int y) { return hierarchicalMatrix[x][y]; }
 } HMatrix;

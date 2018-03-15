@@ -149,10 +149,10 @@ Vector3D RotationMatrix::RotateVector(Vector3D rotate, Vector3D coordinates) {
 	return matrix.ConvertCoordinateToVector();
 }
 
-string RotationMatrix::ToString() {
-	string x = XAxis.ToString();
-	string y = YAxis.ToString();
-	string z = ZAxis.ToString();
+std::string RotationMatrix::ToString() {
+	std::string x = XAxis.ToString();
+	std::string y = YAxis.ToString();
+	std::string z = ZAxis.ToString();
 
 	return x + "\n" + y + "\n" + z + "\n";
 }

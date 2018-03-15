@@ -1,11 +1,9 @@
 #pragma once
 
-#include <math.h>
+#include <Math.h>
 #include <ExtendedStateObserver.h>
 
-using namespace std;
-
-typedef struct NonlinearCombiner {
+class NonlinearCombiner {
 private:
 	double amplificationCoefficient;
 	double dampingCoefficient;
@@ -28,7 +26,7 @@ public:
 		}
 	} Output;
 
-
+	NonlinearCombiner();
 	NonlinearCombiner(double amplification, double damping);
 	double Combine(Output output, double b0, ExtendedStateObserver::State state, double precisionCoefficient);
-} NonlinearCombiner;
+};

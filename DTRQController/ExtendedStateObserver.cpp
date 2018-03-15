@@ -1,5 +1,9 @@
 #include <ExtendedStateObserver.h>
 
+ExtendedStateObserver::ExtendedStateObserver() {
+	this->linear = true;
+}
+
 ExtendedStateObserver::ExtendedStateObserver(bool linear) {
 	this->linear = linear;
 }

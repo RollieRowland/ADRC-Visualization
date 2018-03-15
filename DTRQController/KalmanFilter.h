@@ -1,16 +1,16 @@
 #pragma once
 
-#include <vector>
+#include <Math.h>
 
-typedef struct KalmanFilter {
+class KalmanFilter {
 private:
 	double gain;
 	int memory;
-	vector<double> values;
+	std::vector<double> values;
 
 public:
 	KalmanFilter();
 	KalmanFilter(double gain, int memory);
 	double Filter(double value);
 
-} KalmanFilter;
+};

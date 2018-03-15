@@ -1,7 +1,9 @@
 #pragma once
+
 #include <Vector.h>
 
 typedef struct EulerOrder {
+public:
 	enum Axis
 	{
 		X,
@@ -35,4 +37,5 @@ typedef struct EulerOrder {
 
 	EulerOrder();
 	EulerOrder(Axis axis, Parity parity, AxisRepetition axisRepetition, AxisFrame axisFrame, Vector3D permutation);
+	std::string ToString();
 } EulerOrder;

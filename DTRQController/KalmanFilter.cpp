@@ -22,7 +22,7 @@ double KalmanFilter::Filter(double value) {
 		values.erase(values.begin());
 	}
 
-	for (vector <double>::iterator i = values.begin(); i != values.end(); ++i) {
+	for (std::vector <double>::iterator i = values.begin(); i != values.end(); ++i) {
 		sum += value;
 		i++;
 	}

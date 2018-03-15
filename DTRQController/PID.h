@@ -3,7 +3,7 @@
 #include <Math.h>
 #include <FeedbackController.h>
 
-typedef struct PID : FeedbackController {
+class PID : public FeedbackController {
 private:
 	double integral;
 	double error;
@@ -14,6 +14,7 @@ private:
 	double kd;
 
 public:
+	PID();
 	PID(double kp, double ki, double kd);
 	virtual double Calculate(double setpoint, double processVariable, double dT);
-} PID;
+};

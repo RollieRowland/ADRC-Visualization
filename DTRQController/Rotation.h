@@ -1,4 +1,5 @@
 #pragma once
+
 #include <Quaternion.h>
 #include <RotationMatrix.h>
 #include <DirectionAngle.h>
@@ -8,7 +9,7 @@
 #include <HMatrix.h>
 #include <EulerConstants.h>
 
-typedef struct Rotation {
+class Rotation {
 private:
 	Quaternion QuaternionRotation;
 
@@ -34,4 +35,4 @@ public:
 	RotationMatrix GetRotationMatrix();
 	EulerAngles GetEulerAngles(EulerOrder order);
 	HMatrix GetHierarchicalMatrix();
-} Rotation;
+};

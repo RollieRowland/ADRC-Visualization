@@ -1,6 +1,5 @@
 #include <ADRC.h>
 
-
 ADRC::ADRC(double amplification, double damping, double plant, double precisionModifier, PID pid) {
 	this->amplification = amplification;
 	this->damping = damping;

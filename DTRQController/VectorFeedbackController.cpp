@@ -1,5 +1,9 @@
 #include <VectorFeedbackController.h>
 
+VectorFeedbackController::VectorFeedbackController() {
+
+}
+
 VectorFeedbackController::VectorFeedbackController(FeedbackController X, FeedbackController Y, FeedbackController Z) {
 	this->X = X;
 	this->Y = Y;

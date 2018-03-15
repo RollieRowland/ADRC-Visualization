@@ -179,7 +179,7 @@ EulerAngles Rotation::HierarchicalMatrixToEulerAngles(HMatrix hM, EulerOrder ord
 	{
 		double sy = sqrt(pow(hM(p.X, p.Y), 2) + pow(hM(p.X, p.Z), 2));
 
-		if (sy > 32 * numeric_limits<double>::epsilon())//16 * float.Epsilon
+		if (sy > 32 * std::numeric_limits<double>::epsilon())//16 * float.Epsilon
 		{
 			eulerAngles.Angles.X = atan2(hM(p.X, p.Y), hM(p.X, p.Z));
 			eulerAngles.Angles.Y = atan2(sy, hM(p.X, p.X));
@@ -196,7 +196,7 @@ EulerAngles Rotation::HierarchicalMatrixToEulerAngles(HMatrix hM, EulerOrder ord
 	{
 		double cy = sqrt(pow(hM(p.X, p.X), 2) + pow(hM(p.Y, p.X), 2));
 
-		if (cy > 32 * numeric_limits<double>::epsilon())
+		if (cy > 32 * std::numeric_limits<double>::epsilon())
 		{
 			eulerAngles.Angles.X = atan2(hM(p.Z, p.Y), hM(p.Z, p.Z));
 			eulerAngles.Angles.Y = atan2(-hM(p.Z, p.X), cy);

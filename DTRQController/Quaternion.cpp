@@ -342,11 +342,11 @@ bool Quaternion::IsEqual(Quaternion quaternion) {
 		current.Z == quaternion.Z;
 }
 
-string Quaternion::ToString() {
-	string w = Math::DoubleToCleanString(this->W);
-	string x = Math::DoubleToCleanString(this->X);
-	string y = Math::DoubleToCleanString(this->Y);
-	string z = Math::DoubleToCleanString(this->Z);
+std::string Quaternion::ToString() {
+	std::string w = Math::DoubleToCleanString(this->W);
+	std::string x = Math::DoubleToCleanString(this->X);
+	std::string y = Math::DoubleToCleanString(this->Y);
+	std::string z = Math::DoubleToCleanString(this->Z);
 	
 	return "[" + w + ", " + x + ", " + y + ", " + z + "]";
 	

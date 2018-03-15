@@ -1,5 +1,10 @@
 #include <TriangleWaveFader.h>
 
+TriangleWaveFader::TriangleWaveFader() {
+	this->curvature = 1;
+	this->amplitude = 1;
+}
+
 TriangleWaveFader::TriangleWaveFader(double curvature, double amplitude) {
 	this->curvature = curvature;
 	this->amplitude = amplitude;

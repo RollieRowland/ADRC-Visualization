@@ -1,13 +1,11 @@
 #pragma once
-#include <string>
-#include <math.h>
+
 #include <Math.h>
 #include <Vector.h>
 #include <Rotation.h>
 
-using namespace std;
-
 typedef struct Quaternion {
+public:
 	double W = 1.0;
 	double X = 0.0;
 	double Y = 0.0;
@@ -49,7 +47,7 @@ typedef struct Quaternion {
 	bool IsNonZero();
 	bool IsEqual(Quaternion quaternion);
 
-	string ToString();
+	std::string ToString();
 
 	//Static functions
 	static Quaternion QuaternionFromDirectionVectors(Vector3D initial, Vector3D final);
@@ -150,7 +148,14 @@ typedef struct Quaternion {
 		return this->Divide(quaternion);
 	}
 
+	Quaternion operator  *(double value) {
+		return this->Multiply(value);
+	}
+
+	Quaternion operator  /(double value) {
+		return this->Divide(value);
+	}
+
 	friend Quaternion operator *(double scalar, Quaternion q);
 	friend Quaternion operator *(Quaternion q, double scalar);
-
 } Quaternion;
