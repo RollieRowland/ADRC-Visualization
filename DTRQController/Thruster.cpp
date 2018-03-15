@@ -10,9 +10,11 @@ Thruster::Thruster() {
 	this->disable = false;
 }
 
-Thruster::Thruster(Vector3D thrusterOffset, std::string name) {
+Thruster::Thruster(Vector3D thrusterOffset, std::string name, bool simulation, double dT) {
 	this->ThrusterOffset = thrusterOffset;
 	this->name = name;
+	this->simulation = simulation;
+	this->dT = dT;
 
 	this->CurrentPosition = Vector3D(0, 0, 0);
 	this->TargetPosition = Vector3D(0, 0, 0);
@@ -45,9 +47,16 @@ void Thruster::SetThrusterOutputs(Vector3D output) {
 	CurrentRotation = Vector3D(-outerJoint.GetAngle(), 0, -innerJoint.GetAngle());
 
 	//Sets the outputs of the thrusters
-	innerJoint.SetAngle(output.X);
-	rotor.SetOutput(output.Y);
-	outerJoint.SetAngle(output.Z);
+	if (simulation) {
+		innerJoint.SetAngle(innerCDS.Calculate(output.X));
+		rotor.SetOutput(rotorCDS.Calculate(output.Y));
+		outerJoint.SetAngle(outerCDS.Calculate(output.Z));
+	}
+	else {
+		innerJoint.SetAngle(output.X);
+		rotor.SetOutput(output.Y);
+		outerJoint.SetAngle(output.Z);
+	}
 }
 
 bool Thruster::CheckIfDisabled() {

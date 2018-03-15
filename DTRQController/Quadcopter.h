@@ -18,11 +18,10 @@ private:
 	Vector3D currentAngularVelocity;
 	Vector3D currentAngularAcceleration;
 	Vector3D currentAcceleration;
-	VectorFeedbackController positionController;
-	VectorFeedbackController rotationController;
 	double armLength;
 	double armAngle;
 	double dT;
+	bool simulation;
 
 	void CalculateArmPositions(double armLength, double armAngle);
 	void CalculateGimbalLockedMotion(Vector3D &positionControl, Vector3D &thrusterOutputB,
@@ -30,6 +29,30 @@ private:
 									 Vector3D &thrusterOutputE);
 	void EstimatePosition();
 	void EstimateRotation();
+
+	VectorFeedbackController positionController = VectorFeedbackController {
+		new ADRC { 50.0, 200.0, 4.0, 10.0,
+			PID { 10, 0, 12.5 }
+		},
+		new ADRC { 10.0, 10.0, 1.5, 0.05,
+			PID { 1, 0, 0.2 }
+		},
+		new ADRC { 50.0, 200.0, 4.0, 10.0,
+			PID { 10, 0, 12.5 }
+		}
+	};
+
+	VectorFeedbackController rotationController = VectorFeedbackController {
+		new ADRC { 20.0, 200.0, 4.0, 10.0,
+			PID { 0.5, 0, 0.75 }
+		},
+		new ADRC { 10.0, 10.0, 1.5, 64,
+			PID { 1, 0, 2.5 }
+		},
+		new ADRC { 20.0, 200.0, 4.0, 10.0,
+			PID { 0.5, 0, 0.75 }
+		}
+	};
 
 public:
 	Rotation CurrentRotation;
@@ -41,7 +64,7 @@ public:
 	Thruster TD;
 	Thruster TE;
 
-	Quadcopter(double armLength, double armAngle, double dT);
+	Quadcopter(bool simulation, double armLength, double armAngle, double dT);
 	void CalculateCombinedThrustVector();
 	void SetTarget(Vector3D position, Rotation rotation);
 	void GetCurrent();

@@ -58,8 +58,8 @@ Vector3D Vector3D::Multiply(double scalar) {
 	return Vector3D {
 		this->X * scalar,
 		this->Y * scalar,
-		this->Z * scalar }
-	;
+		this->Z * scalar 
+	};
 }
 
 Vector3D Vector3D::Divide(double scalar) {
@@ -91,7 +91,16 @@ Vector3D Vector3D::Normalize() {
 		vector.Y / length,
 		vector.Z / length 
 	};
+}
 
+Vector3D Vector3D::Constrain(double minimum, double maximum) {
+	Vector3D vector = Vector3D(this->X, this->Y, this->Z);
+
+	vector.X = Mathematics::Constrain(X, minimum, maximum);
+	vector.Y = Mathematics::Constrain(Y, minimum, maximum);
+	vector.Z = Mathematics::Constrain(Z, minimum, maximum);
+
+	return vector;
 }
 
 double Vector3D::Magnitude() {

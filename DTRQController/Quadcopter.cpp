@@ -1,6 +1,7 @@
 #include <Quadcopter.h>
 
-Quadcopter::Quadcopter(double armLength, double armAngle, double dT) {
+Quadcopter::Quadcopter(bool simulation, double armLength, double armAngle, double dT) {
+	this->simulation = simulation;
 	this->armLength = armLength;
 	this->armAngle = armAngle;
 	this->dT = dT;
@@ -8,34 +9,15 @@ Quadcopter::Quadcopter(double armLength, double armAngle, double dT) {
 
 	CalculateArmPositions(armLength, armAngle);
 
+	currentVelocity = Vector3D(0, 0, 0);
+	currentAngularVelocity = Vector3D(0, 0, 0);
+	currentAngularAcceleration = Vector3D(0, 0, 0);
+	currentAcceleration = Vector3D(0, 0, 0);
+
 	CurrentPosition = Vector3D(0, 0, 0);
 	TargetPosition = Vector3D(0, 0, 0);
 	CurrentRotation = Rotation(Quaternion(1, 0, 0, 0));
 	TargetRotation = Rotation(Quaternion(1, 0, 0, 0));
-
-	positionController = VectorFeedbackController {
-		ADRC { 50.0, 200.0, 4.0, 10.0,
-			PID { 10, 0, 12.5 }
-		},
-		ADRC { 10.0, 10.0, 1.5, 0.05,
-			PID { 1, 0, 0.2 }
-		},
-		ADRC { 50.0, 200.0, 4.0, 10.0,
-			PID { 10, 0, 12.5 }
-		}
-	};
-
-	rotationController = VectorFeedbackController {
-		ADRC { 20.0, 200.0, 4.0, 10.0,
-			PID { 0.5, 0, 0.75 }
-		},
-		ADRC { 10.0, 10.0, 1.5, 64,
-			PID { 1, 0, 2.5 }
-		},
-		ADRC { 20.0, 200.0, 4.0, 10.0,
-			PID { 0.5, 0, 0.75 }
-		}
-	};
 }
 
 void Quadcopter::CalculateCombinedThrustVector() {
@@ -44,6 +26,11 @@ void Quadcopter::CalculateCombinedThrustVector() {
 
 	Vector3D rotationOutput = rotationController.Calculate(Vector3D(0, 0, 0), change, dT);
 	Vector3D positionOutput = positionController.Calculate(Vector3D(0, 0, 0), CurrentPosition.Subtract(TargetPosition), dT);
+
+	positionOutput = positionOutput.Constrain(-30, 30);
+	rotationOutput = rotationOutput.Constrain(-30, 30);
+
+	std::cout << positionOutput.ToString() + " " + CurrentPosition.Subtract(TargetPosition).ToString() << std::endl;
 
 	//Thruster output relative to environment origin
 	Vector3D thrusterOutputB = Vector3D(-rotationOutput.Y, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);
@@ -78,7 +65,7 @@ void Quadcopter::SetTarget(Vector3D position, Rotation rotation) {
 void Quadcopter::SimulateCurrent(Vector3D externalAcceleration) {
 	this->externalAcceleration = externalAcceleration;
 	EstimatePosition();
-	EstimateRotation();
+	//EstimateRotation();
 
 	TB.CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TB.ThrusterOffset).Add(CurrentPosition);
 	TC.CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TC.ThrusterOffset).Add(CurrentPosition);
@@ -165,10 +152,6 @@ Vector3D Quadcopter::RotationQuaternionToHoverAngles(Rotation rotation) {
 	outerJoint = Mathematics::RadiansToDegrees(asin(directionVector.Z));
 	innerJoint = Mathematics::RadiansToDegrees(atan2(directionVector.X, directionVector.Y));
 
-	std::cout << Mathematics::DoubleToCleanString(outerJoint) + "  " +
-				 Mathematics::DoubleToCleanString(innerJoint) + "  " +
-				 Mathematics::DoubleToCleanString(directionVector.Y) << std::endl;
-
 	return Vector3D(outerJoint, 0, innerJoint);
 }
 
@@ -180,10 +163,10 @@ void Quadcopter::CalculateArmPositions(double armLength, double armAngle) {
 		    " Z:" + Mathematics::DoubleToCleanString(ZLength) +
 		    " Period:" + Mathematics::DoubleToCleanString(dT) << std::endl;
 
-	TB = Thruster(Vector3D(-XLength, 0,  ZLength), "TB");
-	TC = Thruster(Vector3D( XLength, 0,  ZLength), "TC");
-	TD = Thruster(Vector3D( XLength, 0, -ZLength), "TD");
-	TE = Thruster(Vector3D(-XLength, 0, -ZLength), "TE");
+	TB = Thruster(Vector3D(-XLength, 0,  ZLength), "TB", simulation, dT);
+	TC = Thruster(Vector3D( XLength, 0,  ZLength), "TC", simulation, dT);
+	TD = Thruster(Vector3D( XLength, 0, -ZLength), "TD", simulation, dT);
+	TE = Thruster(Vector3D(-XLength, 0, -ZLength), "TE", simulation, dT);
 }
 
 void Quadcopter::CalculateGimbalLockedMotion(Vector3D &positionControl, Vector3D &thrusterOutputB,

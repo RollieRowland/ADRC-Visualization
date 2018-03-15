@@ -20,6 +20,7 @@ public:
 	Vector3D Divide(double scalar);
 	Vector3D CrossProduct(Vector3D vector);
 	Vector3D Normalize();//unit sphere
+	Vector3D Constrain(double minimum, double maximum);
 
 	double Magnitude();
 	double GetLength();

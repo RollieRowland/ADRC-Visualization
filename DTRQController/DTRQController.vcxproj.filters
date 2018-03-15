@@ -117,6 +117,9 @@
     <ClCompile Include="Mathematics.cpp">
       <Filter>Source Files\Mathematics</Filter>
     </ClCompile>
+    <ClCompile Include="CriticallyDampedSpring.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Thruster.h">
@@ -192,6 +195,9 @@
       <Filter>Header Files\Quadcopter</Filter>
     </ClInclude>
     <ClInclude Include="Mathematics.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="CriticallyDampedSpring.h">
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
   </ItemGroup>

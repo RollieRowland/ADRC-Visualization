@@ -120,6 +120,7 @@
   <ItemGroup>
     <ClCompile Include="ADRC.cpp" />
     <ClCompile Include="AxisAngle.cpp" />
+    <ClCompile Include="CriticallyDampedSpring.cpp" />
     <ClCompile Include="DirectionAngle.cpp" />
     <ClCompile Include="EulerAngles.cpp" />
     <ClCompile Include="EulerConstants.cpp" />
@@ -147,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="ADRC.h" />
     <ClInclude Include="AxisAngle.h" />
+    <ClInclude Include="CriticallyDampedSpring.h" />
     <ClInclude Include="DirectionAngle.h" />
     <ClInclude Include="EulerAngles.h" />
     <ClInclude Include="EulerConstants.h" />

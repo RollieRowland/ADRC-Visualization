@@ -16,14 +16,13 @@ double PID::Calculate(double setpoint, double processVariable, double dT) {
 	double POut, IOut, DOut;
 
 	error = setpoint - processVariable;
+	integral += error * dT;
 
 	POut = kp * error;
-
-	integral += error * dT;
 	IOut = ki * integral;
-
 	DOut = kd * ((error - previousError) / dT);
 
+	output = POut + IOut + DOut;
 	previousError = error;
 
 	return output;
