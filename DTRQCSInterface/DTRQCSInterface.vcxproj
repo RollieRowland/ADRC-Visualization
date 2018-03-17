@@ -20,8 +20,10 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{570FEF64-D0DF-466D-B848-7951B3E92F35}</ProjectGuid>
-    <RootNamespace>DTRQController</RootNamespace>
+    <ProjectGuid>{5FA5438D-BDA3-4312-9525-CA312066F3C6}</ProjectGuid>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>DTRQCSInterface</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -29,27 +31,29 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -70,108 +74,86 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>c:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Tools\MSVC\14.13.26128\include\;C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQController;$(IncludePath)</IncludePath>
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\Debug;C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQController;$(IncludePath)</IncludePath>
+    <ReferencePath>C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQController;$(ReferencePath)</ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Full</Optimization>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <CompileAs>CompileAsCpp</CompileAs>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies />
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies />
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies />
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies />
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ADRC.cpp" />
-    <ClCompile Include="AxisAngle.cpp" />
-    <ClCompile Include="CriticallyDampedSpring.cpp" />
-    <ClCompile Include="DirectionAngle.cpp" />
-    <ClCompile Include="EulerAngles.cpp" />
-    <ClCompile Include="EulerConstants.cpp" />
-    <ClCompile Include="EulerOrder.cpp" />
-    <ClCompile Include="ExtendedStateObserver.cpp" />
-    <ClCompile Include="HMatrix.cpp" />
-    <ClCompile Include="KalmanFilter.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Mathematics.cpp" />
-    <ClCompile Include="Motor.cpp" />
-    <ClCompile Include="MPU6050.cpp" />
-    <ClCompile Include="NonlinearCombiner.cpp" />
-    <ClCompile Include="PID.cpp" />
-    <ClCompile Include="Quadcopter.cpp" />
-    <ClCompile Include="Quaternion.cpp" />
-    <ClCompile Include="Rotation.cpp" />
-    <ClCompile Include="RotationMatrix.cpp" />
-    <ClCompile Include="Servo.cpp" />
-    <ClCompile Include="Thruster.cpp" />
-    <ClCompile Include="TriangleWaveFader.cpp" />
-    <ClCompile Include="Vector.cpp" />
-    <ClCompile Include="VectorFeedbackController.cpp" />
-    <ClCompile Include="VectorKalmanFilter.cpp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ADRC.h" />
-    <ClInclude Include="AxisAngle.h" />
-    <ClInclude Include="CriticallyDampedSpring.h" />
-    <ClInclude Include="DirectionAngle.h" />
-    <ClInclude Include="EulerAngles.h" />
-    <ClInclude Include="EulerConstants.h" />
-    <ClInclude Include="EulerOrder.h" />
-    <ClInclude Include="ExtendedStateObserver.h" />
-    <ClInclude Include="FeedbackController.h" />
-    <ClInclude Include="HMatrix.h" />
-    <ClInclude Include="KalmanFilter.h" />
-    <ClInclude Include="Mathematics.h" />
-    <ClInclude Include="Motor.h" />
-    <ClInclude Include="MPU6050.h" />
-    <ClInclude Include="NonlinearCombiner.h" />
-    <ClInclude Include="PID.h" />
-    <ClInclude Include="Quadcopter.h" />
-    <ClInclude Include="Quaternion.h" />
-    <ClInclude Include="Rotation.h" />
-    <ClInclude Include="RotationMatrix.h" />
-    <ClInclude Include="Servo.h" />
-    <ClInclude Include="Thruster.h" />
-    <ClInclude Include="TriangleWaveFader.h" />
-    <ClInclude Include="Vector.h" />
-    <ClInclude Include="VectorFeedbackController.h" />
-    <ClInclude Include="VectorKalmanFilter.h" />
+    <ClInclude Include="DTRQCSInterface.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="DTRQCSInterface.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

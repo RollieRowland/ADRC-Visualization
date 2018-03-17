@@ -66,6 +66,8 @@ private:
 		new PID { 1, 0, 2.5 },
 		new PID { 0.5, 0, 0.75 }
 	};
+
+	Vector3D RotationQuaternionToHoverAngles(Rotation rotation);
 public:
 	Rotation CurrentRotation;
 	Rotation TargetRotation;
@@ -81,5 +83,4 @@ public:
 	void SetTarget(Vector3D position, Rotation rotation);
 	void GetCurrent();
 	void SimulateCurrent(Vector3D externalAcceleration);
-	Vector3D RotationQuaternionToHoverAngles(Rotation rotation);
 };

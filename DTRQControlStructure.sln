@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRQDependencyTest", "DTRQD
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DTRQController", "DTRQController\DTRQController.vcxproj", "{570FEF64-D0DF-466D-B848-7951B3E92F35}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DTRQCSInterface", "DTRQCSInterface\DTRQCSInterface.vcxproj", "{5FA5438D-BDA3-4312-9525-CA312066F3C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,16 @@ Global
 		{570FEF64-D0DF-466D-B848-7951B3E92F35}.Release|x64.Build.0 = Release|x64
 		{570FEF64-D0DF-466D-B848-7951B3E92F35}.Release|x86.ActiveCfg = Release|Win32
 		{570FEF64-D0DF-466D-B848-7951B3E92F35}.Release|x86.Build.0 = Release|Win32
+		{5FA5438D-BDA3-4312-9525-CA312066F3C6}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{5FA5438D-BDA3-4312-9525-CA312066F3C6}.Debug|x64.ActiveCfg = Debug|x64
+		{5FA5438D-BDA3-4312-9525-CA312066F3C6}.Debug|x64.Build.0 = Debug|x64
+		{5FA5438D-BDA3-4312-9525-CA312066F3C6}.Debug|x86.ActiveCfg = Debug|Win32
+		{5FA5438D-BDA3-4312-9525-CA312066F3C6}.Debug|x86.Build.0 = Debug|Win32
+		{5FA5438D-BDA3-4312-9525-CA312066F3C6}.Release|Any CPU.ActiveCfg = Release|Win32
+		{5FA5438D-BDA3-4312-9525-CA312066F3C6}.Release|x64.ActiveCfg = Release|x64
+		{5FA5438D-BDA3-4312-9525-CA312066F3C6}.Release|x64.Build.0 = Release|x64
+		{5FA5438D-BDA3-4312-9525-CA312066F3C6}.Release|x86.ActiveCfg = Release|Win32
+		{5FA5438D-BDA3-4312-9525-CA312066F3C6}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

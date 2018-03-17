@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using HelixToolkit.Wpf;
 using System.Windows.Media.Media3D;
 using ADRCVisualization.Class_Files.Mathematics;
+using DTRQCSInterface;
 
 namespace ADRCVisualization
 {
@@ -27,6 +28,7 @@ namespace ADRCVisualization
     public partial class QuadViewer : UserControl
     {
         private Quadcopter quadcopter;
+        private DTRQQuadcopter dTRQQuadcopter;
 
         private Timer t1;
 
