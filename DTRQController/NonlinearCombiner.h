@@ -12,8 +12,8 @@ private:
 
 public:
 	typedef struct Output{
-		double Current;
-		double Previous;
+		double Current = 0;
+		double Previous = 0;
 
 		Output() {
 			Current = 0.0;

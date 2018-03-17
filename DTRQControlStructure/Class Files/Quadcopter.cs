@@ -83,14 +83,7 @@ namespace ADRCVisualization.Class_Files
                     PID = new PID(10, 0, 12.5, 1000)
                 }
             };
-            /*
-            PositionFeedbackController = new VectorFeedbackController()
-            {
-                X = new PID(1, 0, 0.2, 1000),
-                Y = new PID(1, 0, 0.2, 1000),
-                Z = new PID(1, 0, 0.2, 1000)
-            };
-            */
+
             RotationFeedbackController = new VectorFeedbackController()
             {
                 X = new ADRC(20, 200, 4, 10, 30)

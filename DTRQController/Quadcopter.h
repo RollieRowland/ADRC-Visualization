@@ -29,7 +29,7 @@ private:
 									 Vector3D &thrusterOutputE);
 	void EstimatePosition();
 	void EstimateRotation();
-
+	/*
 	VectorFeedbackController positionController = VectorFeedbackController {
 		new ADRC { 50.0, 200.0, 4.0, 10.0,
 			PID { 10, 0, 12.5 }
@@ -53,7 +53,19 @@ private:
 			PID { 0.5, 0, 0.75 }
 		}
 	};
+	*/
+	
+	VectorFeedbackController positionController = VectorFeedbackController {
+		new PID { 10, 0, 12.5 },
+		new PID { 1, 0, 0.2 },
+		new PID { 10, 0, 12.5 }
+	};
 
+	VectorFeedbackController rotationController = VectorFeedbackController {
+		new PID { 0.5, 0, 0.75 },
+		new PID { 1, 0, 2.5 },
+		new PID { 0.5, 0, 0.75 }
+	};
 public:
 	Rotation CurrentRotation;
 	Rotation TargetRotation;

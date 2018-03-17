@@ -5,10 +5,10 @@
 
 class PID : virtual public FeedbackController {
 private:
-	double integral;
-	double error;
-	double previousError;
-	double output;
+	double integral = 0;
+	double error = 0;
+	double previousError = 0;
+	double output = 0;
 	double kp;
 	double ki;
 	double kd;

@@ -1,7 +1,7 @@
 #include <PID.h>
 
 PID::PID() {
-	this->kp = 0;
+	this->kp = 1;
 	this->ki = 0;
 	this->kd = 0;
 }

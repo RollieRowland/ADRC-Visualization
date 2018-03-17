@@ -18,9 +18,9 @@ private:
 	bool simulation;
 	double dT;
 
-	CriticallyDampedSpring outerCDS = CriticallyDampedSpring(dT, 150, 1);
-	CriticallyDampedSpring innerCDS = CriticallyDampedSpring(dT, 250, 1);
-	CriticallyDampedSpring rotorCDS = CriticallyDampedSpring(dT, 150, 1);
+	CriticallyDampedSpring outerCDS;
+	CriticallyDampedSpring innerCDS;
+	CriticallyDampedSpring rotorCDS;
 
 	bool CheckIfDisabled();
 public:

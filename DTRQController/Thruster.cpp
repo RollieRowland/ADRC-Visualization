@@ -3,11 +3,17 @@
 Thruster::Thruster() {
 	this->ThrusterOffset = Vector3D(0, 0, 0);
 	this->name = "null";
+	this->simulation = true;
+	this->dT = 0.05;
 
 	this->CurrentPosition = Vector3D(0, 0, 0);
 	this->TargetPosition = Vector3D(0, 0, 0);
 	this->CurrentRotation = Vector3D(0, 0, 0);
 	this->disable = false;
+
+	outerCDS = CriticallyDampedSpring(dT, 150, 1);
+	innerCDS = CriticallyDampedSpring(dT, 250, 1);
+	rotorCDS = CriticallyDampedSpring(dT, 150, 1);
 }
 
 Thruster::Thruster(Vector3D thrusterOffset, std::string name, bool simulation, double dT) {
@@ -20,6 +26,12 @@ Thruster::Thruster(Vector3D thrusterOffset, std::string name, bool simulation, d
 	this->TargetPosition = Vector3D(0, 0, 0);
 	this->CurrentRotation = Vector3D(0, 0, 0);
 	this->disable = false;
+
+	outerCDS = CriticallyDampedSpring(dT, 150, 1);
+	innerCDS = CriticallyDampedSpring(dT, 250, 1);
+	rotorCDS = CriticallyDampedSpring(dT, 150, 1);
+
+	std::cout << "Thruster " << name << " " << thrusterOffset.ToString() << " Simulation: " << simulation << " " << dT << std::endl;
 }
 
 Vector3D Thruster::ReturnThrustVector() {

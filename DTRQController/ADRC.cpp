@@ -5,12 +5,15 @@ ADRC::ADRC(double amplification, double damping, double plant, double precisionM
 	this->damping = damping;
 	this->plant = plant;
 	this->precisionModifier = precisionModifier;
+	this->pid = pid;
 }
 
 double ADRC::Calculate(double setpoint, double processVariable, double dT) {
 	precision = dT * precisionModifier;
 
 	double pdValue = pid.Calculate(setpoint, processVariable, dT);
+
+	//std::cout << "ADRC" << Mathematics::DoubleToCleanString(pdValue) << Mathematics::DoubleToCleanString(processVariable) << std::endl;
 
 	NonlinearCombiner::Output currentOutput = NonlinearCombiner::Output{
 		pid.Calculate(setpoint, processVariable, dT),

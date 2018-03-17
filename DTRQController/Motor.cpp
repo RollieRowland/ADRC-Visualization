@@ -1,5 +1,8 @@
 #include <Motor.h>
 
+Motor::Motor() {
+	output = 0;
+}
 
 void Motor::SetPWM() {
 	

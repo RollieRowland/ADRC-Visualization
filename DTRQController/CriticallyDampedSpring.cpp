@@ -10,6 +10,8 @@ CriticallyDampedSpring::CriticallyDampedSpring(double dT, double springConstant,
 	this->dT = dT;
 	this->springConstant = springConstant;
 	this->mass = mass;
+
+	std::cout << "CDS: " << dT << " " << springConstant << " " << mass << std::endl;
 }
 
 double CriticallyDampedSpring::Calculate(double target) {
@@ -18,11 +20,8 @@ double CriticallyDampedSpring::Calculate(double target) {
 	double dampingForce = -currentVelocity * mass * sqrt(springConstant);
 	double force = springForce + dampingForce;
 
-	currentVelocity += force * dT;
-
-	double displacement = currentVelocity * dT;
-
-	currentPosition = currentPosition + displacement;
+	currentVelocity = currentVelocity + force * dT;
+	currentPosition = currentPosition + currentVelocity * dT;
 
 	return currentPosition;
 }
