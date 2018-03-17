@@ -37,20 +37,6 @@ namespace ADRCVisualization.Class_Files.Mathematics
         }
 
         /// <summary>
-        /// Creates a direction vector from a spherical coordinate.
-        /// </summary>
-        /// <param name="sphericalCoordinate"></param>
-        /// <returns></returns>
-        public static Vector SphericalCoordinateToVector(SphericalCoordinate sphericalCoordinate)
-        {
-            Vector upVector = new Vector(0, sphericalCoordinate.Radius, 0);
-            Vector phiRotation = RotationMatrix.RotateVector(new Vector(-sphericalCoordinate.Phi, 0, 0), upVector);
-            Vector thetaRotation = RotationMatrix.RotateVector(new Vector(0, sphericalCoordinate.Theta, 0), phiRotation);
-
-            return thetaRotation;
-        }
-
-        /// <summary>
         /// Produces the normal vector from the input vector.
         /// </summary>
         /// <param name="vector">The vector to be normalized.</param>

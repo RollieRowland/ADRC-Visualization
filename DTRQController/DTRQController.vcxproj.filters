@@ -22,9 +22,6 @@
     <Filter Include="Source Files\FeedbackControl\ADRC">
       <UniqueIdentifier>{3f0bacf0-f7a4-4b72-bb15-f5e0c0d4a50b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Filters">
-      <UniqueIdentifier>{2ed87666-d79f-4acd-9317-2f8515eec0ab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Quadcopter">
       <UniqueIdentifier>{592b1334-bc53-431b-9280-185c083bcecd}</UniqueIdentifier>
     </Filter>

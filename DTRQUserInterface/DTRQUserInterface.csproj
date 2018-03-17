@@ -31,7 +31,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -85,37 +85,16 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class Files\FeedbackControl\AdaptivePID.cs" />
-    <Compile Include="Class Files\FeedbackControl\ADRC\ADRC.cs" />
-    <Compile Include="Class Files\FeedbackControl\ADRC\ExtendedStateObserver.cs" />
-    <Compile Include="Class Files\FeedbackControl\FeedbackController.cs" />
-    <Compile Include="Class Files\FeedbackControl\QuaternionFeedbackController.cs" />
-    <Compile Include="Class Files\FeedbackControl\VectorFeedbackController.cs" />
-    <Compile Include="Class Files\Filters\VectorKalmanFilter.cs" />
-    <Compile Include="Class Files\Filters\KalmanFilter.cs" />
-    <Compile Include="Class Files\Mathematics\Acceleration.cs" />
     <Compile Include="Class Files\Mathematics\AxisAngle.cs" />
     <Compile Include="Class Files\Mathematics\DirectionAngle.cs" />
     <Compile Include="Class Files\Mathematics\EulerAngles.cs" />
     <Compile Include="Class Files\Mathematics\EulerConstants.cs" />
     <Compile Include="Class Files\Mathematics\EulerOrder.cs" />
-    <Compile Include="Class Files\Mathematics\TriangleWaveFader.cs" />
     <Compile Include="Class Files\Mathematics\HMatrix.cs" />
     <Compile Include="Class Files\Mathematics\RotationMatrix.cs" />
     <Compile Include="Class Files\Mathematics\MathE.cs" />
     <Compile Include="Class Files\Mathematics\Quaternion.cs" />
-    <Compile Include="Class Files\Mathematics\SphericalCoordinate.cs" />
-    <Compile Include="Class Files\Mathematics\Statistics.cs" />
-    <Compile Include="Class Files\Mathematics\Turbulence.cs" />
     <Compile Include="Class Files\Mathematics\Vector.cs" />
-    <Compile Include="Class Files\Mathematics\VectorAcceleration.cs" />
-    <Compile Include="Class Files\Quadcopter.cs" />
-    <Compile Include="Class Files\QuadcopterSimulation\IMU.cs" />
-    <Compile Include="Class Files\QuadcopterSimulation\Motor.cs" />
-    <Compile Include="Class Files\QuadcopterSimulation\Servo.cs" />
-    <Compile Include="Class Files\QuadcopterSimulation\Thruster.cs" />
-    <Compile Include="Class Files\FeedbackControl\ADRC\NonlinearCombiner.cs" />
-    <Compile Include="Class Files\FeedbackControl\PID.cs" />
     <Compile Include="QuadViewer.xaml.cs">
       <DependentUpon>QuadViewer.xaml</DependentUpon>
     </Compile>

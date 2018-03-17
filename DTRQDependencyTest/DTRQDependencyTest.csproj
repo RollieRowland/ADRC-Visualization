@@ -63,9 +63,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DTRQControlStructure\DTRQControlStructure.csproj">
+    <ProjectReference Include="..\DTRQUserInterface\DTRQUserInterface.csproj">
       <Project>{b11eb7b2-7563-4f8b-a81a-2fae529a8c2c}</Project>
-      <Name>DTRQControlStructure</Name>
+      <Name>DTRQUserInterface</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

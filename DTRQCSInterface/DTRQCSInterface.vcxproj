@@ -75,8 +75,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\Debug;C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQController;$(IncludePath)</IncludePath>
-    <ReferencePath>C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQController;$(ReferencePath)</ReferencePath>
+    <IncludePath>C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQCSInterface;$(IncludePath)</IncludePath>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -93,9 +93,11 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <AdditionalIncludeDirectories>C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQController;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies />
+      <AdditionalLibraryDirectories>C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DTRQController.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -137,7 +139,11 @@
   <ItemGroup>
     <ClInclude Include="DTRQCSInterface.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SDirAngle.h" />
+    <ClInclude Include="SQuad.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="SThrust.h" />
+    <ClInclude Include="SVector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
@@ -154,6 +160,11 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DTRQController\DTRQController.vcxproj">
+      <Project>{570fef64-d0df-466d-b848-7951b3e92f35}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

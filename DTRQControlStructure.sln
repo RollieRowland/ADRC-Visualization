@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRQControlStructure", "DTRQControlStructure\DTRQControlStructure.csproj", "{B11EB7B2-7563-4F8B-A81A-2FAE529A8C2C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRQUserInterface", "DTRQUserInterface\DTRQUserInterface.csproj", "{B11EB7B2-7563-4F8B-A81A-2FAE529A8C2C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRQDependencyTest", "DTRQDependencyTest\DTRQDependencyTest.csproj", "{5EE7EFE9-A1AC-4B05-A4C1-A6195F94BC39}"
 EndProject

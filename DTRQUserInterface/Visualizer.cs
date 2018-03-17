@@ -13,12 +13,14 @@ using ADRCVisualization.Class_Files;
 using System.Drawing.Imaging;
 using System.IO;
 using ADRCVisualization.Class_Files.Mathematics;
+using DTRQCSInterface;
 
 namespace ADRCVisualization
 {
     public partial class Visualizer : Form
     {
         private DateTime dateTime;
+        private DTRQQuadcopter quadcopter;
         
         //FeedbackControllers
         //private double RunTime = 60;
@@ -26,17 +28,14 @@ namespace ADRCVisualization
         //Timers for alternate threads and asynchronous calculations
         private System.Timers.Timer t1;
 
-        private Vector gravity =  new Vector(0, -9.81, 0);
-        private Quadcopter quad;
-        private Turbulence turbulence = new Turbulence(10, 100);
-
-        private Vector targetPosition;
-        private DirectionAngle targetRotation;
+        private SVector targetPosition;
+        private SDirAngle targetRotation;
 
         public Visualizer()
         {
-            quad = new Quadcopter(0.3, 55, 0.05);
-
+            quadcopter = new DTRQQuadcopter(true, 0.3, 55, 0.05);
+            SQuad quad = quadcopter.GetQuadcopter();
+            
             InitializeComponent();
 
             //Start3DViewer();
@@ -45,20 +44,15 @@ namespace ADRCVisualization
 
             StartTimers();
             //StopTimers();
-            
+
             //Set current
-            quad.CalculateCurrent();
+            quadcopter.SimulateCurrent(new SVector(0, -9.81, 0));
             
-            targetPosition = new Vector(0, 0, 0);
-            targetRotation = new DirectionAngle(0, 0, 1, 0);
-
-            quad.SetTarget(targetPosition, targetRotation);
-
-            //SetTargets();
-            //SetTargetsTrack();
-            //SetTargetPositions();
-            //SetTargetRotations();
-            //SetTargetCircle();
+            targetPosition = new SVector(0, 0, 0);
+            targetRotation = new SDirAngle(0, 0, 1, 0);
+            
+            quadcopter.SetTarget(targetPosition, targetRotation);
+            
             SetMultiple();
 
             //DisableMotor();
@@ -89,16 +83,16 @@ namespace ADRCVisualization
             viewerThread.Start();
         }
 
-        public Quadcopter GetQuadcopter()
+        public SQuad GetQuadcopter()
         {
-            return quad;
+            return quadcopter.GetQuadcopter();
         }
 
         private async void DisableMotor()
         {
             await Task.Delay(4000);
 
-            quad.ThrusterB.Disable = true;
+            //quad.ThrusterB.Disable = true;
 
             //await Task.Delay(500);
 
@@ -107,7 +101,7 @@ namespace ADRCVisualization
 
         private async void SetMultiple()
         {
-            quad.SetTarget(targetPosition, targetRotation);
+            quadcopter.SetTarget(targetPosition, targetRotation);
 
             while (true)
             {
@@ -129,50 +123,50 @@ namespace ADRCVisualization
                 }
                 */
                 
-                targetPosition = new Vector(1, 0, 1.2);
-                targetRotation = new DirectionAngle(0, 0, 1, 0);
+                targetPosition = new SVector(1, 0, 1.2);
+                targetRotation = new SDirAngle(0, 0, 1, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(3000);
                 /*
                 //////////////////////////////////////////////////
-                targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new DirectionAngle(0, 0, 0, -1);//90, 0, 0
+                targetPosition = new SVector(-1, 0, 1.2);
+                targetRotation = new SDirAngle(0, 0, 0, -1);//90, 0, 0
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(7500);
 
                 //////////////////////////////////////////////////
-                targetPosition = new Vector(-1, 0, -1.2);
-                targetRotation = new DirectionAngle(0, 0, -0.707, -0.707);//0, 45, 0
+                targetPosition = new SVector(-1, 0, -1.2);
+                targetRotation = new SDirAngle(0, 0, -0.707, -0.707);//0, 45, 0
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(7500);
 
-                targetPosition = new Vector(-1, 0, -1.2);
-                targetRotation = new DirectionAngle(0, 0, 1, 0);//0, 0, 0
+                targetPosition = new SVector(-1, 0, -1.2);
+                targetRotation = new SDirAngle(0, 0, 1, 0);//0, 0, 0
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(5000);
                 */
-                
+
                 //////////////////////////////////////////////////
-                targetPosition = new Vector(1, 0, -1.2);
-                targetRotation = new DirectionAngle(0, 1, 0, 0);//0, 0, 90
+                targetPosition = new SVector(1, 0, -1.2);
+                targetRotation = new SDirAngle(0, 1, 0, 0);//0, 0, 90
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(10000);
 
                 //////////////////////////////////////////////////
-                targetPosition = new Vector(-1, 0, 1.2);
-                targetRotation = new DirectionAngle(0, 0.707, -0.707, 0);
+                targetPosition = new SVector(-1, 0, 1.2);
+                targetRotation = new SDirAngle(0, 0.707, -0.707, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(6000);
 
                 //////////////////////////////////////////////////
-                targetPosition = new Vector(1, 0, 1.2);
-                targetRotation = new DirectionAngle(0, 0, 1, 0);//0, 0, 0
+                targetPosition = new SVector(1, 0, 1.2);
+                targetRotation = new SDirAngle(0, 0, 1, 0);//0, 0, 0
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(6000);
@@ -180,7 +174,7 @@ namespace ADRCVisualization
         }
         
         
-        private void SetChartPositions(Quadcopter quadcopter)
+        private void SetChartPositions(SQuad q)
         {
             chart1.ChartAreas[0].AxisX.Maximum = 2;
             chart1.ChartAreas[0].AxisX.Minimum = -2;
@@ -213,7 +207,9 @@ namespace ADRCVisualization
             chart1.Series[9].MarkerColor = Color.LimeGreen;
             chart1.Series[10].MarkerColor = Color.LightPink;
 
-            chart1.Series[9].Points.AddXY(quadcopter.CurrentPosition.X, quadcopter.CurrentPosition.Z);
+            q.GetCurrentPosition();
+
+            chart1.Series[9].Points.AddXY(q.CurrentPosition.X, quadcopter.CurrentPosition.Z);
             chart1.Series[10].Points.AddXY(quadcopter.TargetPosition.X, quadcopter.TargetPosition.Z);
 
             if (chart1.Series[9].Points.Count > 400) chart1.Series[9].Points.RemoveAt(0);
@@ -277,13 +273,12 @@ namespace ADRCVisualization
         {
             this.BeginInvoke((Action)(() =>
             {
-                quad.CalculateCombinedThrustVector();//Secondary Solver
-
-                quad.ApplyForce(gravity);
-                quad.SetTarget(targetPosition, targetRotation);
-                quad.CalculateCurrent();
+                quadcopter.CalculateCombinedThrustVector();//Secondary Solver
+                
+                quadcopter.SetTarget(targetPosition, targetRotation);
+                quadcopter.SimulateCurrent(new SVector(0, -9.81, 0));
                     
-                SetChartPositions(quad);
+                SetChartPositions(quadcopter.GetQuadcopter());
 
                 //label1.Text = Vector.CalculateEuclideanDistance(quad.ThrusterB.CurrentPosition, quad.ThrusterB.TargetPosition).ToString();
                 //label2.Text = Vector.CalculateEuclideanDistance(quad.ThrusterC.CurrentPosition, quad.ThrusterC.TargetPosition).ToString();
@@ -303,7 +298,7 @@ namespace ADRCVisualization
             Double.TryParse(yPositionTB.Text, out double y);
             Double.TryParse(zPositionTB.Text, out double z);
 
-            targetPosition = new Vector(x, y, z);
+            targetPosition = new SVector(x, y, z);
         }
 
         private void SendHPB_Click(object sender, EventArgs e)
@@ -313,7 +308,7 @@ namespace ADRCVisualization
             Double.TryParse(zRotationTB.Text, out double z);
             Double.TryParse(rRotationTB.Text, out double r);
 
-            targetRotation = new DirectionAngle(r, x, y, z);
+            targetRotation = new SDirAngle(r, x, y, z);
         }
     }
 }

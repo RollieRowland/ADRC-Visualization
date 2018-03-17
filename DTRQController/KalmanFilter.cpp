@@ -18,7 +18,7 @@ double KalmanFilter::Filter(double value) {
 
 	values.push_back(value);
 
-	if (values.size() > memory) {
+	if ((signed int)values.size() > memory) {
 		values.erase(values.begin());
 	}
 
