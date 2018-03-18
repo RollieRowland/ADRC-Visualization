@@ -42,8 +42,8 @@ void Quadcopter::CalculateCombinedThrustVector() {
 	Vector3D rotationOutput = rotationController.Calculate(Vector3D(0, 0, 0), change, dT);
 	Vector3D positionOutput = positionController.Calculate(Vector3D(0, 0, 0), CurrentPosition.Subtract(TargetPosition), dT);
 
-	//positionOutput = positionOutput.Constrain(-30, 30);
-	//rotationOutput = rotationOutput.Constrain(-30, 30);
+	positionOutput = positionOutput.Constrain(-30, 30);
+	rotationOutput = rotationOutput.Constrain(-30, 30);
 
 	std::cout << positionOutput.ToString() + " " + CurrentPosition.Subtract(TargetPosition).ToString() << std::endl;
 
@@ -80,7 +80,7 @@ void Quadcopter::SetTarget(Vector3D position, Rotation rotation) {
 void Quadcopter::SimulateCurrent(Vector3D externalAcceleration) {
 	this->externalAcceleration = externalAcceleration;
 	EstimatePosition();
-	//EstimateRotation();
+	EstimateRotation();
 
 	TB.CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TB.ThrusterOffset).Add(CurrentPosition);
 	TC.CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TC.ThrusterOffset).Add(CurrentPosition);

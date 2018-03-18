@@ -30,13 +30,26 @@ namespace ADRCVisualization
 
         private SVector targetPosition;
         private SDirAngle targetRotation;
+        private bool initialized = false;
 
         public Visualizer()
         {
             quadcopter = new DTRQQuadcopter(true, 0.3, 55, 0.05);
             SQuad quad = quadcopter.GetQuadcopter();
-            
+
+            quadcopter.SimulateCurrent(new SVector(0, -9.81, 0));
+
+            targetPosition = new SVector(0, 0, 0);
+            targetRotation = new SDirAngle(0, 0, 1, 0);
+
+            quadcopter.SetTarget(targetPosition, targetRotation);
+            Console.WriteLine("Initializing UI components.");
+
+            Thread.Sleep(2500);
+
             InitializeComponent();
+
+            Console.WriteLine("UI components initialized.");
 
             //Start3DViewer();
 
@@ -46,16 +59,12 @@ namespace ADRCVisualization
             //StopTimers();
 
             //Set current
-            quadcopter.SimulateCurrent(new SVector(0, -9.81, 0));
-            
-            targetPosition = new SVector(0, 0, 0);
-            targetRotation = new SDirAngle(0, 0, 1, 0);
-            
-            quadcopter.SetTarget(targetPosition, targetRotation);
-            
+
             SetMultiple();
 
             //DisableMotor();
+
+            initialized = true;
         }
 
         private void Start3DViewer()
@@ -82,9 +91,16 @@ namespace ADRCVisualization
             viewerThread.SetApartmentState(ApartmentState.STA); // needs to be STA or throws exception
             viewerThread.Start();
         }
-
+        
         public SQuad GetQuadcopter()
         {
+            if (!initialized)
+            {
+                Console.WriteLine("Not initialized");
+
+                throw new Exception("Quadcopter not initialized before request.");
+            }
+
             return quadcopter.GetQuadcopter();
         }
 
@@ -128,7 +144,7 @@ namespace ADRCVisualization
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(3000);
-                /*
+                
                 //////////////////////////////////////////////////
                 targetPosition = new SVector(-1, 0, 1.2);
                 targetRotation = new SDirAngle(0, 0, 0, -1);//90, 0, 0
@@ -148,7 +164,7 @@ namespace ADRCVisualization
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(5000);
-                */
+                
 
                 //////////////////////////////////////////////////
                 targetPosition = new SVector(1, 0, -1.2);
@@ -207,35 +223,33 @@ namespace ADRCVisualization
             chart1.Series[9].MarkerColor = Color.LimeGreen;
             chart1.Series[10].MarkerColor = Color.LightPink;
 
-            q.GetCurrentPosition();
-
-            chart1.Series[9].Points.AddXY(q.CurrentPosition.X, quadcopter.CurrentPosition.Z);
-            chart1.Series[10].Points.AddXY(quadcopter.TargetPosition.X, quadcopter.TargetPosition.Z);
+            chart1.Series[9].Points.AddXY(q.CurrentPosition.X, q.CurrentPosition.Z);
+            chart1.Series[10].Points.AddXY(q.TargetPosition.X, q.TargetPosition.Z);
 
             if (chart1.Series[9].Points.Count > 400) chart1.Series[9].Points.RemoveAt(0);
             if (chart1.Series[10].Points.Count > 400) chart1.Series[10].Points.RemoveAt(0);
 
-            chart1.Series[0].Points.AddXY(quadcopter.CurrentPosition.X, quadcopter.CurrentPosition.Z);
-            chart1.Series[1].Points.AddXY(quadcopter.ThrusterB.CurrentPosition.X, quadcopter.ThrusterB.CurrentPosition.Z);
-            chart1.Series[2].Points.AddXY(quadcopter.ThrusterC.CurrentPosition.X, quadcopter.ThrusterC.CurrentPosition.Z);
-            chart1.Series[3].Points.AddXY(quadcopter.ThrusterD.CurrentPosition.X, quadcopter.ThrusterD.CurrentPosition.Z);
-            chart1.Series[4].Points.AddXY(quadcopter.ThrusterE.CurrentPosition.X, quadcopter.ThrusterE.CurrentPosition.Z);
+            chart1.Series[0].Points.AddXY(q.CurrentPosition.X, q.CurrentPosition.Z);
+            chart1.Series[1].Points.AddXY(q.ThrusterB.CurrentPosition.X, q.ThrusterB.CurrentPosition.Z);
+            chart1.Series[2].Points.AddXY(q.ThrusterC.CurrentPosition.X, q.ThrusterC.CurrentPosition.Z);
+            chart1.Series[3].Points.AddXY(q.ThrusterD.CurrentPosition.X, q.ThrusterD.CurrentPosition.Z);
+            chart1.Series[4].Points.AddXY(q.ThrusterE.CurrentPosition.X, q.ThrusterE.CurrentPosition.Z);
 
-            chart1.Series[0].MarkerSize = (int)MathE.Constrain(quadcopter.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[1].MarkerSize = (int)MathE.Constrain(quadcopter.ThrusterB.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[2].MarkerSize = (int)MathE.Constrain(quadcopter.ThrusterC.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[3].MarkerSize = (int)MathE.Constrain(quadcopter.ThrusterD.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[4].MarkerSize = (int)MathE.Constrain(quadcopter.ThrusterE.CurrentPosition.Y + 10, 2, 40);
+            chart1.Series[0].MarkerSize = (int)MathE.Constrain(q.CurrentPosition.Y + 10, 2, 40);
+            chart1.Series[1].MarkerSize = (int)MathE.Constrain(q.ThrusterB.CurrentPosition.Y + 10, 2, 40);
+            chart1.Series[2].MarkerSize = (int)MathE.Constrain(q.ThrusterC.CurrentPosition.Y + 10, 2, 40);
+            chart1.Series[3].MarkerSize = (int)MathE.Constrain(q.ThrusterD.CurrentPosition.Y + 10, 2, 40);
+            chart1.Series[4].MarkerSize = (int)MathE.Constrain(q.ThrusterE.CurrentPosition.Y + 10, 2, 40);
 
-            chart1.Series[5].Points.AddXY(quadcopter.ThrusterB.TargetPosition.X, quadcopter.ThrusterB.TargetPosition.Z);
-            chart1.Series[6].Points.AddXY(quadcopter.ThrusterC.TargetPosition.X, quadcopter.ThrusterC.TargetPosition.Z);
-            chart1.Series[7].Points.AddXY(quadcopter.ThrusterD.TargetPosition.X, quadcopter.ThrusterD.TargetPosition.Z);
-            chart1.Series[8].Points.AddXY(quadcopter.ThrusterE.TargetPosition.X, quadcopter.ThrusterE.TargetPosition.Z);
+            chart1.Series[5].Points.AddXY(q.ThrusterB.TargetPosition.X, q.ThrusterB.TargetPosition.Z);
+            chart1.Series[6].Points.AddXY(q.ThrusterC.TargetPosition.X, q.ThrusterC.TargetPosition.Z);
+            chart1.Series[7].Points.AddXY(q.ThrusterD.TargetPosition.X, q.ThrusterD.TargetPosition.Z);
+            chart1.Series[8].Points.AddXY(q.ThrusterE.TargetPosition.X, q.ThrusterE.TargetPosition.Z);
 
             chart2.Series[0].Points.Clear();
 
-            chart2.Series[0].Points.Add(quadcopter.CurrentPosition.Y);
-            chart2.Series[0].Points.Add(quadcopter.TargetPosition.Y);
+            chart2.Series[0].Points.Add(q.CurrentPosition.Y);
+            chart2.Series[0].Points.Add(q.TargetPosition.Y);
         }
         
         /// <summary>
@@ -286,7 +300,7 @@ namespace ADRCVisualization
                 //label4.Text = Vector.CalculateEuclideanDistance(quad.ThrusterE.CurrentPosition, quad.ThrusterE.TargetPosition).ToString();
             }));
         }
-
+        
         private void Visualizer_FormClosing(object sender, FormClosingEventArgs e)
         {
             t1.Stop();
@@ -298,7 +312,7 @@ namespace ADRCVisualization
             Double.TryParse(yPositionTB.Text, out double y);
             Double.TryParse(zPositionTB.Text, out double z);
 
-            targetPosition = new SVector(x, y, z);
+            //targetPosition = new SVector(x, y, z);
         }
 
         private void SendHPB_Click(object sender, EventArgs e)
@@ -308,7 +322,7 @@ namespace ADRCVisualization
             Double.TryParse(zRotationTB.Text, out double z);
             Double.TryParse(rRotationTB.Text, out double r);
 
-            targetRotation = new SDirAngle(r, x, y, z);
+            //targetRotation = new SDirAngle(r, x, y, z);
         }
     }
 }

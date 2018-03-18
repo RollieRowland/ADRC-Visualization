@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using HelixToolkit.Wpf;
 using System.Windows.Media.Media3D;
 using ADRCVisualization.Class_Files.Mathematics;
+using DTRQCSInterface;
 
 namespace ADRCVisualization
 {
@@ -26,7 +27,7 @@ namespace ADRCVisualization
     /// </summary>
     public partial class QuadViewer : UserControl
     {
-        //private Quadcopter quadcopter;
+        private SQuad quadcopter;
 
         private Timer t1;
 
@@ -62,8 +63,8 @@ namespace ADRCVisualization
 
             ModelImporter import = new ModelImporter();
 
-            string directory = @"C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQControlStructure\Resources\";
-            //directory = @"..\..\Resources\";
+            string directory = @"C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQUserInterface\Resources\";
+            //string directory = @"..\..\Resources\";
 
             import.DefaultMaterial = new DiffuseMaterial(new SolidColorBrush(Colors.MediumSlateBlue));
 
@@ -178,14 +179,22 @@ namespace ADRCVisualization
             //rotate outer rotations
             //transform entire quad
 
-            Class_Files.Mathematics.Quaternion quadRotCurrent = quadcopter.QuatCurrentRotation;
+            Class_Files.Mathematics.Quaternion quadRotCurrent = 
+                Class_Files.Mathematics.Quaternion.DirectionAngleToQuaternion(
+                    new DirectionAngle(
+                        quadcopter.CurrentRotation.Rotation,
+                        quadcopter.CurrentRotation.Direction.X,
+                        quadcopter.CurrentRotation.Direction.Y,
+                        quadcopter.CurrentRotation.Direction.Z
+                    )
+                );
             
-            Vector mainRotation = (2 * (quadRotPrevious - quadRotCurrent) * quadRotCurrent.Conjugate() / quadcopter.SamplingPeriod).GetBiVector();
+            Vector mainRotation = (2 * (quadRotPrevious - quadRotCurrent) * quadRotCurrent.Conjugate() / quadcopter.dT).GetBiVector();
 
-            Vector bRotation = quadcopter.ThrusterB.CurrentRotation;
-            Vector cRotation = quadcopter.ThrusterC.CurrentRotation;
-            Vector dRotation = quadcopter.ThrusterD.CurrentRotation;
-            Vector eRotation = quadcopter.ThrusterE.CurrentRotation;
+            Vector bRotation = new Vector(quadcopter.ThrusterB.CurrentRotation.X, quadcopter.ThrusterB.CurrentRotation.Y, quadcopter.ThrusterB.CurrentRotation.Z);
+            Vector cRotation = new Vector(quadcopter.ThrusterC.CurrentRotation.X, quadcopter.ThrusterC.CurrentRotation.Y, quadcopter.ThrusterC.CurrentRotation.Z);
+            Vector dRotation = new Vector(quadcopter.ThrusterD.CurrentRotation.X, quadcopter.ThrusterD.CurrentRotation.Y, quadcopter.ThrusterD.CurrentRotation.Z);
+            Vector eRotation = new Vector(quadcopter.ThrusterE.CurrentRotation.X, quadcopter.ThrusterE.CurrentRotation.Y, quadcopter.ThrusterE.CurrentRotation.Z);
 
             Vector mainRotationRelative = mainRotation.Multiply(Math.PI).Multiply(new Vector(1, -1, -1));
 
