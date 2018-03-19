@@ -17,18 +17,21 @@ using DTRQCSInterface;
 
 namespace ADRCVisualization
 {
-    public partial class Visualizer : Form
+    public partial class UserInterface : Form
     {
         private DateTime dateTime;
-        private DTRQQuadcopter quadcopter = new DTRQQuadcopter(true, 0.3, 55, 0.05);
-        
         private System.Timers.Timer t1;
+        
+        private DTRQQuadcopter quadcopter = new DTRQQuadcopter(true, 0.3, 55, 0.05);
+        private SQuad quadData;
+        
 
         private SVector targetPosition;
         private SDirAngle targetRotation;
+        
         private bool initialized = false;
 
-        public Visualizer()
+        public UserInterface()
         {
             quadcopter.SimulateCurrent(new SVector(0, -9.81, 0));
 
@@ -36,6 +39,7 @@ namespace ADRCVisualization
             targetRotation = new SDirAngle(0, 0, 1, 0);
 
             quadcopter.SetTarget(targetPosition, targetRotation);
+            
             Console.WriteLine("Initializing UI components.");
 
             InitializeComponent();
@@ -91,8 +95,10 @@ namespace ADRCVisualization
 
                 throw new Exception("Quadcopter not initialized before request.");
             }
+
+            quadData = quadcopter.GetQuadcopter();
             
-            return quadcopter.GetQuadcopter();
+            return quadData;
         }
 
         private async void DisableMotor()
@@ -180,67 +186,66 @@ namespace ADRCVisualization
             }
         }
         
-        
         private void SetChartPositions(SQuad q)
         {
-            chart1.ChartAreas[0].AxisX.Maximum = 2;
-            chart1.ChartAreas[0].AxisX.Minimum = -2;
-            chart1.ChartAreas[0].AxisY.Maximum = 2;
-            chart1.ChartAreas[0].AxisY.Minimum = -2;
+            XZCoordinates.ChartAreas[0].AxisX.Maximum = 2;
+            XZCoordinates.ChartAreas[0].AxisX.Minimum = -2;
+            XZCoordinates.ChartAreas[0].AxisY.Maximum = 2;
+            XZCoordinates.ChartAreas[0].AxisY.Minimum = -2;
 
-            chart2.ChartAreas[0].AxisY.Maximum = 10;
-            chart2.ChartAreas[0].AxisY.Minimum = -10;
+            YCoordinate.ChartAreas[0].AxisY.Maximum = 10;
+            YCoordinate.ChartAreas[0].AxisY.Minimum = -10;
 
-            chart1.Series[0].Points.Clear();
-            chart1.Series[1].Points.Clear();
-            chart1.Series[2].Points.Clear();
-            chart1.Series[3].Points.Clear();
-            chart1.Series[4].Points.Clear();
-            chart1.Series[5].Points.Clear();
-            chart1.Series[6].Points.Clear();
-            chart1.Series[7].Points.Clear();
-            chart1.Series[8].Points.Clear();
+            XZCoordinates.Series[0].Points.Clear();
+            XZCoordinates.Series[1].Points.Clear();
+            XZCoordinates.Series[2].Points.Clear();
+            XZCoordinates.Series[3].Points.Clear();
+            XZCoordinates.Series[4].Points.Clear();
+            XZCoordinates.Series[5].Points.Clear();
+            XZCoordinates.Series[6].Points.Clear();
+            XZCoordinates.Series[7].Points.Clear();
+            XZCoordinates.Series[8].Points.Clear();
 
-            chart1.Series[0].MarkerColor = Color.MediumSlateBlue;
-            chart1.Series[1].MarkerColor = Color.BurlyWood;
-            chart1.Series[2].MarkerColor = Color.BlueViolet;
-            chart1.Series[3].MarkerColor = Color.ForestGreen;
-            chart1.Series[4].MarkerColor = Color.MediumAquamarine;
-            chart1.Series[5].MarkerColor = Color.BurlyWood;
-            chart1.Series[6].MarkerColor = Color.BlueViolet;
-            chart1.Series[7].MarkerColor = Color.ForestGreen;
-            chart1.Series[8].MarkerColor = Color.MediumAquamarine;
+            XZCoordinates.Series[0].MarkerColor = Color.MediumSlateBlue;
+            XZCoordinates.Series[1].MarkerColor = Color.BurlyWood;
+            XZCoordinates.Series[2].MarkerColor = Color.BlueViolet;
+            XZCoordinates.Series[3].MarkerColor = Color.ForestGreen;
+            XZCoordinates.Series[4].MarkerColor = Color.MediumAquamarine;
+            XZCoordinates.Series[5].MarkerColor = Color.BurlyWood;
+            XZCoordinates.Series[6].MarkerColor = Color.BlueViolet;
+            XZCoordinates.Series[7].MarkerColor = Color.ForestGreen;
+            XZCoordinates.Series[8].MarkerColor = Color.MediumAquamarine;
 
-            chart1.Series[9].MarkerColor = Color.LimeGreen;
-            chart1.Series[10].MarkerColor = Color.LightPink;
+            XZCoordinates.Series[9].MarkerColor = Color.LimeGreen;
+            XZCoordinates.Series[10].MarkerColor = Color.LightPink;
 
-            chart1.Series[9].Points.AddXY(q.CurrentPosition.X, q.CurrentPosition.Z);
-            chart1.Series[10].Points.AddXY(q.TargetPosition.X, q.TargetPosition.Z);
+            XZCoordinates.Series[9].Points.AddXY(q.CurrentPosition.X, q.CurrentPosition.Z);
+            XZCoordinates.Series[10].Points.AddXY(q.TargetPosition.X, q.TargetPosition.Z);
 
-            if (chart1.Series[9].Points.Count > 400) chart1.Series[9].Points.RemoveAt(0);
-            if (chart1.Series[10].Points.Count > 400) chart1.Series[10].Points.RemoveAt(0);
+            if (XZCoordinates.Series[9].Points.Count > 400) XZCoordinates.Series[9].Points.RemoveAt(0);
+            if (XZCoordinates.Series[10].Points.Count > 400) XZCoordinates.Series[10].Points.RemoveAt(0);
 
-            chart1.Series[0].Points.AddXY(q.CurrentPosition.X, q.CurrentPosition.Z);
-            chart1.Series[1].Points.AddXY(q.ThrusterB.CurrentPosition.X, q.ThrusterB.CurrentPosition.Z);
-            chart1.Series[2].Points.AddXY(q.ThrusterC.CurrentPosition.X, q.ThrusterC.CurrentPosition.Z);
-            chart1.Series[3].Points.AddXY(q.ThrusterD.CurrentPosition.X, q.ThrusterD.CurrentPosition.Z);
-            chart1.Series[4].Points.AddXY(q.ThrusterE.CurrentPosition.X, q.ThrusterE.CurrentPosition.Z);
+            XZCoordinates.Series[0].Points.AddXY(q.CurrentPosition.X, q.CurrentPosition.Z);
+            XZCoordinates.Series[1].Points.AddXY(q.ThrusterB.CurrentPosition.X, q.ThrusterB.CurrentPosition.Z);
+            XZCoordinates.Series[2].Points.AddXY(q.ThrusterC.CurrentPosition.X, q.ThrusterC.CurrentPosition.Z);
+            XZCoordinates.Series[3].Points.AddXY(q.ThrusterD.CurrentPosition.X, q.ThrusterD.CurrentPosition.Z);
+            XZCoordinates.Series[4].Points.AddXY(q.ThrusterE.CurrentPosition.X, q.ThrusterE.CurrentPosition.Z);
 
-            chart1.Series[0].MarkerSize = (int)MathE.Constrain(q.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[1].MarkerSize = (int)MathE.Constrain(q.ThrusterB.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[2].MarkerSize = (int)MathE.Constrain(q.ThrusterC.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[3].MarkerSize = (int)MathE.Constrain(q.ThrusterD.CurrentPosition.Y + 10, 2, 40);
-            chart1.Series[4].MarkerSize = (int)MathE.Constrain(q.ThrusterE.CurrentPosition.Y + 10, 2, 40);
+            XZCoordinates.Series[0].MarkerSize = (int)MathE.Constrain(q.CurrentPosition.Y + 10, 2, 40);
+            XZCoordinates.Series[1].MarkerSize = (int)MathE.Constrain(q.ThrusterB.CurrentPosition.Y + 10, 2, 40);
+            XZCoordinates.Series[2].MarkerSize = (int)MathE.Constrain(q.ThrusterC.CurrentPosition.Y + 10, 2, 40);
+            XZCoordinates.Series[3].MarkerSize = (int)MathE.Constrain(q.ThrusterD.CurrentPosition.Y + 10, 2, 40);
+            XZCoordinates.Series[4].MarkerSize = (int)MathE.Constrain(q.ThrusterE.CurrentPosition.Y + 10, 2, 40);
 
-            chart1.Series[5].Points.AddXY(q.ThrusterB.TargetPosition.X, q.ThrusterB.TargetPosition.Z);
-            chart1.Series[6].Points.AddXY(q.ThrusterC.TargetPosition.X, q.ThrusterC.TargetPosition.Z);
-            chart1.Series[7].Points.AddXY(q.ThrusterD.TargetPosition.X, q.ThrusterD.TargetPosition.Z);
-            chart1.Series[8].Points.AddXY(q.ThrusterE.TargetPosition.X, q.ThrusterE.TargetPosition.Z);
+            XZCoordinates.Series[5].Points.AddXY(q.ThrusterB.TargetPosition.X, q.ThrusterB.TargetPosition.Z);
+            XZCoordinates.Series[6].Points.AddXY(q.ThrusterC.TargetPosition.X, q.ThrusterC.TargetPosition.Z);
+            XZCoordinates.Series[7].Points.AddXY(q.ThrusterD.TargetPosition.X, q.ThrusterD.TargetPosition.Z);
+            XZCoordinates.Series[8].Points.AddXY(q.ThrusterE.TargetPosition.X, q.ThrusterE.TargetPosition.Z);
 
-            chart2.Series[0].Points.Clear();
+            YCoordinate.Series[0].Points.Clear();
 
-            chart2.Series[0].Points.Add(q.CurrentPosition.Y);
-            chart2.Series[0].Points.Add(q.TargetPosition.Y);
+            YCoordinate.Series[0].Points.Add(q.CurrentPosition.Y);
+            YCoordinate.Series[0].Points.Add(q.TargetPosition.Y);
         }
         
         /// <summary>
@@ -283,20 +288,15 @@ namespace ADRCVisualization
                 quadcopter.SetTarget(targetPosition, targetRotation);
                 quadcopter.SimulateCurrent(new SVector(0, -9.81, 0));
                     
-                SetChartPositions(quadcopter.GetQuadcopter());
-
-                //label1.Text = Vector.CalculateEuclideanDistance(quad.ThrusterB.CurrentPosition, quad.ThrusterB.TargetPosition).ToString();
-                //label2.Text = Vector.CalculateEuclideanDistance(quad.ThrusterC.CurrentPosition, quad.ThrusterC.TargetPosition).ToString();
-                //label3.Text = Vector.CalculateEuclideanDistance(quad.ThrusterD.CurrentPosition, quad.ThrusterD.TargetPosition).ToString();
-                //label4.Text = Vector.CalculateEuclideanDistance(quad.ThrusterE.CurrentPosition, quad.ThrusterE.TargetPosition).ToString();
+                SetChartPositions(GetQuadcopter());
             }));
         }
-        
+
         private void Visualizer_FormClosing(object sender, FormClosingEventArgs e)
         {
             t1.Stop();
         }
-
+        
         private void SendXYZ_Click(object sender, EventArgs e)
         {
             Double.TryParse(xPositionTB.Text, out double x);

@@ -6,22 +6,27 @@
 #include <SVector.h>
 
 namespace DTRQCSInterface {
-	public value class SDirAngle {
+	public ref class SDirAngle {
 	public:
 		double Rotation;
-		SVector Direction;
+		SVector^ Direction;
 
 		SDirAngle(double r, double x, double y, double z) {
 			this->Rotation = r;
-			this->Direction = SVector(x, y, z);
+			this->Direction = gcnew SVector(x, y, z);
 		}
 
 		SDirAngle(DirectionAngle dA) {
 			this->Rotation = dA.Rotation;
-			this->Direction = SVector(dA.Direction);
+			this->Direction = gcnew SVector(dA.Direction);
 		}
 
-		SDirAngle(double Rotation, SVector Direction) {
+		SDirAngle(const SDirAngle% sDA) {
+			this->Rotation = sDA.Rotation;
+			this->Direction = sDA.Direction;
+		}
+
+		SDirAngle(double Rotation, SVector^ Direction) {
 			this->Rotation = Rotation;
 			this->Direction = Direction;
 		}

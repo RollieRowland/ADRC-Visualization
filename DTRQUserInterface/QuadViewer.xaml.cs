@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-//using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -173,7 +172,7 @@ namespace ADRCVisualization
 
         public void UpdateTransformation(object sender, ElapsedEventArgs e)
         {
-            quadcopter = Program.Visualizer.GetQuadcopter();
+            quadcopter = Program.UI.GetQuadcopter();
 
             //rotate inner rotations
             //rotate outer rotations

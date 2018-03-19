@@ -8,7 +8,7 @@ namespace ADRCVisualization
 {
     static class Program
     {
-        public static Visualizer Visualizer { get; private set; }
+        public static UserInterface UI { get; private set; }
 
         /// <summary>
         /// The main entry point for the application.
@@ -19,9 +19,9 @@ namespace ADRCVisualization
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Visualizer = new Visualizer();
+            UI = new UserInterface();
 
-            Application.Run(Visualizer);
+            Application.Run(UI);
         }
     }
 }

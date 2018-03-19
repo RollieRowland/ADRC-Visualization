@@ -11,10 +11,10 @@ int main()
 
 	DTRQQuadcopter^ q = gcnew DTRQQuadcopter(true, 0.3, 55, 0.05);
 
-	q->SimulateCurrent(SVector(0, -9.81, 0));
+	q->SimulateCurrent(gcnew SVector(0, -9.81, 0));
 
-	SVector targetPosition = SVector(0, 0, 0);
-	SDirAngle targetRotation = SDirAngle(0, 0, 1, 0);
+	SVector^ targetPosition = gcnew SVector(0, 0, 0);
+	SDirAngle^ targetRotation = gcnew SDirAngle(0, 0, 1, 0);
 
 	q->SetTarget(targetPosition, targetRotation);
 
@@ -23,11 +23,11 @@ int main()
 		q->CalculateCombinedThrustVector();//Secondary Solver
 
 		q->SetTarget(targetPosition, targetRotation);
-		q->SimulateCurrent(SVector(0, -9.81, 0));
+		q->SimulateCurrent(gcnew SVector(0, -9.81, 0));
 
-		std::cout << q->GetQuadcopter().CurrentPosition.X << " "
-					<< q->GetQuadcopter().CurrentPosition.Y << " "
-					<< q->GetQuadcopter().CurrentPosition.Z << std::endl;
+		std::cout << q->GetQuadcopter()->CurrentPosition->X << " "
+			      << q->GetQuadcopter()->CurrentPosition->Y << " "
+				  << q->GetQuadcopter()->CurrentPosition->Z << std::endl;
 
 		Sleep(5);
 	}

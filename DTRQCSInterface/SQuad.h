@@ -6,15 +6,29 @@
 #include <SThrust.h>
 
 namespace DTRQCSInterface {
-	public value class SQuad {
+	public ref class SQuad {
 	public:
-		SVector CurrentPosition;
-		SDirAngle CurrentRotation;
-		SVector TargetPosition;
-		SThrust ThrusterB, ThrusterC, ThrusterD, ThrusterE;
+		SVector^ CurrentPosition;
+		SDirAngle^ CurrentRotation;
+		SVector^ TargetPosition;
+		SThrust^ ThrusterB;
+		SThrust^ ThrusterC;
+		SThrust^ ThrusterD;
+		SThrust^ ThrusterE;
 		double dT;
 
-		SQuad(SVector CurrentPosition, SDirAngle CurrentRotation, SVector TargetPosition, SThrust TB, SThrust TC, SThrust TD, SThrust TE, double dT) {
+		SQuad(const SQuad% sQ) {
+			this->CurrentPosition = sQ.CurrentPosition;
+			this->CurrentRotation = sQ.CurrentRotation;
+			this->TargetPosition = sQ.TargetPosition;
+			this->ThrusterB = sQ.ThrusterB;
+			this->ThrusterC = sQ.ThrusterC;
+			this->ThrusterD = sQ.ThrusterD;
+			this->ThrusterE = sQ.ThrusterE;
+			this->dT = sQ.dT;
+		}
+
+		SQuad(SVector^ CurrentPosition, SDirAngle^ CurrentRotation, SVector^ TargetPosition, SThrust^ TB, SThrust^ TC, SThrust^ TD, SThrust^ TE, double dT) {
 			this->CurrentPosition = CurrentPosition;
 			this->CurrentRotation = CurrentRotation;
 			this->TargetPosition = TargetPosition;
