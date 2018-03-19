@@ -4,14 +4,15 @@ CriticallyDampedSpring::CriticallyDampedSpring() {
 	this->dT = 1;
 	this->springConstant = 1;
 	this->mass = 1;
+	this->name = "null";
 }
 
-CriticallyDampedSpring::CriticallyDampedSpring(double dT, double springConstant, double mass) {
+CriticallyDampedSpring::CriticallyDampedSpring(double dT, double springConstant, double mass, std::string name) {
 	this->dT = dT;
 	this->springConstant = springConstant;
 	this->mass = mass;
 
-	std::cout << "CDS: " << dT << " " << springConstant << " " << mass << std::endl;
+	std::cout << "    CDS for " << name << " initializing with: dT:" << dT << " K:" << springConstant << " M:" << mass << std::endl;
 }
 
 double CriticallyDampedSpring::Calculate(double target) {

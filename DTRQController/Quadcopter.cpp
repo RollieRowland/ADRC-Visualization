@@ -1,6 +1,8 @@
 #include <Quadcopter.h>
 
 Quadcopter::Quadcopter(bool simulation, double armLength, double armAngle, double dT) {
+	std::cout << "DTRQ Controller Initializing." << std::endl;
+
 	this->simulation = simulation;
 	this->armLength = armLength;
 	this->armAngle = armAngle;
@@ -18,16 +20,20 @@ Quadcopter::Quadcopter(bool simulation, double armLength, double armAngle, doubl
 	this->CurrentRotation = Rotation(Quaternion(1, 0, 0, 0));
 	this->TargetRotation = Rotation(Quaternion(1, 0, 0, 0));
 
+	std::cout << "Calculating Quadcopter Arm Positions." << std::endl;
+
 	CalculateArmPositions(armLength, armAngle);
+
+	std::cout << "DTRQ Initialized, ready for commands." << std::endl;
 }
 
 void Quadcopter::CalculateArmPositions(double armLength, double armAngle) {
 	double XLength = armLength * cos(Mathematics::DegreesToRadians(armAngle));
 	double ZLength = armLength * sin(Mathematics::DegreesToRadians(armAngle));
 
-	std::cout << "Quad Arm Length X:" + Mathematics::DoubleToCleanString(XLength) +
+	std::cout << "Quadcopter Thruster Offset: X:" + Mathematics::DoubleToCleanString(XLength) +
 		" Z:" + Mathematics::DoubleToCleanString(ZLength) +
-		" Period:" + Mathematics::DoubleToCleanString(dT) << std::endl;
+		" dT:" + Mathematics::DoubleToCleanString(dT) << std::endl;
 
 	TB = Thruster(Vector3D(-XLength, 0, ZLength), "TB", simulation, dT);
 	TC = Thruster(Vector3D(XLength, 0, ZLength), "TC", simulation, dT);
@@ -45,7 +51,7 @@ void Quadcopter::CalculateCombinedThrustVector() {
 	positionOutput = positionOutput.Constrain(-30, 30);
 	rotationOutput = rotationOutput.Constrain(-30, 30);
 
-	std::cout << positionOutput.ToString() + " " + CurrentPosition.Subtract(TargetPosition).ToString() << std::endl;
+	//std::cout << positionOutput.ToString() + " " + CurrentPosition.Subtract(TargetPosition).ToString() << std::endl;
 
 	//Thruster output relative to environment origin
 	Vector3D thrusterOutputB = Vector3D(-rotationOutput.Y, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);

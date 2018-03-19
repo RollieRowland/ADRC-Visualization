@@ -20,12 +20,8 @@ namespace ADRCVisualization
     public partial class Visualizer : Form
     {
         private DateTime dateTime;
-        private DTRQQuadcopter quadcopter;
+        private DTRQQuadcopter quadcopter = new DTRQQuadcopter(true, 0.3, 55, 0.05);
         
-        //FeedbackControllers
-        //private double RunTime = 60;
-        
-        //Timers for alternate threads and asynchronous calculations
         private System.Timers.Timer t1;
 
         private SVector targetPosition;
@@ -34,9 +30,6 @@ namespace ADRCVisualization
 
         public Visualizer()
         {
-            quadcopter = new DTRQQuadcopter(true, 0.3, 55, 0.05);
-            SQuad quad = quadcopter.GetQuadcopter();
-
             quadcopter.SimulateCurrent(new SVector(0, -9.81, 0));
 
             targetPosition = new SVector(0, 0, 0);
@@ -44,8 +37,6 @@ namespace ADRCVisualization
 
             quadcopter.SetTarget(targetPosition, targetRotation);
             Console.WriteLine("Initializing UI components.");
-
-            Thread.Sleep(2500);
 
             InitializeComponent();
 
@@ -100,7 +91,7 @@ namespace ADRCVisualization
 
                 throw new Exception("Quadcopter not initialized before request.");
             }
-
+            
             return quadcopter.GetQuadcopter();
         }
 
@@ -312,7 +303,7 @@ namespace ADRCVisualization
             Double.TryParse(yPositionTB.Text, out double y);
             Double.TryParse(zPositionTB.Text, out double z);
 
-            //targetPosition = new SVector(x, y, z);
+            targetPosition = new SVector(x, y, z);
         }
 
         private void SendHPB_Click(object sender, EventArgs e)
@@ -322,7 +313,7 @@ namespace ADRCVisualization
             Double.TryParse(zRotationTB.Text, out double z);
             Double.TryParse(rRotationTB.Text, out double r);
 
-            //targetRotation = new SDirAngle(r, x, y, z);
+            targetRotation = new SDirAngle(r, x, y, z);
         }
     }
 }
