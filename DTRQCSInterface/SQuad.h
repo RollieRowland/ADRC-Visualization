@@ -9,7 +9,7 @@ namespace DTRQCSInterface {
 	public ref class SQuad {
 	public:
 		SVector^ CurrentPosition;
-		SDirAngle^ CurrentRotation;
+		SQuaternion^ CurrentRotation;
 		SVector^ TargetPosition;
 		SThrust^ ThrusterB;
 		SThrust^ ThrusterC;
@@ -28,7 +28,7 @@ namespace DTRQCSInterface {
 			this->dT = sQ.dT;
 		}
 
-		SQuad(SVector^ CurrentPosition, SDirAngle^ CurrentRotation, SVector^ TargetPosition, SThrust^ TB, SThrust^ TC, SThrust^ TD, SThrust^ TE, double dT) {
+		SQuad(SVector^ CurrentPosition, SQuaternion^ CurrentRotation, SVector^ TargetPosition, SThrust^ TB, SThrust^ TC, SThrust^ TD, SThrust^ TE, double dT) {
 			this->CurrentPosition = CurrentPosition;
 			this->CurrentRotation = CurrentRotation;
 			this->TargetPosition = TargetPosition;

@@ -6,29 +6,32 @@
 #include <SVector.h>
 
 namespace DTRQCSInterface {
-	public ref class SDirAngle {
+	public ref class SQuaternion {
 	public:
-		double Rotation;
-		SVector^ Direction;
+		double W;
+		double X;
+		double Y;
+		double Z;
 
-		SDirAngle(double r, double x, double y, double z) {
-			this->Rotation = r;
-			this->Direction = gcnew SVector(x, y, z);
+		SQuaternion(double w, double x, double y, double z) {
+			this->W = w;
+			this->X = x;
+			this->Y = y;
+			this->Z = z;
 		}
 
-		SDirAngle(DirectionAngle dA) {
-			this->Rotation = dA.Rotation;
-			this->Direction = gcnew SVector(dA.Direction);
+		SQuaternion(Quaternion q) {
+			this->W = q.W;
+			this->X = q.X;
+			this->Y = q.Y;
+			this->Z = q.Z;
 		}
 
-		SDirAngle(const SDirAngle% sDA) {
-			this->Rotation = sDA.Rotation;
-			this->Direction = sDA.Direction;
-		}
-
-		SDirAngle(double Rotation, SVector^ Direction) {
-			this->Rotation = Rotation;
-			this->Direction = Direction;
+		SQuaternion(const SQuaternion% q) {
+			this->W = q.W;
+			this->X = q.X;
+			this->Y = q.Y;
+			this->Z = q.Z;
 		}
 	};
 }

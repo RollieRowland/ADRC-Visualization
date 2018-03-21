@@ -14,7 +14,7 @@ int main()
 	q->SimulateCurrent(gcnew SVector(0, -9.81, 0));
 
 	SVector^ targetPosition = gcnew SVector(0, 0, 0);
-	SDirAngle^ targetRotation = gcnew SDirAngle(0, 0, 1, 0);
+	SQuaternion^ targetRotation = gcnew SQuaternion(1, 0, 0, 0);
 
 	q->SetTarget(targetPosition, targetRotation);
 

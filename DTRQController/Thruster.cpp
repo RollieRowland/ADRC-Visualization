@@ -55,6 +55,8 @@ void Thruster::SetThrusterOutputs(Vector3D output) {
 	output.Y = disable ? 0 : output.Y;
 	output.Z = disable ? 0 : output.Z;
 
+	//output.X = 0;
+
 	//Sets current rotation of thruster for use in the visualization of the quad
 	CurrentRotation = Vector3D(-outerJoint.GetAngle(), 0, -innerJoint.GetAngle());
 

@@ -48,16 +48,21 @@ void Quadcopter::CalculateCombinedThrustVector() {
 	Vector3D rotationOutput = rotationController.Calculate(Vector3D(0, 0, 0), change, dT);
 	Vector3D positionOutput = positionController.Calculate(Vector3D(0, 0, 0), CurrentPosition.Subtract(TargetPosition), dT);
 
-	positionOutput = positionOutput.Constrain(-30, 30);
+	positionOutput = positionOutput.Constrain(Vector3D(-30, -100, -30), Vector3D(30, 100, 30));
 	rotationOutput = rotationOutput.Constrain(-30, 30);
+
+	positionOutput = Vector3D();
+	rotationOutput = Vector3D();
+
+	//rotationOutput = rotationOutput.Multiply(Vector3D(1, 0, 1));
 
 	//std::cout << positionOutput.ToString() + " " + CurrentPosition.Subtract(TargetPosition).ToString() << std::endl;
 
 	//Thruster output relative to environment origin
 	Vector3D thrusterOutputB = Vector3D(-rotationOutput.Y, -rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);
-	Vector3D thrusterOutputC = Vector3D(-rotationOutput.Y, -rotationOutput.X - rotationOutput.Z, rotationOutput.Y);
-	Vector3D thrusterOutputD = Vector3D(rotationOutput.Y, rotationOutput.X - rotationOutput.Z, rotationOutput.Y);
-	Vector3D thrusterOutputE = Vector3D(rotationOutput.Y, rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);
+	Vector3D thrusterOutputC = Vector3D(-rotationOutput.Y, -rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
+	Vector3D thrusterOutputD = Vector3D( rotationOutput.Y,  rotationOutput.X - rotationOutput.Z,  rotationOutput.Y);
+	Vector3D thrusterOutputE = Vector3D( rotationOutput.Y,  rotationOutput.X + rotationOutput.Z, -rotationOutput.Y);
 
 	Vector3D hoverAngles = RotationQuaternionToHoverAngles(CurrentRotation);
 
@@ -85,8 +90,12 @@ void Quadcopter::SetTarget(Vector3D position, Rotation rotation) {
 
 void Quadcopter::SimulateCurrent(Vector3D externalAcceleration) {
 	this->externalAcceleration = externalAcceleration;
-	EstimatePosition();
-	EstimateRotation();
+
+	//EstimatePosition();
+	//EstimateRotation();
+
+	CurrentPosition = TargetPosition;
+	CurrentRotation = TargetRotation;
 
 	TB.CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TB.ThrusterOffset).Add(CurrentPosition);
 	TC.CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TC.ThrusterOffset).Add(CurrentPosition);
@@ -117,6 +126,8 @@ void Quadcopter::EstimatePosition() {
 
 	Vector3D thrustSum = TBThrust.Add(TBThrust).Add(TBThrust).Add(TBThrust);
 
+	std::cout << thrustSum.ToString() << std::endl;
+
 	thrustSum = CurrentRotation.GetQuaternion().RotateVector(thrustSum);
 
 	currentAcceleration = thrustSum.Add(externalAcceleration);
@@ -142,8 +153,7 @@ void Quadcopter::EstimateRotation() {
 	//calculate current inertia tensor
 	currentAngularAcceleration = Vector3D {
 		( TBO.Y + TCO.Y - TDO.Y - TEO.Y) * torque,
-		( TBO.X + TCO.X - TDO.X - TEO.X) * torque + 
-		( TBO.Z - TCO.Z - TDO.Z + TEO.Z) * torque,
+		( TBO.X + TCO.X - TDO.X - TEO.X) * torque + ( TBO.Z - TCO.Z - TDO.Z + TEO.Z) * torque,
 		(-TBO.Y + TCO.Y + TDO.Y - TEO.Y) * torque
 	};
 
@@ -152,15 +162,15 @@ void Quadcopter::EstimateRotation() {
 	currentAngularAcceleration = Vector3D::DegreesToRadians(currentAngularAcceleration);
 	currentAngularVelocity = currentAngularVelocity + currentAngularAcceleration * dT;
 
-	Quaternion angularRotation = Quaternion(currentAngularVelocity * dT * 0.5);
+	Quaternion angularRotation = Quaternion(0.5 * currentAngularVelocity * dT);
 
-	CurrentRotation = CurrentRotation.GetQuaternion() + angularRotation * CurrentRotation.GetQuaternion();
+	Quaternion tQ = CurrentRotation.GetQuaternion() + angularRotation * CurrentRotation.GetQuaternion();
 	CurrentRotation = Rotation(CurrentRotation.GetQuaternion().UnitQuaternion());
 }
 
 Vector3D Quadcopter::RotationQuaternionToHoverAngles(Rotation rotation) {
-	double innerJoint = 0;
 	double outerJoint = 0;
+	double innerJoint = 0;
 	DirectionAngle directionAngle = rotation.GetDirectionAngle();
 
 	directionAngle.Direction = RotationMatrix::RotateVector(Vector3D(0, -90, 0), directionAngle.Direction);

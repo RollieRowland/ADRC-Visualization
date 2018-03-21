@@ -27,7 +27,7 @@ namespace ADRCVisualization
         
 
         private SVector targetPosition;
-        private SDirAngle targetRotation;
+        private SQuaternion targetRotation;
         
         private bool initialized = false;
 
@@ -36,7 +36,7 @@ namespace ADRCVisualization
             quadcopter.SimulateCurrent(new SVector(0, -9.81, 0));
 
             targetPosition = new SVector(0, 0, 0);
-            targetRotation = new SDirAngle(0, 0, 1, 0);
+            targetRotation = new SQuaternion(1, 0, 0, 0);
 
             quadcopter.SetTarget(targetPosition, targetRotation);
             
@@ -121,68 +121,73 @@ namespace ADRCVisualization
                 /*
                 for (double i = 0; i < 360; i += 1)
                 {
-                    targetPosition = new Vector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
-                    targetRotation = new Vector(i / 6, 0, 0);
+                    targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
+                    //targetRotation = new Vector(i / 6, 0, 0);
 
                     await Task.Delay(15);
                 }
 
                 for (double i = 0; i < 360; i += 1)
                 {
-                    targetPosition = new Vector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
-                    targetRotation = new Vector(60 - i / 8, 0, 0);
+                    targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
+                    //targetRotation = new Vector(60 - i / 8, 0, 0);
 
                     await Task.Delay(15);
                 }
                 */
                 
                 targetPosition = new SVector(1, 0, 1.2);
-                targetRotation = new SDirAngle(0, 0, 1, 0);
+                targetRotation = new SQuaternion(1, 0, 0, 0);
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(3000);
+
+                targetPosition = new SVector(-1, 0, 1.2);
+                targetRotation = new SQuaternion(0, 0, 1, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(3000);
                 
                 //////////////////////////////////////////////////
                 targetPosition = new SVector(-1, 0, 1.2);
-                targetRotation = new SDirAngle(0, 0, 0, -1);//90, 0, 0
+                targetRotation = new SQuaternion(0, 0, 0, -1);//90, 0, 0
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(7500);
 
+                targetPosition = new SVector(-1, 0, -1.2);
+                targetRotation = new SQuaternion(0, 0, -0.707, -0.707);//0, 45, 0
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(7500);
                 //////////////////////////////////////////////////
-                targetPosition = new SVector(-1, 0, -1.2);
-                targetRotation = new SDirAngle(0, 0, -0.707, -0.707);//0, 45, 0
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(7500);
 
                 targetPosition = new SVector(-1, 0, -1.2);
-                targetRotation = new SDirAngle(0, 0, 1, 0);//0, 0, 0
+                targetRotation = new SQuaternion(0, 0, 1, 0);//0, 0, 0
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(5000);
+                await Task.Delay(3000);
                 
-
+                
                 //////////////////////////////////////////////////
                 targetPosition = new SVector(1, 0, -1.2);
-                targetRotation = new SDirAngle(0, 1, 0, 0);//0, 0, 90
+                targetRotation = new SQuaternion(0, 1, 0, 0);//0, 0, 90
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(10000);
-
-                //////////////////////////////////////////////////
+                
                 targetPosition = new SVector(-1, 0, 1.2);
-                targetRotation = new SDirAngle(0, 0.707, -0.707, 0);
+                targetRotation = new SQuaternion(0, 0.707, -0.707, 0);
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(6000);
-
                 //////////////////////////////////////////////////
-                targetPosition = new SVector(1, 0, 1.2);
-                targetRotation = new SDirAngle(0, 0, 1, 0);//0, 0, 0
+
+                targetPosition = new SVector(1, 0, -1.2);
+                targetRotation = new SQuaternion(0, 0, 1, 0);//0, 0, 0
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(6000);
+                await Task.Delay(3000);
             }
         }
         
@@ -313,7 +318,9 @@ namespace ADRCVisualization
             Double.TryParse(zRotationTB.Text, out double z);
             Double.TryParse(rRotationTB.Text, out double r);
 
-            targetRotation = new SDirAngle(r, x, y, z);
+            Quaternion q = Quaternion.DirectionAngleToQuaternion(new DirectionAngle(r, x, y, z));
+
+            targetRotation = new SQuaternion(q.W, q.X, q.Y, q.Z);
         }
     }
 }

@@ -89,6 +89,11 @@ namespace ADRCVisualization.Class_Files.Mathematics
             return !IsEqual(v1, v2);
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         /// <summary>
         /// Adds the input vector object to this object.
         /// </summary>

@@ -21,6 +21,7 @@ public:
 	Vector3D CrossProduct(Vector3D vector);
 	Vector3D Normalize();//unit sphere
 	Vector3D Constrain(double minimum, double maximum);
+	Vector3D Constrain(Vector3D minimum, Vector3D maximum);
 
 	double Magnitude();
 	double GetLength();

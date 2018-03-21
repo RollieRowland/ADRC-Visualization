@@ -103,6 +103,16 @@ Vector3D Vector3D::Constrain(double minimum, double maximum) {
 	return vector;
 }
 
+Vector3D Vector3D::Constrain(Vector3D minimum, Vector3D maximum) {
+	Vector3D vector = Vector3D(this->X, this->Y, this->Z);
+
+	vector.X = Mathematics::Constrain(X, minimum.X, maximum.X);
+	vector.Y = Mathematics::Constrain(Y, minimum.Y, maximum.Y);
+	vector.Z = Mathematics::Constrain(Z, minimum.Z, maximum.Z);
+
+	return vector;
+}
+
 double Vector3D::Magnitude() {
 	Vector3D vector = Vector3D(this->X, this->Y, this->Z);
 

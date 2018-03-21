@@ -179,13 +179,11 @@ namespace ADRCVisualization
             //transform entire quad
 
             Class_Files.Mathematics.Quaternion quadRotCurrent = 
-                Class_Files.Mathematics.Quaternion.DirectionAngleToQuaternion(
-                    new DirectionAngle(
-                        quadcopter.CurrentRotation.Rotation,
-                        quadcopter.CurrentRotation.Direction.X,
-                        quadcopter.CurrentRotation.Direction.Y,
-                        quadcopter.CurrentRotation.Direction.Z
-                    )
+                    new Class_Files.Mathematics.Quaternion(
+                        quadcopter.CurrentRotation.W,
+                        quadcopter.CurrentRotation.X,
+                        quadcopter.CurrentRotation.Y,
+                        quadcopter.CurrentRotation.Z
                 );
             
             Vector mainRotation = (2 * (quadRotPrevious - quadRotCurrent) * quadRotCurrent.Conjugate() / quadcopter.dT).GetBiVector();
