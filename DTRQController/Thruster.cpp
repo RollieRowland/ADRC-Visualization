@@ -14,9 +14,9 @@ Thruster::Thruster(Vector3D thrusterOffset, std::string name, bool simulation, d
 	if (simulation) {
 		std::cout << "  Thruster initializing in simulation mode." << std::endl;
 
-		this->outerCDS = new CriticallyDampedSpring(dT, 0.005, "Thruster " + this->name + " outer");
-		this->innerCDS = new CriticallyDampedSpring(dT, 0.005, "Thruster " + this->name + " inner");
-		this->rotorCDS = new CriticallyDampedSpring(dT, 50, "Thruster " + this->name + " rotor");
+		this->outerCDS = new CriticallyDampedSpring(dT, 50, "Thruster " + this->name + " outer");
+		this->innerCDS = new CriticallyDampedSpring(dT, 50, "Thruster " + this->name + " inner");
+		this->rotorCDS = new CriticallyDampedSpring(dT, 250, "Thruster " + this->name + " rotor");
 	}
 
 	std::cout << "  Thruster " << name << ": Offset:" << thrusterOffset.ToString() << " Simulation: " << simulation << " dT:" << dT << std::endl;

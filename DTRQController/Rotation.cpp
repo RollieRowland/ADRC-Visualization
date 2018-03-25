@@ -34,13 +34,14 @@ Rotation::Rotation(Vector3D initial, Vector3D target) {
 
 Quaternion Rotation::AxisAngleToQuaternion(AxisAngle axisAngle) {
 		double rotation = Mathematics::DegreesToRadians(axisAngle.Rotation);
-		double scale = sin(rotation / 2);
+		double scale = sin(rotation / 2.0);
 
 		return Quaternion(
-			cos(rotation / 2),
+			cos(rotation / 2.0),
 			axisAngle.Axis.X * scale,
 			axisAngle.Axis.Y * scale,
-			axisAngle.Axis.Z * scale);
+			axisAngle.Axis.Z * scale
+		);
 }
 
 Quaternion Rotation::DirectionAngleToQuaternion(DirectionAngle directionAngle) {
@@ -75,7 +76,7 @@ Quaternion Rotation::RotationMatrixToQuaternion(RotationMatrix rM) {
 
 	if (matrixTrace > 0)//standard procedure
 	{
-		square = sqrt(1.0 + matrixTrace) * 2;//4 * qw
+		square = sqrt(1.0 + matrixTrace) * 2.0;//4 * qw
 
 		q.W = 0.25 * square;
 		q.X = (Z.Y - Y.Z) / square;
@@ -84,7 +85,7 @@ Quaternion Rotation::RotationMatrixToQuaternion(RotationMatrix rM) {
 	}
 	else if ((X.X > Y.Y) && (X.X > Z.Z))
 	{
-		square = sqrt(1.0 + X.X - Y.Y - Z.Z) * 2;//4 * qx
+		square = sqrt(1.0 + X.X - Y.Y - Z.Z) * 2.0;//4 * qx
 
 		q.W = (Z.Y - Y.Z) / square;
 		q.X = 0.25 * square;
@@ -93,7 +94,7 @@ Quaternion Rotation::RotationMatrixToQuaternion(RotationMatrix rM) {
 	}
 	else if (Y.Y > Z.Z)
 	{
-		square = sqrt(1.0 + Y.Y - X.X - Z.Z) * 2;//4 * qy
+		square = sqrt(1.0 + Y.Y - X.X - Z.Z) * 2.0;//4 * qy
 
 		q.W = (X.Z - Z.X) / square;
 		q.X = (X.Y + Y.X) / square;
@@ -102,7 +103,7 @@ Quaternion Rotation::RotationMatrixToQuaternion(RotationMatrix rM) {
 	}
 	else
 	{
-		square = sqrt(1.0 + Z.Z - X.X - Y.Y) * 2;//4 * qz
+		square = sqrt(1.0 + Z.Z - X.X - Y.Y) * 2.0;//4 * qz
 
 		q.W = (Y.X - X.Y) / square;
 		q.X = (X.Z + Z.X) / square;
@@ -181,9 +182,9 @@ EulerAngles Rotation::HierarchicalMatrixToEulerAngles(HMatrix hM, EulerOrder ord
 
 	if (order.InitialAxisRepetition == EulerOrder::AxisRepetition::Yes)
 	{
-		double sy = sqrt(pow(hM(p.X, p.Y), 2) + pow(hM(p.X, p.Z), 2));
+		double sy = sqrt(pow(hM(p.X, p.Y), 2.0) + pow(hM(p.X, p.Z), 2.0));
 
-		if (sy > 32 * std::numeric_limits<double>::epsilon())//16 * float.Epsilon
+		if (sy > 32.0 * std::numeric_limits<double>::epsilon())//16 * float.Epsilon
 		{
 			eulerAngles.Angles.X = atan2(hM(p.X, p.Y), hM(p.X, p.Z));
 			eulerAngles.Angles.Y = atan2(sy, hM(p.X, p.X));
@@ -198,9 +199,9 @@ EulerAngles Rotation::HierarchicalMatrixToEulerAngles(HMatrix hM, EulerOrder ord
 	}
 	else
 	{
-		double cy = sqrt(pow(hM(p.X, p.X), 2) + pow(hM(p.Y, p.X), 2));
+		double cy = sqrt(pow(hM(p.X, p.X), 2.0) + pow(hM(p.Y, p.X), 2.0));
 
-		if (cy > 32 * std::numeric_limits<double>::epsilon())
+		if (cy > 32.0 * std::numeric_limits<double>::epsilon())
 		{
 			eulerAngles.Angles.X = atan2(hM(p.Z, p.Y), hM(p.Z, p.Z));
 			eulerAngles.Angles.Y = atan2(-hM(p.Z, p.X), cy);

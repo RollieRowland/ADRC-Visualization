@@ -51,10 +51,8 @@ void Quadcopter::CalculateCombinedThrustVector() {
 	positionOutput = positionOutput.Constrain(Vector3D(-30, -100, -30), Vector3D(30, 100, 30));
 	rotationOutput = rotationOutput.Constrain(-30, 30);
 
-	positionOutput = Vector3D();
-	rotationOutput = Vector3D();
-
-	//rotationOutput = rotationOutput.Multiply(Vector3D(1, 0, 1));
+	positionOutput = Vector3D(0, 0, 0);
+	rotationOutput = Vector3D(0, 0, 0);
 
 	//std::cout << positionOutput.ToString() + " " + CurrentPosition.Subtract(TargetPosition).ToString() << std::endl;
 
@@ -66,7 +64,7 @@ void Quadcopter::CalculateCombinedThrustVector() {
 
 	Vector3D hoverAngles = RotationQuaternionToHoverAngles(CurrentRotation);
 
-	positionOutput = CurrentRotation.GetQuaternion().RotateVector(positionOutput);
+	//positionOutput = CurrentRotation.GetQuaternion().RotateVector(positionOutput);
 
 	//Due to XYZ permutation order of Euler angle
 	positionOutput.X = positionOutput.X + hoverAngles.Z;//Adjust main joint to rotation
@@ -173,15 +171,15 @@ Vector3D Quadcopter::RotationQuaternionToHoverAngles(Rotation rotation) {
 	double innerJoint = 0;
 	DirectionAngle directionAngle = rotation.GetDirectionAngle();
 
-	directionAngle.Direction = RotationMatrix::RotateVector(Vector3D(0, -90, 0), directionAngle.Direction);
+	//directionAngle.Direction = RotationMatrix::RotateVector(Vector3D(0, -90, 0), directionAngle.Direction);
 
 	Vector3D directionVector = Vector3D(directionAngle.Direction);
 
 	directionVector = RotationMatrix::RotateVector(Vector3D(0, directionAngle.Rotation, 0), directionVector);
 
 	//These are cartesian coordinates, convert them to the angle from 1, 0 to the point it is at
-	outerJoint = Mathematics::RadiansToDegrees(asin(directionVector.Z));
-	innerJoint = Mathematics::RadiansToDegrees(atan2(directionVector.X, directionVector.Y));
+	innerJoint = Mathematics::RadiansToDegrees(asin(directionVector.Z));
+	outerJoint = Mathematics::RadiansToDegrees(atan2(directionVector.X, directionVector.Y));
 
 	return Vector3D(outerJoint, 0, innerJoint);
 }

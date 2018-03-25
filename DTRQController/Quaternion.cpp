@@ -34,9 +34,9 @@ Vector3D Quaternion::RotateVector(Vector3D coordinate) {
 	Quaternion qr = current * qv * current.MultiplicativeInverse();
 
 	return Vector3D {
-		X = qr.X,
-		Y = qr.Y,
-		Z = qr.Z
+		qr.X,
+		qr.Y,
+		qr.Z
 	};
 }
 
@@ -48,9 +48,9 @@ Vector3D Quaternion::UnrotateVector(Vector3D coordinate) {
 
 Vector3D Quaternion::GetBiVector() {
 	return Vector3D{
-		X = this->X,
-		Y = this->Y,
-		Z = this->Z
+		this->X,
+		this->Y,
+		this->Z
 	};
 }
 
@@ -88,10 +88,10 @@ Quaternion Quaternion::Add(Quaternion quaternion) {
 	Quaternion current = Quaternion(this->W, this->X, this->Y, this->Z);
 
 	return Quaternion {
-		W = current.W + quaternion.W,
-		X = current.X + quaternion.X,
-		Y = current.Y + quaternion.Y,
-		Z = current.Z + quaternion.Z
+		current.W + quaternion.W,
+		current.X + quaternion.X,
+		current.Y + quaternion.Y,
+		current.Z + quaternion.Z
 	};
 }
 
@@ -99,10 +99,10 @@ Quaternion Quaternion::Subtract(Quaternion quaternion) {
 	Quaternion current = Quaternion(this->W, this->X, this->Y, this->Z);
 
 	return Quaternion{
-		W = current.W - quaternion.W,
-		X = current.X - quaternion.X,
-		Y = current.Y - quaternion.Y,
-		Z = current.Z - quaternion.Z
+		current.W - quaternion.W,
+		current.X - quaternion.X,
+		current.Y - quaternion.Y,
+		current.Z - quaternion.Z
 	};
 }
 
@@ -111,10 +111,10 @@ Quaternion Quaternion::Multiply(Quaternion quaternion) {
 
 	return Quaternion
 	{
-		W = current.W * quaternion.W - current.X * quaternion.X - current.Y * quaternion.Y - current.Z * quaternion.Z,
-		X = current.W * quaternion.X + current.X * quaternion.W + current.Y * quaternion.Z - current.Z * quaternion.Y,
-		Y = current.W * quaternion.Y - current.X * quaternion.Z + current.Y * quaternion.W + current.Z * quaternion.X,
-		Z = current.W * quaternion.Z + current.X * quaternion.Y - current.Y * quaternion.X + current.Z * quaternion.W
+		current.W * quaternion.W - current.X * quaternion.X - current.Y * quaternion.Y - current.Z * quaternion.Z,
+		current.W * quaternion.X + current.X * quaternion.W + current.Y * quaternion.Z - current.Z * quaternion.Y,
+		current.W * quaternion.Y - current.X * quaternion.Z + current.Y * quaternion.W + current.Z * quaternion.X,
+		current.W * quaternion.Z + current.X * quaternion.Y - current.Y * quaternion.X + current.Z * quaternion.W
 	};
 }
 
@@ -122,10 +122,10 @@ Quaternion Quaternion::Multiply(double scalar) {
 	Quaternion current = Quaternion(this->W, this->X, this->Y, this->Z);
 
 	return Quaternion{
-		W = current.W * scalar,
-		X = current.X * scalar,
-		Y = current.Y * scalar,
-		Z = current.Z * scalar
+		current.W * scalar,
+		current.X * scalar,
+		current.Y * scalar,
+		current.Z * scalar
 	};
 }
 
@@ -147,10 +147,10 @@ Quaternion Quaternion::Divide(Quaternion quaternion) {
 
 	return Quaternion
 	{
-		W = (current.W * quaternion.W + current.X * quaternion.X + current.Y * quaternion.Y + current.Z * quaternion.Z) / scale,
-		X = (-current.W * quaternion.X + current.X * quaternion.W + current.Y * quaternion.Z - current.Z * quaternion.Y) / scale,
-		Y = (-current.W * quaternion.Y - current.X * quaternion.Z + current.Y * quaternion.W + current.Z * quaternion.X) / scale,
-		Z = (-current.W * quaternion.Z + current.X * quaternion.Y - current.Y * quaternion.X + current.Z * quaternion.W) / scale
+		(current.W * quaternion.W + current.X * quaternion.X + current.Y * quaternion.Y + current.Z * quaternion.Z) / scale,
+		(-current.W * quaternion.X + current.X * quaternion.W + current.Y * quaternion.Z - current.Z * quaternion.Y) / scale,
+		(-current.W * quaternion.Y - current.X * quaternion.Z + current.Y * quaternion.W + current.Z * quaternion.X) / scale,
+		(-current.W * quaternion.Z + current.X * quaternion.Y - current.Y * quaternion.X + current.Z * quaternion.W) / scale
 	};
 }
 
@@ -159,10 +159,10 @@ Quaternion Quaternion::Divide(double scalar) {
 
 	return Quaternion
 	{
-		W = current.W / scalar,
-		X = current.X / scalar,
-		Y = current.Y / scalar,
-		Z = current.Z / scalar
+		current.W / scalar,
+		current.X / scalar,
+		current.Y / scalar,
+		current.Z / scalar
 	};
 }
 
@@ -171,10 +171,10 @@ Quaternion Quaternion::Power(Quaternion exponent) {
 
 	return Quaternion
 	{
-		W = pow(current.W, exponent.W),
-		X = pow(current.X, exponent.X),
-		Y = pow(current.Y, exponent.Y),
-		Z = pow(current.Z, exponent.Z)
+		pow(current.W, exponent.W),
+		pow(current.X, exponent.X),
+		pow(current.Y, exponent.Y),
+		pow(current.Z, exponent.Z)
 	};
 }
 
@@ -183,10 +183,10 @@ Quaternion Quaternion::Power(double exponent) {
 
 	return Quaternion
 	{
-		W = pow(current.W, exponent),
-		X = pow(current.X, exponent),
-		Y = pow(current.Y, exponent),
-		Z = pow(current.Z, exponent)
+		pow(current.W, exponent),
+		pow(current.X, exponent),
+		pow(current.Y, exponent),
+		pow(current.Z, exponent)
 	};
 }
 
@@ -210,10 +210,10 @@ Quaternion Quaternion::Absolute() {
 
 	return Quaternion
 	{
-		W = abs(current.W),
-		X = abs(current.X),
-		Y = abs(current.Y),
-		Z = abs(current.Z)
+		abs(current.W),
+		abs(current.X),
+		abs(current.Y),
+		abs(current.Z)
 	};
 }
 
@@ -222,10 +222,10 @@ Quaternion Quaternion::AdditiveInverse() {
 
 	return Quaternion
 	{
-		W = -current.W,
-		X = -current.X,
-		Y = -current.Y,
-		Z = -current.Z
+		-current.W,
+		-current.X,
+		-current.Y,
+		-current.Z
 	};
 }
 
@@ -241,10 +241,10 @@ Quaternion Quaternion::Conjugate() {
 
 	return Quaternion
 	{
-		W =  current.W,
-		X = -current.X,
-		Y = -current.Y,
-		Z = -current.Z
+		 current.W,
+		-current.X,
+		-current.Y,
+		-current.Z
 	};
 }
 
