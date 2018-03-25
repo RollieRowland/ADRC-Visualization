@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+/*
 using ADRCVisualization.Class_Files.Mathematics;
 
 namespace ADRCVisualizationTest
@@ -497,3 +498,4 @@ namespace ADRCVisualizationTest
         }
     }
 }
+*/

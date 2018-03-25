@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DTRQCSInterface", "DTRQCSIn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRQUserInterface", "DTRQUserInterface\DTRQUserInterface.csproj", "{B11EB7B2-7563-4F8B-A81A-2FAE529A8C2C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DTRQControllerTest", "DTRQControllerTest\DTRQControllerTest.vcxproj", "{FFD0BF41-2EED-4F5B-AE21-DC7A5915A286}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,16 @@ Global
 		{B11EB7B2-7563-4F8B-A81A-2FAE529A8C2C}.Release|x64.Build.0 = Release|Any CPU
 		{B11EB7B2-7563-4F8B-A81A-2FAE529A8C2C}.Release|x86.ActiveCfg = Release|Any CPU
 		{B11EB7B2-7563-4F8B-A81A-2FAE529A8C2C}.Release|x86.Build.0 = Release|Any CPU
+		{FFD0BF41-2EED-4F5B-AE21-DC7A5915A286}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{FFD0BF41-2EED-4F5B-AE21-DC7A5915A286}.Debug|x64.ActiveCfg = Debug|x64
+		{FFD0BF41-2EED-4F5B-AE21-DC7A5915A286}.Debug|x64.Build.0 = Debug|x64
+		{FFD0BF41-2EED-4F5B-AE21-DC7A5915A286}.Debug|x86.ActiveCfg = Debug|Win32
+		{FFD0BF41-2EED-4F5B-AE21-DC7A5915A286}.Debug|x86.Build.0 = Debug|Win32
+		{FFD0BF41-2EED-4F5B-AE21-DC7A5915A286}.Release|Any CPU.ActiveCfg = Release|Win32
+		{FFD0BF41-2EED-4F5B-AE21-DC7A5915A286}.Release|x64.ActiveCfg = Release|x64
+		{FFD0BF41-2EED-4F5B-AE21-DC7A5915A286}.Release|x64.Build.0 = Release|x64
+		{FFD0BF41-2EED-4F5B-AE21-DC7A5915A286}.Release|x86.ActiveCfg = Release|Win32
+		{FFD0BF41-2EED-4F5B-AE21-DC7A5915A286}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

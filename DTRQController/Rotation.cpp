@@ -44,8 +44,8 @@ Quaternion Rotation::AxisAngleToQuaternion(AxisAngle axisAngle) {
 }
 
 Quaternion Rotation::DirectionAngleToQuaternion(DirectionAngle directionAngle) {
-	Vector3D right = Vector3D(1, 0, 0);
-	Vector3D up = Vector3D(0, 1, 0);
+	Vector3D right =   Vector3D(1, 0, 0);
+	Vector3D up =      Vector3D(0, 1, 0);
 	Vector3D forward = Vector3D(0, 0, 1);
 
 	Vector3D rotatedRight;
@@ -310,16 +310,16 @@ Quaternion Rotation::QuaternionFromDirectionVectors(Vector3D initial, Vector3D t
 	}
 	else if (dot > 0.999999)
 	{
-		q.W = 1;
-		q.X = 0;
-		q.Y = 0;
-		q.Z = 0;
+		q.W = 1.0;
+		q.X = 0.0;
+		q.Y = 0.0;
+		q.Z = 0.0;
 	}
 	else
 	{
 		tempV = Vector3D::CrossProduct(initial, target);
 
-		q.W = 1 + dot;
+		q.W = 1.0 + dot;
 		q.X = tempV.X;
 		q.Y = tempV.Y;
 		q.Z = tempV.Z;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+/*
 using ADRCVisualization.Class_Files.Mathematics;
 
 namespace ADRCVisualizationTest
@@ -67,22 +68,7 @@ namespace ADRCVisualizationTest
             Assert.AreEqual(euler.Y, eulerConverted.Y, 0.01, "Bad translation in X dimension" + eulerConverted);
             Assert.AreEqual(euler.Z, eulerConverted.Z, 0.01, "Bad translation in X dimension" + eulerConverted);
         }
-
-        /*
-        [TestMethod]
-        public void BVATestEulerAnglesHMatrixConversion360()
-        {
-            //Responds correctly for angle output, it just resolves to a more efficient euler angle
-            /*
-            for (int i = -350; i <= -90; i += 10)
-            {
-                BVATestEulerAngleHMatrixConversion(i);
-            }
-
-            for (int i = 90; i <= 350; i += 10)
-            {
-                BVATestEulerAngleHMatrixConversion(i);
-            }
-        }*/
+        
     }
 }
+*/

@@ -131,24 +131,34 @@ public:
 	}
 
 	Quaternion operator  +(Quaternion quaternion) {
-		return this->Add(quaternion);
+		Quaternion q = Quaternion(*this);
+
+		return q.Add(quaternion);
 	}
 
 	Quaternion operator  -(Quaternion quaternion) {
-		return this->Subtract(quaternion);
+		Quaternion q = Quaternion(*this);
+
+		return q.Subtract(quaternion);
 	}
 
 	Quaternion operator  *(Quaternion quaternion) {
-		return this->Multiply(quaternion);
+		Quaternion q = Quaternion(*this);
+
+		return q.Multiply(quaternion);
 	}
 
 	Quaternion operator  /(Quaternion quaternion) {
-		return this->Divide(quaternion);
+		Quaternion q = Quaternion(*this);
+
+		return q.Divide(quaternion);
 	}
 
 
 	Quaternion operator  /(double value) {
-		return this->Divide(value);
+		Quaternion q = Quaternion(*this);
+
+		return q.Divide(value);
 	}
 
 	friend Quaternion operator *(double scalar, Quaternion q);

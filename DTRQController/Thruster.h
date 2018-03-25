@@ -18,9 +18,9 @@ private:
 	bool simulation;
 	double dT;
 
-	CriticallyDampedSpring outerCDS;
-	CriticallyDampedSpring innerCDS;
-	CriticallyDampedSpring rotorCDS;
+	CriticallyDampedSpring *outerCDS;
+	CriticallyDampedSpring *innerCDS;
+	CriticallyDampedSpring *rotorCDS;
 
 	bool CheckIfDisabled();
 public:
@@ -29,7 +29,7 @@ public:
 	Vector3D CurrentRotation;
 	Vector3D ThrusterOffset;
 
-	Thruster();
+	~Thruster();
 	Thruster(Vector3D ThrusterOffset, std::string name, bool simulation, double dT);
 	void SetThrusterOutputs(Vector3D output);
 	Vector3D ReturnThrustVector();

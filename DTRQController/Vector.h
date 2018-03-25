@@ -105,26 +105,38 @@ public:
 	}
 
 	Vector3D operator  +(Vector3D vector) {
-		return this->Add(vector);
+		Vector3D v = Vector3D(*this);
+
+		return v.Add(vector);
 	}
 
 	Vector3D operator  -(Vector3D vector) {
-		return this->Subtract(vector);
+		Vector3D v = Vector3D(*this);
+
+		return v.Subtract(vector);
 	}
 
 	Vector3D operator  *(Vector3D vector) {
-		return this->Multiply(vector);
+		Vector3D v = Vector3D(*this);
+
+		return v.Multiply(vector);
 	}
 
 	Vector3D operator  /(Vector3D vector) {
-		return this->Divide(vector);
+		Vector3D v = Vector3D(*this);
+
+		return v.Divide(vector);
 	}
 
 	Vector3D operator  *(double value) {
-		return this->Multiply(value);
+		Vector3D v = Vector3D(*this);
+
+		return v.Multiply(value);
 	}
 
 	Vector3D operator  /(double value) {
-		return this->Divide(value);
+		Vector3D v = Vector3D(*this);
+
+		return v.Divide(value);
 	}
 } Vector3D;

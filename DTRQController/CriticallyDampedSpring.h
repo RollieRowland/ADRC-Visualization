@@ -5,15 +5,13 @@
 typedef struct CriticallyDampedSpring {
 private:
 	double dT;
-	double currentPosition = 0;
-	double currentVelocity = 0;
+	double currentVelocity = 0.0;
+	double currentPosition = 0.0;
 	double springConstant;
-	double mass;
 	std::string name;
 
 public:
-	CriticallyDampedSpring();
-	CriticallyDampedSpring(double dT, double springConstant, double mass, std::string name);
+	CriticallyDampedSpring(double dT, double springConstant, std::string name);
 
 	double Calculate(double target);
 	

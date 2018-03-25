@@ -1,17 +1,5 @@
 #include <Thruster.h>
 
-Thruster::Thruster() {
-	this->ThrusterOffset = Vector3D(0, 0, 0);
-	this->name = "null";
-	this->simulation = true;
-	this->dT = 0.05;
-
-	this->CurrentPosition = Vector3D(0, 0, 0);
-	this->TargetPosition = Vector3D(0, 0, 0);
-	this->CurrentRotation = Vector3D(0, 0, 0);
-	this->disable = false;
-}
-
 Thruster::Thruster(Vector3D thrusterOffset, std::string name, bool simulation, double dT) {
 	this->ThrusterOffset = thrusterOffset;
 	this->name = name;
@@ -26,12 +14,18 @@ Thruster::Thruster(Vector3D thrusterOffset, std::string name, bool simulation, d
 	if (simulation) {
 		std::cout << "  Thruster initializing in simulation mode." << std::endl;
 
-		this->outerCDS = CriticallyDampedSpring(dT, 150, 1, "Thruster " + this->name + " outer");
-		this->innerCDS = CriticallyDampedSpring(dT, 250, 1, "Thruster " + this->name + " inner");
-		this->rotorCDS = CriticallyDampedSpring(dT, 150, 1, "Thruster " + this->name + " rotor");
+		this->outerCDS = new CriticallyDampedSpring(dT, 0.005, "Thruster " + this->name + " outer");
+		this->innerCDS = new CriticallyDampedSpring(dT, 0.005, "Thruster " + this->name + " inner");
+		this->rotorCDS = new CriticallyDampedSpring(dT, 50, "Thruster " + this->name + " rotor");
 	}
 
 	std::cout << "  Thruster " << name << ": Offset:" << thrusterOffset.ToString() << " Simulation: " << simulation << " dT:" << dT << std::endl;
+}
+
+Thruster::~Thruster() {
+	delete outerCDS;
+	delete innerCDS;
+	delete rotorCDS;
 }
 
 Vector3D Thruster::ReturnThrustVector() {
@@ -62,9 +56,9 @@ void Thruster::SetThrusterOutputs(Vector3D output) {
 
 	//Sets the outputs of the thrusters
 	if (simulation) {
-		innerJoint.SetAngle(innerCDS.Calculate(output.X));
-		rotor.SetOutput(rotorCDS.Calculate(output.Y));
-		outerJoint.SetAngle(outerCDS.Calculate(output.Z));
+		innerJoint.SetAngle(innerCDS->Calculate(output.X));
+		rotor.SetOutput(rotorCDS->Calculate(output.Y));
+		outerJoint.SetAngle(outerCDS->Calculate(output.Z));
 	}
 	else {
 		innerJoint.SetAngle(output.X);

@@ -72,10 +72,10 @@ public:
 	Rotation TargetRotation;
 	Vector3D CurrentPosition;
 	Vector3D TargetPosition;
-	Thruster TB;
-	Thruster TC;
-	Thruster TD;
-	Thruster TE;
+	Thruster *TB;
+	Thruster *TC;
+	Thruster *TD;
+	Thruster *TE;
 
 	Quadcopter(bool simulation, double armLength, double armAngle, double dT);
 	void CalculateCombinedThrustVector();
