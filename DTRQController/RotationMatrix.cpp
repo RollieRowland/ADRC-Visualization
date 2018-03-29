@@ -146,7 +146,13 @@ Vector3D RotationMatrix::RotateVector(Vector3D rotate, Vector3D coordinates) {
 
 	matrix.Rotate(rotate);
 
-	return matrix.ConvertCoordinateToVector();
+
+	if (rotate.X == 0 && rotate.Y == 0 && rotate.Z == 0) {
+		return coordinates;
+	}
+	else {
+		return matrix.ConvertCoordinateToVector();
+	}
 }
 
 std::string RotationMatrix::ToString() {

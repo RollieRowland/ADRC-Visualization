@@ -42,30 +42,30 @@ private:
 		}
 	};
 	*/
-	/*VectorFeedbackController rotationController = VectorFeedbackController {
+	VectorFeedbackController rotationController = VectorFeedbackController {
 		new ADRC { 20.0, 200.0, 4.0, 10.0,
-			PID { 0.5, 0, 0.75 }
+			PID { 5, 0, 7.5 }
 		},
 		new ADRC { 10.0, 10.0, 1.5, 64,
-			PID { 1, 0, 2.5 }
+			PID { 10, 0, 25 }
 		},
 		new ADRC { 20.0, 200.0, 4.0, 10.0,
-			PID { 0.5, 0, 0.75 }
+			PID { 5, 0, 7.5 }
 		}
-	};*/
+	};
 	
 	VectorFeedbackController positionController = VectorFeedbackController {
 		new PID { 10, 0, 12.5 },
 		new PID { 1, 0, 0.2 },
 		new PID { 10, 0, 12.5 }
 	};
-
+	/*
 	VectorFeedbackController rotationController = VectorFeedbackController {
 		new PID { 0.5, 0, 0.75 },
 		new PID { 1, 0, 2.5 },
 		new PID { 0.5, 0, 0.75 }
 	};
-	
+	*/
 	Vector3D RotationQuaternionToHoverAngles(Rotation rotation);
 public:
 	Rotation CurrentRotation;

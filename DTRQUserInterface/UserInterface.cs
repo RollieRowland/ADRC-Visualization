@@ -119,22 +119,29 @@ namespace ADRCVisualization
             while (true)
             {
                 /*
+                Quaternion q;
+                
                 for (double i = 0; i < 360; i += 1)
                 {
-                    targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
-                    //targetRotation = new Vector(i / 6, 0, 0);
+                    q = Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, i, i), EulerConstants.EulerOrderXYZS));
+                    //targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
+
+                    SetTarget(new Vector(0, 0, 0), q);
 
                     await Task.Delay(15);
                 }
 
                 for (double i = 0; i < 360; i += 1)
                 {
-                    targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
-                    //targetRotation = new Vector(60 - i / 8, 0, 0);
+                    q = Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, i, i), EulerConstants.EulerOrderXYZS));
+                    //targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
+                    
+                    SetTarget(new Vector(0, 0, 0), q);
 
                     await Task.Delay(15);
                 }
                 */
+                
                 
                 targetPosition = new SVector(1, 0, 1.2);
                 targetRotation = new SQuaternion(1, 0, 0, 0);
@@ -189,6 +196,12 @@ namespace ADRCVisualization
 
                 await Task.Delay(3000);
             }
+        }
+
+        private void SetTarget(Vector v, Quaternion q)
+        {
+            targetPosition = new SVector(v.X, v.Y, v.Z);
+            targetRotation = new SQuaternion(q.W, q.X, q.Y, q.Z);
         }
         
         private void SetChartPositions(SQuad q)
