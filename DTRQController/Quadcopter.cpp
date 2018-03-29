@@ -51,7 +51,7 @@ void Quadcopter::CalculateCombinedThrustVector() {
 	positionOutput = positionOutput.Constrain(Vector3D(-30, -100, -30), Vector3D(30, 100, 30));
 	rotationOutput = rotationOutput.Constrain(-30, 30);
 
-	positionOutput = Vector3D(0, 0, 0);
+	//positionOutput = Vector3D(0, 0, 0);
 	//rotationOutput = rotationOutput * Vector3D(1, 1, 0);
 
 	//Thruster output relative to environment origin
@@ -64,7 +64,22 @@ void Quadcopter::CalculateCombinedThrustVector() {
 
 	//adjusting thrust from non-inertial to inertial frame
 	//positionOutput = CurrentRotation.GetQuaternion().RotateVector(positionOutput);
-	positionOutput = RotationMatrix::RotateVector(Vector3D(0, CurrentRotation.GetDirectionAngle().Rotation, 0), positionOutput);
+	//positionOutput = RotationMatrix::RotateVector(Vector3D(0, CurrentRotation.GetDirectionAngle().Rotation, 0), positionOutput);
+
+	AxisAngle aa = CurrentRotation.GetAxisAngle();//zero x and z
+	aa.Axis.Multiply(Vector3D(0, 1, 0));
+	Rotation yawOnly = Rotation(aa);
+
+	YawPitchRoll ypr = CurrentRotation.GetYawPitchRoll();
+
+	std::cout << ypr.ToString() << std::endl;
+
+	//rotations on X: no change
+	//rotations on Z: inverts when 180 degree rotation, locks at 90
+	//rotations on Y: amount of x and z change
+
+	//positionOutput = RotationMatrix::RotateVector(Vector3D(0, ypr.Yaw, 0), positionOutput);
+	//positionOutput = yawOnly.GetQuaternion().UnrotateVector(positionOutput);
 
 	//Due to XYZ permutation order of Euler angle
 	positionOutput.X = positionOutput.X + hoverAngles.Z;//Adjust main joint to rotation
@@ -89,7 +104,7 @@ void Quadcopter::SetTarget(Vector3D position, Rotation rotation) {
 void Quadcopter::SimulateCurrent(Vector3D externalAcceleration) {
 	this->externalAcceleration = externalAcceleration;
 
-	//EstimatePosition();
+	EstimatePosition();
 	EstimateRotation();
 
 	//CurrentPosition = TargetPosition;
@@ -124,12 +139,24 @@ void Quadcopter::EstimatePosition() {
 
 	Vector3D thrustSum = TBThrust.Add(TBThrust).Add(TBThrust).Add(TBThrust);
 
-	std::cout << thrustSum.ToString() << std::endl;
-
 	thrustSum = CurrentRotation.GetQuaternion().RotateVector(thrustSum);
 
+	//Surface area frame: 0.054145
+	//Surface area inner arm: 0.017069 x4 = 0.068276
+	//Surface area outer arm: 0.015366 x4 = 0.06164
+	//Total area in m2: 0.184061
+	//
+	//drag force = 0.5 * density * air velocity^2 * dragCoef * area
+	Vector3D dragForce = Vector3D {
+		0.5 * 1.225 * pow(currentVelocity.X, 2) * 1.0 * 0.184061,
+		0.5 * 1.225 * pow(currentVelocity.Y, 2) * 1.0 * 0.184061,
+		0.5 * 1.225 * pow(currentVelocity.Z, 2) * 1.0 * 0.184061
+	};
+
+	//std::cout << dragForce.ToString() << std::endl;
+
 	currentAcceleration = thrustSum.Add(externalAcceleration);
-	currentVelocity = currentVelocity.Add(currentAcceleration.Multiply(dT));
+	currentVelocity = currentVelocity.Add(currentAcceleration.Multiply(dT) + currentAcceleration.Multiply(dT));
 
 	CurrentPosition = CurrentPosition.Add(currentVelocity.Multiply(dT));
 }
@@ -156,7 +183,7 @@ void Quadcopter::EstimateRotation() {
 	};
 
 	//TB + TD - (TC + TE)
-	Vector3D differentialThrustRotation = TBO.Add(TDO).Add(TCO.Add(TEO).Multiply(-1)).Multiply(0.15);
+	Vector3D differentialThrustRotation = TBO.Add(TDO).Subtract(TCO.Add(TEO));// .Multiply(0.15);
 
 	currentAngularAcceleration = currentAngularAcceleration + differentialThrustRotation;
 	currentAngularAcceleration = Vector3D::DegreesToRadians(currentAngularAcceleration);

@@ -118,29 +118,29 @@ namespace ADRCVisualization
 
             while (true)
             {
-                /*
+                
                 Quaternion q;
                 
                 for (double i = 0; i < 360; i += 1)
                 {
-                    q = Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, i, i), EulerConstants.EulerOrderXYZS));
-                    //targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
+                    //q = Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, i, i), EulerConstants.EulerOrderXYZS));
+                    targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
 
-                    SetTarget(new Vector(0, 0, 0), q);
+                   // SetTarget(new Vector(0, 0, 0), q);
 
                     await Task.Delay(15);
                 }
 
                 for (double i = 0; i < 360; i += 1)
                 {
-                    q = Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, i, i), EulerConstants.EulerOrderXYZS));
-                    //targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
+                    //q = Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, i, i), EulerConstants.EulerOrderXYZS));
+                    targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
                     
-                    SetTarget(new Vector(0, 0, 0), q);
+                    //SetTarget(new Vector(0, 0, 0), q);
 
                     await Task.Delay(15);
                 }
-                */
+                
                 
                 
                 targetPosition = new SVector(1, 0, 1.2);

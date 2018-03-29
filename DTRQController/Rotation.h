@@ -8,6 +8,7 @@
 #include <Quaternion.h>
 #include <RotationMatrix.h>
 #include <Vector.h>
+#include <YawPitchRoll.h>
 
 class Rotation {
 private:
@@ -21,6 +22,7 @@ private:
 	EulerAngles HierarchicalMatrixToEulerAngles(HMatrix hM, EulerOrder order);
 	HMatrix EulerAnglesToHierarchicalMatrix(EulerAngles eulerAngles);
 	Quaternion QuaternionFromDirectionVectors(Vector3D initial, Vector3D target);
+	Quaternion YawPitchRollToQuaternion(YawPitchRoll ypr);
 public:
 	Rotation();
 	Rotation(Quaternion quaternion);
@@ -30,6 +32,7 @@ public:
 	Rotation(EulerAngles eulerAngles);
 	Rotation(HMatrix hMatrix);
 	Rotation(Vector3D initial, Vector3D target);
+	Rotation(YawPitchRoll ypr);
 
 	Quaternion GetQuaternion();
 	AxisAngle GetAxisAngle();
@@ -37,4 +40,5 @@ public:
 	RotationMatrix GetRotationMatrix();
 	EulerAngles GetEulerAngles(EulerOrder order);
 	HMatrix GetHierarchicalMatrix();
+	YawPitchRoll GetYawPitchRoll();
 };

@@ -149,6 +149,7 @@
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="VectorFeedbackController.cpp" />
     <ClCompile Include="VectorKalmanFilter.cpp" />
+    <ClCompile Include="YawPitchRoll.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ADRC.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="EulerOrder.h" />
     <ClInclude Include="ExtendedStateObserver.h" />
     <ClInclude Include="FeedbackController.h" />
+    <ClInclude Include="YawPitchRoll.h" />
     <ClInclude Include="HMatrix.h" />
     <ClInclude Include="KalmanFilter.h" />
     <ClInclude Include="Mathematics.h" />

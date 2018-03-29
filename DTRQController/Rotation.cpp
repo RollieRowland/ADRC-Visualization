@@ -32,6 +32,10 @@ Rotation::Rotation(Vector3D initial, Vector3D target) {
 	QuaternionRotation = QuaternionFromDirectionVectors(initial, target);
 }
 
+Rotation::Rotation(YawPitchRoll ypr) {
+	QuaternionRotation = YawPitchRollToQuaternion(ypr);
+}
+
 Quaternion Rotation::AxisAngleToQuaternion(AxisAngle axisAngle) {
 		double rotation = Mathematics::DegreesToRadians(axisAngle.Rotation);
 		double scale = sin(rotation / 2.0);
@@ -170,6 +174,10 @@ Quaternion Rotation::EulerAnglesToQuaternion(EulerAngles eulerAngles) {
 	}
 
 	return q;
+}
+
+Quaternion Rotation::YawPitchRollToQuaternion(YawPitchRoll ypr) {
+	throw "YPR not implemented.";
 }
 
 Quaternion Rotation::HierarchicalMatrixToQuaternion(HMatrix hMatrix) {
@@ -422,4 +430,19 @@ EulerAngles Rotation::GetEulerAngles(EulerOrder order) {
 
 HMatrix Rotation::GetHierarchicalMatrix() {
 	return EulerAnglesToHierarchicalMatrix(GetEulerAngles(EulerConstants::EulerOrderXYZS));
+}
+
+YawPitchRoll Rotation::GetYawPitchRoll() {
+	Quaternion q = QuaternionRotation;
+
+	//intrinsic tait-bryan rotation of order XYZ
+	double yaw =  atan2( 2.0 * (q.Y * q.Z + q.W * q.X), pow(q.W, 2) - pow(q.X, 2) - pow(q.Y, 2) + pow(q.Z, 2));
+	double pitch = asin(-2.0 * (q.X * q.Z - q.W * q.Y));
+	double roll = atan2( 2.0 * (q.X * q.Y + q.W * q.Z), pow(q.W, 2) + pow(q.X, 2) - pow(q.Y, 2) - pow(q.Z, 2));
+
+	yaw = Mathematics::RadiansToDegrees(yaw);
+	pitch = Mathematics::RadiansToDegrees(pitch);
+	roll = Mathematics::RadiansToDegrees(roll);
+
+	return YawPitchRoll(yaw, pitch, roll);
 }
