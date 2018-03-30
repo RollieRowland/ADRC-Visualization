@@ -19,7 +19,7 @@ public:
 	Vector3D Multiply(double scalar);
 	Vector3D Divide(double scalar);
 	Vector3D CrossProduct(Vector3D vector);
-	Vector3D Normalize();//unit sphere
+	Vector3D UnitSphere();//unit sphere
 	Vector3D Constrain(double minimum, double maximum);
 	Vector3D Constrain(Vector3D minimum, Vector3D maximum);
 

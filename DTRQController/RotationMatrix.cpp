@@ -110,9 +110,9 @@ void RotationMatrix::Normalize() {
 	Vector3D vz = Vector3D::CrossProduct(XAxis, YAxis);
 	Vector3D vy = Vector3D::CrossProduct(vz, XAxis);
 
-	XAxis = XAxis.Normalize();
-	YAxis = vy.Normalize();
-	ZAxis = vz.Normalize();
+	XAxis = XAxis.UnitSphere();
+	YAxis = vy.UnitSphere();
+	ZAxis = vz.UnitSphere();
 }
 
 void RotationMatrix::Transpose() {

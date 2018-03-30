@@ -118,83 +118,58 @@ namespace ADRCVisualization
 
             while (true)
             {
-                
-                Quaternion q;
-                
                 for (double i = 0; i < 360; i += 1)
                 {
-                    //q = Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, i, i), EulerConstants.EulerOrderXYZS));
-                    targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
+                    double x, y;
 
-                   // SetTarget(new Vector(0, 0, 0), q);
+                    x = Math.Sin(MathE.DegreesToRadians(i));
+                    y = Math.Cos(MathE.DegreesToRadians(i));
 
-                    await Task.Delay(15);
+                    SetTarget(new Vector(x * 1.5, 0, y * 1.5), Quaternion.DirectionAngleToQuaternion(new DirectionAngle(MathE.RadiansToDegrees(Math.Acos(y)) * Math.Sign(x), new Vector(-x * 0.707, 0.707, -y * 0.707))));
+
+                    await Task.Delay(40);
                 }
 
-                for (double i = 0; i < 360; i += 1)
-                {
-                    //q = Quaternion.EulerToQuaternion(new EulerAngles(new Vector(i, i, i), EulerConstants.EulerOrderXYZS));
-                    targetPosition = new SVector(Math.Sin(MathE.DegreesToRadians(i)) * 1.5, 0, Math.Cos(MathE.DegreesToRadians(i)) * 1.5);
-                    
-                    //SetTarget(new Vector(0, 0, 0), q);
 
-                    await Task.Delay(15);
-                }
-                
-                
-                
-                targetPosition = new SVector(1, 0, 1.2);
-                targetRotation = new SQuaternion(1, 0, 0, 0);
+                SetTarget(new Vector(1, 0, 1.2), Quaternion.DirectionAngleToQuaternion(new DirectionAngle(0, new Vector(0, 1, 0))));
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(3000);
 
-                targetPosition = new SVector(-1, 0, 1.2);
-                targetRotation = new SQuaternion(0, 0, 1, 0);
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(3000);
-                
-                //////////////////////////////////////////////////
-                targetPosition = new SVector(-1, 0, 1.2);
-                targetRotation = new SQuaternion(0, 0, 0, -1);//90, 0, 0
+                SetTarget(new Vector(-1, 0, 1.2), Quaternion.DirectionAngleToQuaternion(new DirectionAngle(0, new Vector(1, 0, 0))));
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(7500);
 
-                targetPosition = new SVector(-1, 0, -1.2);
-                targetRotation = new SQuaternion(0, 0, -0.707, -0.707);//0, 45, 0
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(7500);
-                //////////////////////////////////////////////////
-
-                targetPosition = new SVector(-1, 0, -1.2);
-                targetRotation = new SQuaternion(0, 0, 1, 0);//0, 0, 0
-                Console.WriteLine("Target Set");
-
-                await Task.Delay(3000);
-                
-                
-                //////////////////////////////////////////////////
-                targetPosition = new SVector(1, 0, -1.2);
-                targetRotation = new SQuaternion(0, 1, 0, 0);//0, 0, 90
+                SetTarget(new Vector(-1, 0, -1.2), Quaternion.DirectionAngleToQuaternion(new DirectionAngle(45, new Vector(0, 1, 0))));
                 Console.WriteLine("Target Set");
 
                 await Task.Delay(10000);
-                
-                targetPosition = new SVector(-1, 0, 1.2);
-                targetRotation = new SQuaternion(0, 0.707, -0.707, 0);
+
+                SetTarget(new Vector(-1, 0, -1.2), Quaternion.DirectionAngleToQuaternion(new DirectionAngle(180, new Vector(0, -1, 0))));
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(6000);
-                //////////////////////////////////////////////////
+                await Task.Delay(7500);
 
-                targetPosition = new SVector(1, 0, -1.2);
-                targetRotation = new SQuaternion(0, 0, 1, 0);//0, 0, 0
+                SetTarget(new Vector(1, 0, -1.2), Quaternion.DirectionAngleToQuaternion(new DirectionAngle(45, new Vector(0, 0.707, 0.707))));
                 Console.WriteLine("Target Set");
 
-                await Task.Delay(3000);
+                await Task.Delay(12000);
+
+                SetTarget(new Vector(-1, 0, -1.2), Quaternion.DirectionAngleToQuaternion(new DirectionAngle(0, new Vector(0, 1, 0))));
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(7500);
+
+                SetTarget(new Vector(-1, 0, 1.2), Quaternion.DirectionAngleToQuaternion(new DirectionAngle(180, new Vector(0, -1, 0))));
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(7500);
+
+                SetTarget(new Vector(1, 0, -1.2), Quaternion.DirectionAngleToQuaternion(new DirectionAngle(0, new Vector(0, 1, 0))));
+                Console.WriteLine("Target Set");
+
+                await Task.Delay(7500);
             }
         }
 

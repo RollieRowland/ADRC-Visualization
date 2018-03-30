@@ -79,7 +79,7 @@ Vector3D Vector3D::CrossProduct(Vector3D vector) {
 	};
 }
 
-Vector3D Vector3D::Normalize() {
+Vector3D Vector3D::UnitSphere() {
 	Vector3D vector = Vector3D(this->X, this->Y, this->Z);
 	double length = vector.GetLength();
 

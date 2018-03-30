@@ -55,31 +55,16 @@ void Quadcopter::CalculateCombinedThrustVector() {
 	//rotationOutput = rotationOutput * Vector3D(1, 1, 0);
 
 	//Thruster output relative to environment origin
-	Vector3D thrusterOutputB = Vector3D(0, -rotationOutput.X + rotationOutput.Z + rotationOutput.Y, 0);
-	Vector3D thrusterOutputC = Vector3D(0, -rotationOutput.X - rotationOutput.Z - rotationOutput.Y, 0);
-	Vector3D thrusterOutputD = Vector3D(0,  rotationOutput.X - rotationOutput.Z + rotationOutput.Y, 0);
-	Vector3D thrusterOutputE = Vector3D(0,  rotationOutput.X + rotationOutput.Z - rotationOutput.Y, 0);
+	Vector3D thrusterOutputB = Vector3D(0, -rotationOutput.X + rotationOutput.Z - rotationOutput.Y, 0);
+	Vector3D thrusterOutputC = Vector3D(0, -rotationOutput.X - rotationOutput.Z + rotationOutput.Y, 0);
+	Vector3D thrusterOutputD = Vector3D(0,  rotationOutput.X - rotationOutput.Z - rotationOutput.Y, 0);
+	Vector3D thrusterOutputE = Vector3D(0,  rotationOutput.X + rotationOutput.Z + rotationOutput.Y, 0);
 
-	Vector3D hoverAngles = RotationQuaternionToHoverAngles(CurrentRotation);
+	Vector3D hoverAngles = RotationToHoverAngles(CurrentRotation);
 
-	//adjusting thrust from non-inertial to inertial frame
-	//positionOutput = CurrentRotation.GetQuaternion().RotateVector(positionOutput);
-	//positionOutput = RotationMatrix::RotateVector(Vector3D(0, CurrentRotation.GetDirectionAngle().Rotation, 0), positionOutput);
+	positionOutput = CalculateRotationOffset().RotateVector(positionOutput);
 
-	AxisAngle aa = CurrentRotation.GetAxisAngle();//zero x and z
-	aa.Axis.Multiply(Vector3D(0, 1, 0));
-	Rotation yawOnly = Rotation(aa);
-
-	YawPitchRoll ypr = CurrentRotation.GetYawPitchRoll();
-
-	std::cout << ypr.ToString() << std::endl;
-
-	//rotations on X: no change
-	//rotations on Z: inverts when 180 degree rotation, locks at 90
-	//rotations on Y: amount of x and z change
-
-	//positionOutput = RotationMatrix::RotateVector(Vector3D(0, ypr.Yaw, 0), positionOutput);
-	//positionOutput = yawOnly.GetQuaternion().UnrotateVector(positionOutput);
+	std::cout << CurrentRotation.GetQuaternion().ToString() << " " << CurrentRotation.GetDirectionAngle().ToString() << " " << hoverAngles.ToString() << std::endl;
 
 	//Due to XYZ permutation order of Euler angle
 	positionOutput.X = positionOutput.X + hoverAngles.Z;//Adjust main joint to rotation
@@ -148,17 +133,17 @@ void Quadcopter::EstimatePosition() {
 	//
 	//drag force = 0.5 * density * air velocity^2 * dragCoef * area
 	Vector3D dragForce = Vector3D {
-		0.5 * 1.225 * pow(currentVelocity.X, 2) * 1.0 * 0.184061,
-		0.5 * 1.225 * pow(currentVelocity.Y, 2) * 1.0 * 0.184061,
-		0.5 * 1.225 * pow(currentVelocity.Z, 2) * 1.0 * 0.184061
+		0.5 * 1.225 * pow(currentVelocity.X, 2) * 1.0 * 0.184061 * Mathematics::Sign(currentVelocity.X),
+		0.5 * 1.225 * pow(currentVelocity.Y, 2) * 1.0 * 0.184061 * Mathematics::Sign(currentVelocity.Y),
+		0.5 * 1.225 * pow(currentVelocity.Z, 2) * 1.0 * 0.184061 * Mathematics::Sign(currentVelocity.Z)
 	};
 
-	//std::cout << dragForce.ToString() << std::endl;
+	currentAcceleration = thrustSum + externalAcceleration;
+	currentVelocity = currentVelocity + currentAcceleration * dT - dragForce * dT;
 
-	currentAcceleration = thrustSum.Add(externalAcceleration);
-	currentVelocity = currentVelocity.Add(currentAcceleration.Multiply(dT) + currentAcceleration.Multiply(dT));
+	//std::cout << currentVelocity.ToString() << " " << dragForce.ToString() << std::endl;
 
-	CurrentPosition = CurrentPosition.Add(currentVelocity.Multiply(dT));
+	CurrentPosition = CurrentPosition + currentVelocity * dT;
 }
 
 void Quadcopter::EstimateRotation() {
@@ -182,19 +167,26 @@ void Quadcopter::EstimateRotation() {
 		(-TBO.Y + TCO.Y + TDO.Y - TEO.Y) * torque
 	};
 
+	//drag force = 0.5 * density * air velocity^2 * dragCoef * area
+	Vector3D dragForce = Vector3D{
+		0.5 * 1.225 * pow(currentAngularVelocity.X, 2) * 1.0 * 0.184061 * Mathematics::Sign(currentAngularVelocity.X),
+		0.5 * 1.225 * pow(currentAngularVelocity.Y, 2) * 1.0 * 0.184061 * Mathematics::Sign(currentAngularVelocity.Y),
+		0.5 * 1.225 * pow(currentAngularVelocity.Z, 2) * 1.0 * 0.184061 * Mathematics::Sign(currentAngularVelocity.Z)
+	};
+
 	//TB + TD - (TC + TE)
 	Vector3D differentialThrustRotation = TBO.Add(TDO).Subtract(TCO.Add(TEO));// .Multiply(0.15);
 
 	currentAngularAcceleration = currentAngularAcceleration + differentialThrustRotation;
 	currentAngularAcceleration = Vector3D::DegreesToRadians(currentAngularAcceleration);
-	currentAngularVelocity = currentAngularVelocity + currentAngularAcceleration * dT;
+	currentAngularVelocity = currentAngularVelocity + currentAngularAcceleration * dT - dragForce * dT;
 
 	Quaternion angularRotation = Quaternion(0.5 * dT * currentAngularVelocity);
 
 	CurrentRotation = Rotation((CurrentRotation.GetQuaternion() + angularRotation * CurrentRotation.GetQuaternion()).UnitQuaternion());
 }
 
-Vector3D Quadcopter::RotationQuaternionToHoverAngles(Rotation rotation) {
+Vector3D Quadcopter::RotationToHoverAngles(Rotation rotation) {
 	double outerJoint = 0;
 	double innerJoint = 0;
 	DirectionAngle directionAngle = rotation.GetDirectionAngle();
@@ -215,7 +207,7 @@ Vector3D Quadcopter::RotationQuaternionToHoverAngles(Rotation rotation) {
 void Quadcopter::CalculateGimbalLockedMotion(Vector3D &positionControl, Vector3D &thrusterOutputB,
 											 Vector3D &thrusterOutputC, Vector3D &thrusterOutputD,
 											 Vector3D &thrusterOutputE) {
-	Vector3D hoverAngles = RotationQuaternionToHoverAngles(CurrentRotation);
+	Vector3D hoverAngles = RotationToHoverAngles(CurrentRotation);
 
 	double fadeIn = gimbalLockFader.CalculateRatio(hoverAngles.Z);//0 -> 1, New position control faders, approaches 1 when z rot is -90/90
 	double fadeOut = 1 - fadeIn;//1 -> 0, Rotation magnitude faders, approaches 0 when Z rot is -90/90 degrees
@@ -252,4 +244,14 @@ void Quadcopter::GetCurrent() {
 	TC->CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TC->ThrusterOffset).Add(CurrentPosition);
 	TD->CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TD->ThrusterOffset).Add(CurrentPosition);
 	TE->CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TE->ThrusterOffset).Add(CurrentPosition);
+}
+
+Quaternion Quadcopter::CalculateRotationOffset() {
+	Vector3D hoverRotation = RotationToHoverAngles(CurrentRotation);
+
+	Quaternion hover = Rotation(EulerAngles(hoverRotation, EulerConstants::EulerOrderXYZS)).GetQuaternion();
+
+	Quaternion yaw3D = hover * CurrentRotation.GetQuaternion().MultiplicativeInverse();
+
+	return yaw3D;
 }

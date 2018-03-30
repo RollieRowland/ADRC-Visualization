@@ -53,6 +53,8 @@ Quaternion Rotation::DirectionAngleToQuaternion(DirectionAngle directionAngle) {
 	Vector3D up =      Vector3D(0, 1, 0);
 	Vector3D forward = Vector3D(0, 0, 1);
 
+	directionAngle.Direction.UnitSphere();
+
 	Vector3D rotatedRight;
 	Vector3D rotatedUp = Vector3D(directionAngle.Direction);
 	Vector3D rotatedForward;
@@ -65,7 +67,7 @@ Quaternion Rotation::DirectionAngleToQuaternion(DirectionAngle directionAngle) {
 	rotatedRight = rotationChange.RotateVector(rightAngleRotated);
 	rotatedForward = rotationChange.RotateVector(forwardAngleRotated);
 
-	return RotationMatrixToQuaternion(RotationMatrix(rotatedRight, rotatedUp, rotatedForward));
+	return RotationMatrixToQuaternion(RotationMatrix(rotatedRight, rotatedUp, rotatedForward)).UnitQuaternion();
 }
 
 Quaternion Rotation::RotationMatrixToQuaternion(RotationMatrix rM) {
@@ -313,7 +315,7 @@ Quaternion Rotation::QuaternionFromDirectionVectors(Vector3D initial, Vector3D t
 			tempV = Vector3D::CrossProduct(yAxis, initial);
 		}
 
-		tempV = tempV.Normalize();
+		tempV = tempV.UnitSphere();
 
 		q = Rotation(AxisAngle(Mathematics::PI, tempV)).GetQuaternion();
 	}
@@ -374,7 +376,7 @@ AxisAngle Rotation::GetAxisAngle() {
 }
 
 DirectionAngle Rotation::GetDirectionAngle() {
-	Quaternion q = QuaternionRotation;
+	Quaternion q = QuaternionRotation.UnitQuaternion();
 	Vector3D up = Vector3D(0, 1, 0);//up vector
 	Vector3D right = Vector3D(1, 0, 0);
 	Vector3D rotatedUp = q.RotateVector(up);//new direction vector

@@ -27,6 +27,7 @@ private:
 	void CalculateGimbalLockedMotion(Vector3D &positionControl, Vector3D &thrusterOutputB,
 							         Vector3D &thrusterOutputC, Vector3D &thrusterOutputD,
 									 Vector3D &thrusterOutputE);
+	Quaternion CalculateRotationOffset();
 	void EstimatePosition();
 	void EstimateRotation();
 	
@@ -42,7 +43,7 @@ private:
 		}
 	};
 	*/
-	VectorFeedbackController rotationController = VectorFeedbackController {
+	/*VectorFeedbackController rotationController = VectorFeedbackController {
 		new ADRC { 20.0, 200.0, 4.0, 10.0,
 			PID { 5, 0, 7.5 }
 		},
@@ -52,21 +53,21 @@ private:
 		new ADRC { 20.0, 200.0, 4.0, 10.0,
 			PID { 5, 0, 7.5 }
 		}
-	};
+	};*/
 	
 	VectorFeedbackController positionController = VectorFeedbackController {
 		new PID { 10, 0, 12.5 },
 		new PID { 1, 0, 0.2 },
 		new PID { 10, 0, 12.5 }
 	};
-	/*
+	
 	VectorFeedbackController rotationController = VectorFeedbackController {
-		new PID { 0.5, 0, 0.75 },
-		new PID { 1, 0, 2.5 },
-		new PID { 0.5, 0, 0.75 }
+		new PID { 0.05, 0, 0.325 },
+		new PID { 0.05, 0, 0.325 },
+		new PID { 0.05, 0, 0.325 }
 	};
-	*/
-	Vector3D RotationQuaternionToHoverAngles(Rotation rotation);
+	
+	Vector3D RotationToHoverAngles(Rotation rotation);
 public:
 	Rotation CurrentRotation;
 	Rotation TargetRotation;
