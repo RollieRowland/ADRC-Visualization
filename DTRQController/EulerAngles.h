@@ -1,9 +1,9 @@
 #pragma once
 
-#include <EulerConstants.h>
-#include <EulerOrder.h>
-#include <Mathematics.h>
-#include <Vector.h>
+#include "EulerConstants.h"
+#include "EulerOrder.h"
+#include "Mathematics.h"
+#include "Vector.h"
 
 typedef struct EulerAngles {
 public:

@@ -1,6 +1,6 @@
-#include <Quadcopter.h>
+#include "Quadcopter.h"
 
-Quadcopter::Quadcopter(bool simulation, double armLength, double armAngle, double dT) {
+Quadcopter::Quadcopter(bool simulation, double armLength, double armAngle, double dT, VectorFeedbackController *pos, VectorFeedbackController *rot) {
 	std::cout << "DTRQ Controller Initializing." << std::endl;
 
 	this->simulation = simulation;
@@ -20,11 +20,24 @@ Quadcopter::Quadcopter(bool simulation, double armLength, double armAngle, doubl
 	this->CurrentRotation = Rotation(Quaternion(1, 0, 0, 0));
 	this->TargetRotation = Rotation(Quaternion(1, 0, 0, 0));
 
+	this->positionController = pos;
+	this->rotationController = rot;
+
 	std::cout << "Calculating Quadcopter Arm Positions." << std::endl;
 
 	CalculateArmPositions(armLength, armAngle);
 
 	std::cout << "DTRQ Initialized, ready for commands." << std::endl;
+}
+
+Quadcopter::~Quadcopter() {
+	delete positionController;
+	delete rotationController;
+
+	delete TB;
+	delete TC;
+	delete TD;
+	delete TE;
 }
 
 void Quadcopter::CalculateArmPositions(double armLength, double armAngle) {
@@ -45,8 +58,8 @@ void Quadcopter::CalculateCombinedThrustVector() {
 	//Omega = 2 * (qt - qc) * qc^-1 / dt -> only bivector quantity, real value is disregarded
 	Vector3D change = (2 * (TargetRotation.GetQuaternion() - CurrentRotation.GetQuaternion()) * CurrentRotation.GetQuaternion().Conjugate() / dT).GetBiVector();
 
-	Vector3D rotationOutput = rotationController.Calculate(Vector3D(0, 0, 0), change, dT);
-	Vector3D positionOutput = positionController.Calculate(Vector3D(0, 0, 0), CurrentPosition.Subtract(TargetPosition), dT);
+	Vector3D rotationOutput = rotationController->Calculate(Vector3D(0, 0, 0), change, dT);
+	Vector3D positionOutput = positionController->Calculate(Vector3D(0, 0, 0), CurrentPosition.Subtract(TargetPosition), dT);
 
 	positionOutput = positionOutput.Constrain(Vector3D(-30, -100, -30), Vector3D(30, 100, 30));
 	rotationOutput = rotationOutput.Constrain(-30, 30);
@@ -74,6 +87,16 @@ void Quadcopter::CalculateCombinedThrustVector() {
 	TC->SetThrusterOutputs(thrusterOutputC.Add(positionOutput));
 	TD->SetThrusterOutputs(thrusterOutputD.Add(positionOutput));
 	TE->SetThrusterOutputs(thrusterOutputE.Add(positionOutput));
+}
+
+void Quadcopter::SetCurrent(Vector3D position, Rotation rotation) {
+	CurrentPosition = position;
+	CurrentRotation = rotation;
+
+	TB->CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TB->ThrusterOffset).Add(CurrentPosition);
+	TC->CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TC->ThrusterOffset).Add(CurrentPosition);
+	TD->CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TD->ThrusterOffset).Add(CurrentPosition);
+	TE->CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TE->ThrusterOffset).Add(CurrentPosition);
 }
 
 void Quadcopter::SetTarget(Vector3D position, Rotation rotation) {
@@ -181,7 +204,7 @@ void Quadcopter::EstimateRotation() {
 	currentAngularAcceleration = Vector3D::DegreesToRadians(currentAngularAcceleration);
 	currentAngularVelocity = currentAngularVelocity + currentAngularAcceleration * dT - dragForce * dT;
 
-	Quaternion angularRotation = Quaternion(0.5 * dT * currentAngularVelocity);
+	Quaternion angularRotation = Quaternion(currentAngularVelocity * 0.5 * dT);
 
 	CurrentRotation = Rotation((CurrentRotation.GetQuaternion() + angularRotation * CurrentRotation.GetQuaternion()).UnitQuaternion());
 }
@@ -234,16 +257,6 @@ void Quadcopter::CalculateGimbalLockedMotion(Vector3D &positionControl, Vector3D
 
 	positionControl.X *= fadeOut;
 	positionControl.Z *= fadeOut;
-}
-
-void Quadcopter::GetCurrent() {
-	//CurrentPosition = mpu.GetCurrentPosition();
-	//CurrentRotation = mpu.GetCurrentRotation();
-
-	TB->CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TB->ThrusterOffset).Add(CurrentPosition);
-	TC->CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TC->ThrusterOffset).Add(CurrentPosition);
-	TD->CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TD->ThrusterOffset).Add(CurrentPosition);
-	TE->CurrentPosition = CurrentRotation.GetQuaternion().RotateVector(TE->ThrusterOffset).Add(CurrentPosition);
 }
 
 Quaternion Quadcopter::CalculateRotationOffset() {

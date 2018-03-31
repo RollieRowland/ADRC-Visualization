@@ -136,7 +136,6 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mathematics.cpp" />
     <ClCompile Include="Motor.cpp" />
-    <ClCompile Include="MPU6050.cpp" />
     <ClCompile Include="NonlinearCombiner.cpp" />
     <ClCompile Include="PID.cpp" />
     <ClCompile Include="Quadcopter.cpp" />
@@ -166,7 +165,6 @@
     <ClInclude Include="KalmanFilter.h" />
     <ClInclude Include="Mathematics.h" />
     <ClInclude Include="Motor.h" />
-    <ClInclude Include="MPU6050.h" />
     <ClInclude Include="NonlinearCombiner.h" />
     <ClInclude Include="PID.h" />
     <ClInclude Include="Quadcopter.h" />

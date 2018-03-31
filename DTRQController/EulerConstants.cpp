@@ -1,4 +1,4 @@
-#include <EulerConstants.h>
+#include "EulerConstants.h"
 
 //Static frame of reference, inertial reference frame
 EulerOrder EulerConstants::EulerOrderXYZS = EulerOrder(EulerOrder::Axis::X, EulerOrder::Parity::Even, EulerOrder::AxisRepetition::No, EulerOrder::AxisFrame::Static, Vector3D(0, 1, 2));

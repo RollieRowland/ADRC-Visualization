@@ -1,6 +1,6 @@
 #pragma once
 
-#include <EulerOrder.h>
+#include "EulerOrder.h"
 
 typedef struct EulerConstants {
 	//Static frame of reference, inertial reference frame

@@ -1,15 +1,7 @@
-#include <Motor.h>
+#include "Motor.h"
 
 Motor::Motor() {
 	output = 0;
-}
-
-void Motor::SetPWM() {
-	
-}
-
-bool Motor::CheckESC() {
-	return true;
 }
 
 void Motor::SetOutput(double value) {

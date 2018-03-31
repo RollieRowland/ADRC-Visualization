@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{a6b785de-24d3-4584-b14b-3a5da4b5951d}</ProjectGuid>
+    <Keyword>Linux</Keyword>
+    <RootNamespace>DTRQArmController</RootNamespace>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <ApplicationType>Linux</ApplicationType>
+    <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform>Raspberry</TargetLinuxPlatform>
+    <LinuxProjectType>{8748239F-558C-44D1-944B-07B09C35B330}</LinuxProjectType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <Link>
+      <LibraryDependencies>wiringPi</LibraryDependencies>
+    </Link>
+    <RemotePostBuildEvent>
+      <Command>gpio export 17 out</Command>
+      <Message>export pin 17 using the gpio utility so that we can execute the blink program without sudo</Message>
+    </RemotePostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <Link>
+      <LibraryDependencies>wiringPi</LibraryDependencies>
+    </Link>
+    <RemotePostBuildEvent>
+      <Command>gpio export 17 out</Command>
+      <Message>export pin 17 using the gpio utility so that we can execute the blink program without sudo</Message>
+    </RemotePostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\DTRQController\ADRC.cpp" />
+    <ClCompile Include="..\DTRQController\AxisAngle.cpp" />
+    <ClCompile Include="..\DTRQController\CriticallyDampedSpring.cpp" />
+    <ClCompile Include="..\DTRQController\DirectionAngle.cpp" />
+    <ClCompile Include="..\DTRQController\EulerAngles.cpp" />
+    <ClCompile Include="..\DTRQController\EulerConstants.cpp" />
+    <ClCompile Include="..\DTRQController\EulerOrder.cpp" />
+    <ClCompile Include="..\DTRQController\ExtendedStateObserver.cpp" />
+    <ClCompile Include="..\DTRQController\HMatrix.cpp" />
+    <ClCompile Include="..\DTRQController\KalmanFilter.cpp" />
+    <ClCompile Include="..\DTRQController\Mathematics.cpp" />
+    <ClCompile Include="..\DTRQController\Motor.cpp" />
+    <ClCompile Include="..\DTRQController\NonlinearCombiner.cpp" />
+    <ClCompile Include="..\DTRQController\PID.cpp" />
+    <ClCompile Include="..\DTRQController\Quadcopter.cpp" />
+    <ClCompile Include="..\DTRQController\Quaternion.cpp" />
+    <ClCompile Include="..\DTRQController\Rotation.cpp" />
+    <ClCompile Include="..\DTRQController\RotationMatrix.cpp" />
+    <ClCompile Include="..\DTRQController\Servo.cpp" />
+    <ClCompile Include="..\DTRQController\Thruster.cpp" />
+    <ClCompile Include="..\DTRQController\TriangleWaveFader.cpp" />
+    <ClCompile Include="..\DTRQController\Vector.cpp" />
+    <ClCompile Include="..\DTRQController\VectorFeedbackController.cpp" />
+    <ClCompile Include="..\DTRQController\VectorKalmanFilter.cpp" />
+    <ClCompile Include="..\DTRQController\YawPitchRoll.cpp" />
+    <ClCompile Include="bcm2835.c" />
+    <ClCompile Include="I2Cdev.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MPU6050.cpp" />
+    <ClCompile Include="MPU6050_example_1.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\DTRQController\ADRC.h" />
+    <ClInclude Include="..\DTRQController\AxisAngle.h" />
+    <ClInclude Include="..\DTRQController\CriticallyDampedSpring.h" />
+    <ClInclude Include="..\DTRQController\DirectionAngle.h" />
+    <ClInclude Include="..\DTRQController\EulerAngles.h" />
+    <ClInclude Include="..\DTRQController\EulerConstants.h" />
+    <ClInclude Include="..\DTRQController\EulerOrder.h" />
+    <ClInclude Include="..\DTRQController\ExtendedStateObserver.h" />
+    <ClInclude Include="..\DTRQController\FeedbackController.h" />
+    <ClInclude Include="..\DTRQController\HMatrix.h" />
+    <ClInclude Include="..\DTRQController\KalmanFilter.h" />
+    <ClInclude Include="..\DTRQController\Mathematics.h" />
+    <ClInclude Include="..\DTRQController\Motor.h" />
+    <ClInclude Include="..\DTRQController\NonlinearCombiner.h" />
+    <ClInclude Include="..\DTRQController\PID.h" />
+    <ClInclude Include="..\DTRQController\Quadcopter.h" />
+    <ClInclude Include="..\DTRQController\Quaternion.h" />
+    <ClInclude Include="..\DTRQController\Rotation.h" />
+    <ClInclude Include="..\DTRQController\RotationMatrix.h" />
+    <ClInclude Include="..\DTRQController\Servo.h" />
+    <ClInclude Include="..\DTRQController\Thruster.h" />
+    <ClInclude Include="..\DTRQController\TriangleWaveFader.h" />
+    <ClInclude Include="..\DTRQController\Vector.h" />
+    <ClInclude Include="..\DTRQController\VectorFeedbackController.h" />
+    <ClInclude Include="..\DTRQController\VectorKalmanFilter.h" />
+    <ClInclude Include="..\DTRQController\YawPitchRoll.h" />
+    <ClInclude Include="bcm2835.h" />
+    <ClInclude Include="I2Cdev.h" />
+    <ClInclude Include="MPU6050.h" />
+  </ItemGroup>
+  <ItemDefinitionGroup />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

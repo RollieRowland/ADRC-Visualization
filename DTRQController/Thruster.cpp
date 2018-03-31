@@ -1,4 +1,4 @@
-#include <Thruster.h>
+#include "Thruster.h"
 
 Thruster::Thruster(Vector3D thrusterOffset, std::string name, bool simulation, double dT) {
 	this->ThrusterOffset = thrusterOffset;
@@ -48,8 +48,6 @@ void Thruster::SetThrusterOutputs(Vector3D output) {
 	output.Y = disable ? 0 : output.Y;
 	output.Z = disable ? 0 : output.Z;
 
-	//output.X = 0;
-
 	//Sets current rotation of thruster for use in the visualization of the quad
 	CurrentRotation = Vector3D(-outerJoint.GetAngle(), 0, -innerJoint.GetAngle());
 
@@ -67,8 +65,9 @@ void Thruster::SetThrusterOutputs(Vector3D output) {
 }
 
 bool Thruster::CheckIfDisabled() {
-	//setDisabled if dshot
-	return rotor.CheckESC();
+	disable = false;
+
+	return true;
 }
 
 bool Thruster::IsDisabled() {

@@ -42,9 +42,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MPU6050.cpp">
-      <Filter>Source Files\Quadcopter</Filter>
-    </ClCompile>
     <ClCompile Include="Motor.cpp">
       <Filter>Source Files\Quadcopter</Filter>
     </ClCompile>
@@ -132,9 +129,6 @@
       <Filter>Header Files\Quadcopter</Filter>
     </ClInclude>
     <ClInclude Include="Motor.h">
-      <Filter>Header Files\Quadcopter</Filter>
-    </ClInclude>
-    <ClInclude Include="MPU6050.h">
       <Filter>Header Files\Quadcopter</Filter>
     </ClInclude>
     <ClInclude Include="Quaternion.h">

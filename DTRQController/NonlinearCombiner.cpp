@@ -1,4 +1,4 @@
-#include <NonlinearCombiner.h>
+#include "NonlinearCombiner.h"
 
 NonlinearCombiner::NonlinearCombiner() {
 	this->amplificationCoefficient = 1;

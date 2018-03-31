@@ -1,4 +1,4 @@
-#include <EulerOrder.h>
+#include "EulerOrder.h"
 
 EulerOrder::EulerOrder() {
 	//XYZ static/inertial frame of reference

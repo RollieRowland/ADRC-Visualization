@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Mathematics.h>
+#include "Mathematics.h"
 
 class TriangleWaveFader {
 private:

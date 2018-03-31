@@ -1,4 +1,4 @@
-#include <TriangleWaveFader.h>
+#include "TriangleWaveFader.h"
 
 TriangleWaveFader::TriangleWaveFader() {
 	this->curvature = 1;

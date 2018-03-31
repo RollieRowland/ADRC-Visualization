@@ -1,4 +1,4 @@
-#include <CriticallyDampedSpring.h>
+#include "CriticallyDampedSpring.h"
 
 CriticallyDampedSpring::CriticallyDampedSpring(double dT, double springConstant, std::string name) {
 	this->dT = dT;

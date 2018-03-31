@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\DTRQController\ADRC.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\AxisAngle.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\CriticallyDampedSpring.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\DirectionAngle.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\EulerAngles.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\EulerConstants.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\EulerOrder.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\ExtendedStateObserver.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\HMatrix.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\KalmanFilter.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\Mathematics.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\Motor.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\NonlinearCombiner.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\PID.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\Quadcopter.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\Quaternion.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\Rotation.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\RotationMatrix.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\Servo.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\Thruster.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\TriangleWaveFader.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\Vector.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\VectorFeedbackController.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\VectorKalmanFilter.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\YawPitchRoll.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="bcm2835.c">
+      <Filter>Hardware Control\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="I2Cdev.cpp">
+      <Filter>Hardware Control\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MPU6050.cpp">
+      <Filter>Hardware Control\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MPU6050_example_1.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Include Files">
+      <UniqueIdentifier>{2192efa3-224f-490e-9f69-40b30c1874e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include Files\Source Files">
+      <UniqueIdentifier>{cbac0dec-d534-4413-a60c-c0857053144d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include Files\Header Files">
+      <UniqueIdentifier>{c2d6c6aa-d21b-45da-a128-7b72b7b001e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hardware Control">
+      <UniqueIdentifier>{19ea3d71-ddfc-49da-8adc-f9eda95f233a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hardware Control\Header Files">
+      <UniqueIdentifier>{e402c402-da3a-4e28-a155-f2ad5b75b848}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Hardware Control\Source Files">
+      <UniqueIdentifier>{6945308e-1732-43d1-8ee2-999025207d88}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\DTRQController\ADRC.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\AxisAngle.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\CriticallyDampedSpring.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\DirectionAngle.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\EulerAngles.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\EulerConstants.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\EulerOrder.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\FeedbackController.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\ExtendedStateObserver.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\HMatrix.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\KalmanFilter.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\Mathematics.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\Motor.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\NonlinearCombiner.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\PID.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\Quadcopter.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\Quaternion.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\Rotation.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\RotationMatrix.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\Servo.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\Thruster.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\TriangleWaveFader.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\Vector.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\VectorFeedbackController.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\VectorKalmanFilter.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\YawPitchRoll.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bcm2835.h">
+      <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MPU6050.h">
+      <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="I2Cdev.h">
+      <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

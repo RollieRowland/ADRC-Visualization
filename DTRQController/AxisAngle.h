@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Mathematics.h>
-#include <Vector.h>
+#include "Mathematics.h"
+#include "Vector.h"
 
 typedef struct AxisAngle {
 public:

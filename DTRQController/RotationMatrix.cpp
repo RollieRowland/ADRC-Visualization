@@ -1,4 +1,4 @@
-#include <RotationMatrix.h>
+#include "RotationMatrix.h"
 
 RotationMatrix::RotationMatrix(Vector3D axes) {
 	XAxis = Vector3D(axes.X, axes.X, axes.X);

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <EulerAngles.h>
-#include <EulerOrder.h>
-#include <Mathematics.h>
+#include "EulerAngles.h"
+#include "EulerOrder.h"
+#include "Mathematics.h"
 
 typedef struct HMatrix {
 public:

@@ -1,11 +1,7 @@
-#include <Servo.h>
+#include "Servo.h"
 
 Servo::Servo() {
 	angle = 0;
-}
-
-void Servo::SetPWM() {
-
 }
 
 void Servo::SetAngle(double value) {
