@@ -23,6 +23,7 @@ private:
 	HMatrix EulerAnglesToHierarchicalMatrix(EulerAngles eulerAngles);
 	Quaternion QuaternionFromDirectionVectors(Vector3D initial, Vector3D target);
 	Quaternion YawPitchRollToQuaternion(YawPitchRoll ypr);
+
 public:
 	Rotation();
 	Rotation(Quaternion quaternion);
@@ -41,4 +42,5 @@ public:
 	EulerAngles GetEulerAngles(EulerOrder order);
 	HMatrix GetHierarchicalMatrix();
 	YawPitchRoll GetYawPitchRoll();
+
 };

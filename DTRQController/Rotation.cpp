@@ -248,7 +248,8 @@ EulerAngles Rotation::HierarchicalMatrixToEulerAngles(HMatrix hM, EulerOrder ord
 
 HMatrix Rotation::EulerAnglesToHierarchicalMatrix(EulerAngles eulerAngles) {
 	HMatrix hM = HMatrix();
-	double sx, sy, sz, cx, cy, cz, cc, cs, sc, ss; Vector3D p = eulerAngles.Order.Permutation;
+	double sx, sy, sz, cx, cy, cz, cc, cs, sc, ss; 
+	Vector3D p = eulerAngles.Order.Permutation;
 
 	eulerAngles.Angles.X = Mathematics::DegreesToRadians(eulerAngles.Angles.X);
 	eulerAngles.Angles.Y = Mathematics::DegreesToRadians(eulerAngles.Angles.Y);
@@ -282,17 +283,15 @@ HMatrix Rotation::EulerAnglesToHierarchicalMatrix(EulerAngles eulerAngles) {
 
 	if (eulerAngles.Order.InitialAxisRepetition == EulerOrder::AxisRepetition::Yes)
 	{
-		hM(p.X, p.X) = cy; hM(p.X, p.Y) = sy * sx; hM(p.X, p.Z) = sy * cx; hM(0, 3) = 0;
-		hM(p.Y, p.X) = sy * sz; hM(p.Y, p.Y) = -cy * ss + cc; hM(p.Y, p.Z) = -cy * cs - sc; hM(1, 3) = 0;
-		hM(p.Z, p.X) = -sy * cz; hM(p.Z, p.Y) = cy * sc + cs; hM(p.Z, p.Z) = cy * cc - ss; hM(2, 3) = 0;
-		hM(3, 0) = 0; hM(3, 1) = 0; hM(3, 2) = 0; hM(3, 3) = 1;
+		hM(p.X, p.X) = cy;       hM(p.X, p.Y) = sy * sx;       hM(p.X, p.Z) = sy * cx;
+		hM(p.Y, p.X) = sy * sz;  hM(p.Y, p.Y) = -cy * ss + cc; hM(p.Y, p.Z) = -cy * cs - sc;
+		hM(p.Z, p.X) = -sy * cz; hM(p.Z, p.Y) = cy * sc + cs;  hM(p.Z, p.Z) = cy * cc - ss;
 	}
 	else
 	{
-		hM(p.X, p.X) = cy * cz; hM(p.X, p.Y) = sy * sc - cs; hM(p.X, p.Z) = sy * cc + ss; hM(0, 3) = 0;
-		hM(p.Y, p.X) = cy * sz; hM(p.Y, p.Y) = sy * ss + cc; hM(p.Y, p.Z) = sy * cs - sc; hM(1, 3) = 0;
-		hM(p.Z, p.X) = -sy; hM(p.Z, p.Y) = cy * sx; hM(p.Z, p.Z) = cy * cx; hM(2, 3) = 0;
-		hM(3, 0) = 0; hM(3, 1) = 0; hM(3, 2) = 0; hM(3, 3) = 1;
+		hM(p.X, p.X) = cy * cz;  hM(p.X, p.Y) = sy * sc - cs;  hM(p.X, p.Z) = sy * cc + ss;
+		hM(p.Y, p.X) = cy * sz;  hM(p.Y, p.Y) = sy * ss + cc;  hM(p.Y, p.Z) = sy * cs - sc;
+		hM(p.Z, p.X) = -sy;      hM(p.Z, p.Y) = cy * sx;       hM(p.Z, p.Z) = cy * cx;
 	}
 
 	return hM;

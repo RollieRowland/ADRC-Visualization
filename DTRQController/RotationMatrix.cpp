@@ -90,41 +90,52 @@ void RotationMatrix::RotateZ(double theta) {
 	ZAxis = Vector3D(0,  0, 1).Multiply(ZAxis);
 }
 
-void RotationMatrix::Multiply(double d) {
-	XAxis = XAxis.Multiply(d);
-	YAxis = YAxis.Multiply(d);
-	ZAxis = ZAxis.Multiply(d);
+RotationMatrix RotationMatrix::Multiply(double d) {
+	return RotationMatrix {
+		XAxis.Multiply(d),
+		YAxis.Multiply(d),
+		ZAxis.Multiply(d)
+	};
 }
 
-void RotationMatrix::Multiply(RotationMatrix rM) {
-	XAxis = XAxis.Multiply(rM.XAxis);
-	YAxis = YAxis.Multiply(rM.YAxis);
-	ZAxis = ZAxis.Multiply(rM.ZAxis);
+RotationMatrix RotationMatrix::Multiply(RotationMatrix rM) {
+	return RotationMatrix {
+		XAxis.Multiply(rM.XAxis),
+		YAxis.Multiply(rM.YAxis),
+		ZAxis.Multiply(rM.ZAxis)
+	};
 }
 
 void RotationMatrix::RotateRelative(RotationMatrix rM) {
 	Multiply(rM);
 }
 
-void RotationMatrix::Normalize() {
+RotationMatrix RotationMatrix::Normalize() {
 	Vector3D vz = Vector3D::CrossProduct(XAxis, YAxis);
 	Vector3D vy = Vector3D::CrossProduct(vz, XAxis);
 
-	XAxis = XAxis.UnitSphere();
-	YAxis = vy.UnitSphere();
-	ZAxis = vz.UnitSphere();
+	return RotationMatrix {
+		XAxis.UnitSphere(),
+		vy.UnitSphere(),
+		vz.UnitSphere()
+	};
 }
 
-void RotationMatrix::Transpose() {
+RotationMatrix RotationMatrix::Transpose() {
 	XAxis = Vector3D(XAxis.X, YAxis.X, ZAxis.X);
 	YAxis = Vector3D(XAxis.Y, YAxis.Y, ZAxis.Y);
 	ZAxis = Vector3D(XAxis.Z, YAxis.Z, ZAxis.Z);
 }
 
-void RotationMatrix::Inverse() {
-	XAxis = Vector3D::CrossProduct(YAxis, ZAxis);
-	YAxis = Vector3D::CrossProduct(ZAxis, XAxis);
-	ZAxis = Vector3D::CrossProduct(XAxis, YAxis);
+RotationMatrix RotationMatrix::Inverse() {
+
+	RotationMatrix rM = RotationMatrix{
+		Vector3D::CrossProduct(YAxis, ZAxis),
+		Vector3D::CrossProduct(ZAxis, XAxis),
+		Vector3D::CrossProduct(XAxis, YAxis)
+	};
+	
+	rM = Transpose().Multiply(1 / rM.Determinant());
 
 	Transpose();
 	Multiply(1 / Determinant());
@@ -136,8 +147,8 @@ bool RotationMatrix::IsEqual(RotationMatrix rM) {
 
 double RotationMatrix::Determinant() {
 	return XAxis.X * (YAxis.Y * ZAxis.Z - ZAxis.Y * YAxis.Z) -
-		YAxis.X * (ZAxis.Z * XAxis.Y - ZAxis.Y * XAxis.Z) +
-		ZAxis.X * (XAxis.Y * YAxis.Z - YAxis.Y * XAxis.Z);
+		   YAxis.X * (ZAxis.Z * XAxis.Y - ZAxis.Y * XAxis.Z) +
+		   ZAxis.X * (XAxis.Y * YAxis.Z - YAxis.Y * XAxis.Z);
 }
 
 Vector3D RotationMatrix::RotateVector(Vector3D rotate, Vector3D coordinates) {
@@ -145,7 +156,6 @@ Vector3D RotationMatrix::RotateVector(Vector3D rotate, Vector3D coordinates) {
 	RotationMatrix matrix = RotationMatrix(coordinates);
 
 	matrix.Rotate(rotate);
-
 
 	if (rotate.X == 0 && rotate.Y == 0 && rotate.Z == 0) {
 		return coordinates;

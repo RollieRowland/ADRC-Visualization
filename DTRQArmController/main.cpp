@@ -1,6 +1,4 @@
-#include <wiringPi.h>
 
-#define	LED	17
 
 int main(void)
 {
@@ -29,16 +27,13 @@ int main(void)
 	//END LOOP
 	//////////
 
-	wiringPiSetupSys();
+	//abstract i2c device
+	//mpu 6050 derived from i2c device
+	//mpu 9    derived from i2c device
+	//magnetometer derived from i2c device
+	//multiplexer contains multiple abstract i2c device instances (up to 8)
+	//
+	//
 
-	pinMode(LED, OUTPUT);
-
-	while (true)
-	{
-		digitalWrite(LED, HIGH);  // On
-		delay(500); // ms
-		digitalWrite(LED, LOW);	  // Off
-		delay(500);
-	}
 	return 0;
 }

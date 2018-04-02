@@ -77,7 +77,7 @@ void Quadcopter::CalculateCombinedThrustVector() {
 
 	positionOutput = CalculateRotationOffset().RotateVector(positionOutput);
 
-	std::cout << CurrentRotation.GetQuaternion().ToString() << " " << CurrentRotation.GetDirectionAngle().ToString() << " " << hoverAngles.ToString() << std::endl;
+	//std::cout << CurrentRotation.GetQuaternion().ToString() << " " << CurrentRotation.GetDirectionAngle().ToString() << " " << hoverAngles.ToString() << std::endl;
 
 	//Due to XYZ permutation order of Euler angle
 	positionOutput.X = positionOutput.X + hoverAngles.Z;//Adjust main joint to rotation
