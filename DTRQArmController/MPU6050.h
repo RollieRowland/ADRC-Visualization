@@ -810,8 +810,7 @@ class MPU6050 {
         bool writeMemoryBlock(const uint8_t *data, uint16_t dataSize, uint8_t bank=0, uint8_t address=0, bool verify=true, bool useProgMem=false);
         bool writeProgMemoryBlock(const uint8_t *data, uint16_t dataSize, uint8_t bank=0, uint8_t address=0, bool verify=true);
 
-        bool writeDMPConfigurationSet(const uint8_t *data, uint16_t dataSize, bool useProgMem=false);
-        bool writeProgDMPConfigurationSet(const uint8_t *data, uint16_t dataSize);
+        bool writeDMPConfigurationSet(const uint8_t *data, uint16_t dataSize);
 
         // DMP_CFG_1 register
         uint8_t getDMPConfig1();

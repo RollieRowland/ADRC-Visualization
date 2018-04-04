@@ -2,7 +2,7 @@
 #include "stdafx.h"
 
 #include <SVector.h>
-#include <SDirAngle.h>
+#include <SQuaternion.h>
 #include <SThrust.h>
 
 namespace DTRQCSInterface {

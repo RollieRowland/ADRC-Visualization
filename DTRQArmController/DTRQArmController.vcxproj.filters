@@ -87,6 +87,9 @@
       <Filter>Hardware Control\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MPU6050_example_1.cpp" />
+    <ClCompile Include="I2CController.cpp">
+      <Filter>Hardware Control\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include Files">
@@ -194,6 +197,9 @@
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="I2Cdev.h">
+      <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="I2CController.h">
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

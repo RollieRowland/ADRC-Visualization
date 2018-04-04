@@ -1,7 +1,7 @@
 #pragma once
 #include "stdafx.h"
 
-#include <DirectionAngle.h>
+#include <Quaternion.h>
 
 #include <SVector.h>
 

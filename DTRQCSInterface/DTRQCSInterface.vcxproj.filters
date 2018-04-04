@@ -27,13 +27,13 @@
     <ClInclude Include="SVector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SDirAngle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SQuad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SThrust.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SQuaternion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
