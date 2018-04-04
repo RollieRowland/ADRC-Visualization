@@ -1,7 +1,7 @@
 #pragma once
 
 #include "bcm2835.h"
-#include "MPU6050.h"
+#include "MPU6050_6Axis_MotionApps20.h"
 #include <stdio.h>
 
 class I2CController {

@@ -202,5 +202,8 @@
     <ClInclude Include="I2CController.h">
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MPU6050_6Axis_MotionApps20.h">
+      <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -114,6 +114,7 @@
     <ClInclude Include="I2Cdev.h" />
     <ClInclude Include="MPU6050.h" />
     <ClInclude Include="I2CController.h" />
+    <ClInclude Include="MPU6050_6Axis_MotionApps20.h" />
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

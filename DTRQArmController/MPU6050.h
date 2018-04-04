@@ -825,7 +825,7 @@ class MPU6050 {
             uint8_t *dmpPacketBuffer;
             uint16_t dmpPacketSize;
 
-            uint8_t dmpInitialize();
+            uint8_t dmpInitialize(int addr);
             bool dmpPacketAvailable();
 
             uint8_t dmpSetFIFORate(uint8_t fifoRate);

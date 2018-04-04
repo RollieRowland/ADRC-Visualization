@@ -1,7 +1,16 @@
 #include "I2CController.h"
 
 I2CController::I2CController() {
+	SelectDevice(Main);
+	mpuMain = new MPU6050(0x70);
+	mpuMain->testConnection();
+	mpuMain->initialize();
+	mpuMain->dmpin
 
+	mpuB = new MPU6050(0x70);
+	mpuC = new MPU6050(0x70);
+	mpuD = new MPU6050(0x70);
+	mpuE = new MPU6050(0x70);
 }
 
 void I2CController::SelectDevice(MPU mpu) {
