@@ -111,12 +111,17 @@
     <ClInclude Include="..\DTRQController\VectorKalmanFilter.h" />
     <ClInclude Include="..\DTRQController\YawPitchRoll.h" />
     <ClInclude Include="bcm2835.h" />
+    <ClInclude Include="helper_3dmath.h" />
     <ClInclude Include="I2Cdev.h" />
     <ClInclude Include="MPU6050.h" />
     <ClInclude Include="I2CController.h" />
     <ClInclude Include="MPU6050_6Axis_MotionApps20.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQController;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>

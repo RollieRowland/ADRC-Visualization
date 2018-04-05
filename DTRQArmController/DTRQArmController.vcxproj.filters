@@ -205,5 +205,8 @@
     <ClInclude Include="MPU6050_6Axis_MotionApps20.h">
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="helper_3dmath.h">
+      <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

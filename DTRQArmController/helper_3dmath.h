@@ -32,42 +32,42 @@ THE SOFTWARE.
 #ifndef _HELPER_3DMATH_H_
 #define _HELPER_3DMATH_H_
 
-class Quaternion {
+class QuaternionFloat {
     public:
         float w;
         float x;
         float y;
         float z;
         
-        Quaternion() {
+		QuaternionFloat() {
             w = 1.0f;
             x = 0.0f;
             y = 0.0f;
             z = 0.0f;
         }
         
-        Quaternion(float nw, float nx, float ny, float nz) {
+		QuaternionFloat(float nw, float nx, float ny, float nz) {
             w = nw;
             x = nx;
             y = ny;
             z = nz;
         }
 
-        Quaternion getProduct(Quaternion q) {
+		QuaternionFloat getProduct(QuaternionFloat q) {
             // Quaternion multiplication is defined by:
             //     (Q1 * Q2).w = (w1w2 - x1x2 - y1y2 - z1z2)
             //     (Q1 * Q2).x = (w1x2 + x1w2 + y1z2 - z1y2)
             //     (Q1 * Q2).y = (w1y2 - x1z2 + y1w2 + z1x2)
             //     (Q1 * Q2).z = (w1z2 + x1y2 - y1x2 + z1w2
-            return Quaternion(
+            return QuaternionFloat(
                 w*q.w - x*q.x - y*q.y - z*q.z,  // new w
                 w*q.x + x*q.w + y*q.z - z*q.y,  // new x
                 w*q.y - x*q.z + y*q.w + z*q.x,  // new y
                 w*q.z + x*q.y - y*q.x + z*q.w); // new z
         }
 
-        Quaternion getConjugate() {
-            return Quaternion(w, -x, -y, -z);
+		QuaternionFloat getConjugate() {
+            return QuaternionFloat(w, -x, -y, -z);
         }
         
         float getMagnitude() {
@@ -82,8 +82,8 @@ class Quaternion {
             z /= m;
         }
         
-        Quaternion getNormalized() {
-            Quaternion r(w, x, y, z);
+		QuaternionFloat getNormalized() {
+			QuaternionFloat r(w, x, y, z);
             r.normalize();
             return r;
         }
@@ -124,7 +124,7 @@ class VectorInt16 {
             return r;
         }
         
-        void rotate(Quaternion *q) {
+        void rotate(QuaternionFloat *q) {
             // http://www.cprogramming.com/tutorial/3d/quaternions.html
             // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/transforms/index.htm
             // http://content.gpwiki.org/index.php/OpenGL:Tutorials:Using_Quaternions_to_represent_rotation
@@ -135,7 +135,7 @@ class VectorInt16 {
             // - q is the orientation quaternion
             // - P_in is the input vector (a*aReal)
             // - conj(q) is the conjugate of the orientation quaternion (q=[w,x,y,z], q*=[w,-x,-y,-z])
-            Quaternion p(0, x, y, z);
+			QuaternionFloat p(0, x, y, z);
 
             // quaternion multiplication: q * p, stored back in p
             p = q -> getProduct(p);
@@ -149,7 +149,7 @@ class VectorInt16 {
             z = p.z;
         }
 
-        VectorInt16 getRotated(Quaternion *q) {
+        VectorInt16 getRotated(QuaternionFloat *q) {
             VectorInt16 r(x, y, z);
             r.rotate(q);
             return r;
@@ -191,8 +191,8 @@ class VectorFloat {
             return r;
         }
         
-        void rotate(Quaternion *q) {
-            Quaternion p(0, x, y, z);
+        void rotate(QuaternionFloat *q) {
+			QuaternionFloat p(0, x, y, z);
 
             // quaternion multiplication: q * p, stored back in p
             p = q -> getProduct(p);
@@ -206,7 +206,7 @@ class VectorFloat {
             z = p.z;
         }
 
-        VectorFloat getRotated(Quaternion *q) {
+        VectorFloat getRotated(QuaternionFloat *q) {
             VectorFloat r(x, y, z);
             r.rotate(q);
             return r;
