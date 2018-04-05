@@ -125,6 +125,8 @@ RotationMatrix RotationMatrix::Transpose() {
 	XAxis = Vector3D(XAxis.X, YAxis.X, ZAxis.X);
 	YAxis = Vector3D(XAxis.Y, YAxis.Y, ZAxis.Y);
 	ZAxis = Vector3D(XAxis.Z, YAxis.Z, ZAxis.Z);
+
+	return *this;
 }
 
 RotationMatrix RotationMatrix::Inverse() {
@@ -138,7 +140,7 @@ RotationMatrix RotationMatrix::Inverse() {
 	rM = Transpose().Multiply(1 / rM.Determinant());
 
 	Transpose();
-	Multiply(1 / Determinant());
+	return Multiply(1 / Determinant());
 }
 
 bool RotationMatrix::IsEqual(RotationMatrix rM) {

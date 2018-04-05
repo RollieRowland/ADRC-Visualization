@@ -5,20 +5,23 @@
 #include <stdio.h>
 #include <iostream>
 #include "Rotation.h"
+#include "PWMController.h"
 
 class I2CController {
 public:
-	enum MPU {
-		Main,
-		ThrusterB,
-		ThrusterC,
-		ThrusterD,
-		ThrusterE
+	enum Device {
+		MainMPU,
+		ThrusterBMPU,
+		ThrusterCMPU,
+		ThrusterDMPU,
+		ThrusterEMPU,
+		PWMManager
 	};
 
 	//valid inputs: 0 -> 7
 	//open connection, write, end connection
 	I2CController(int addr);
+	~I2CController();
 
 	Quaternion GetMainRotation();
 	Quaternion GetTBRotation();
@@ -31,6 +34,11 @@ public:
 	Vector3D GetTCWorldAcceleration();
 	Vector3D GetTDWorldAcceleration();
 	Vector3D GetTEWorldAcceleration();
+
+	void SetBThrustVector(Vector3D);
+	void SetCThrustVector(Vector3D);
+	void SetDThrustVector(Vector3D);
+	void SetEThrustVector(Vector3D);
 
 private:
 	int address;
@@ -55,10 +63,12 @@ private:
 	Vector3D *TDV;
 	Vector3D *TEV;
 
-	void SelectDevice(MPU mpu);
-	void InitializeMPU(MPU dev, MPU6050 *mpu);
+	PWMController *hPWM;
 
-	Quaternion GetRotation(MPU dev, MPU6050 *mpu);
-	Vector3D GetLinearAcceleration(MPU dev, MPU6050 *mpu);
+	void SelectDevice(Device mpu);
+	void InitializeMPU(Device dev, MPU6050 *mpu);
+
+	Quaternion GetRotation(Device dev, MPU6050 *mpu);
+	Vector3D GetLinearAcceleration(Device dev, MPU6050 *mpu);
 
 };

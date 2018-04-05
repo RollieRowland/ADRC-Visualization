@@ -9,15 +9,39 @@ I2CController::I2CController(int addr) {
 	mpuD = new MPU6050(address);
 	mpuE = new MPU6050(address);
 
-	InitializeMPU(Main, mpuMain);
-	InitializeMPU(ThrusterB, mpuMain);
-	InitializeMPU(ThrusterC, mpuMain);
-	InitializeMPU(ThrusterD, mpuMain);
-	InitializeMPU(ThrusterE, mpuMain);
+	hPWM = new PWMController(500);
+
+	InitializeMPU(MainMPU, mpuMain);
+	InitializeMPU(ThrusterBMPU, mpuMain);
+	InitializeMPU(ThrusterCMPU, mpuMain);
+	InitializeMPU(ThrusterDMPU, mpuMain);
+	InitializeMPU(ThrusterEMPU, mpuMain);
 }
 
-void I2CController::SelectDevice(MPU mpu) {
-	if (mpu == Main) {
+I2CController::~I2CController() {
+	delete mpuMain;
+	delete mpuB;
+	delete mpuC;
+	delete mpuD;
+	delete mpuE;
+
+	delete MQ;
+	delete TBQ;
+	delete TCQ;
+	delete TDQ;
+	delete TEQ;
+
+	delete MV;
+	delete TBV;
+	delete TCV;
+	delete TDV;
+	delete TEV;
+
+	delete hPWM;
+}
+
+void I2CController::SelectDevice(Device mpu) {
+	if (mpu == MainMPU) {
 		int addr = 1 << 0;//1 * 2^i
 		char buf[4];
 
@@ -25,7 +49,7 @@ void I2CController::SelectDevice(MPU mpu) {
 
 		bcm2835_i2c_write(buf, 4);
 	}
-	else if (mpu == ThrusterB) {
+	else if (mpu == ThrusterBMPU) {
 		int addr = 1 << 1;//1 * 2^i
 		char buf[4];
 
@@ -33,7 +57,7 @@ void I2CController::SelectDevice(MPU mpu) {
 
 		bcm2835_i2c_write(buf, 4);
 	}
-	else if (mpu == ThrusterC) {
+	else if (mpu == ThrusterCMPU) {
 		int addr = 1 << 2;//1 * 2^i
 		char buf[4];
 
@@ -41,7 +65,7 @@ void I2CController::SelectDevice(MPU mpu) {
 
 		bcm2835_i2c_write(buf, 4);
 	}
-	else if (mpu == ThrusterD) {
+	else if (mpu == ThrusterDMPU) {
 		int addr = 1 << 3;//1 * 2^i
 		char buf[4];
 
@@ -49,7 +73,7 @@ void I2CController::SelectDevice(MPU mpu) {
 
 		bcm2835_i2c_write(buf, 4);
 	}
-	else if (mpu == ThrusterE) {
+	else if (mpu == ThrusterEMPU) {
 		int addr = 1 << 4;//1 * 2^i
 		char buf[4];
 
@@ -59,7 +83,7 @@ void I2CController::SelectDevice(MPU mpu) {
 	}
 }
 
-void I2CController::InitializeMPU(MPU dev, MPU6050 *mpu) {
+void I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
 	int dmpStatus;
 
 	SelectDevice(dev);
@@ -91,7 +115,7 @@ void I2CController::InitializeMPU(MPU dev, MPU6050 *mpu) {
 	}
 }
 
-Quaternion I2CController::GetRotation(MPU dev, MPU6050 *mpu) {
+Quaternion I2CController::GetRotation(Device dev, MPU6050 *mpu) {
 	SelectDevice(dev);
 
 	int mpuIntStatus = mpu->getIntStatus();
@@ -117,7 +141,7 @@ Quaternion I2CController::GetRotation(MPU dev, MPU6050 *mpu) {
 }
 
 Quaternion I2CController::GetMainRotation() {
-	Quaternion q = GetRotation(Main, mpuMain);
+	Quaternion q = GetRotation(MainMPU, mpuMain);
 
 	if (q.W == -1 && q.X == -1 && q.Y == -1 && q.Z == -1) {
 		return Quaternion(MQ->W, MQ->X, MQ->Y, MQ->Z);
@@ -130,7 +154,7 @@ Quaternion I2CController::GetMainRotation() {
 }
 
 Quaternion I2CController::GetTBRotation() {
-	Quaternion q = GetRotation(ThrusterB, mpuB);
+	Quaternion q = GetRotation(ThrusterBMPU, mpuB);
 
 	if (q.W == -1 && q.X == -1 && q.Y == -1 && q.Z == -1) {
 		return Quaternion(TBQ->W, TBQ->X, TBQ->Y, TBQ->Z);
@@ -143,7 +167,7 @@ Quaternion I2CController::GetTBRotation() {
 }
 
 Quaternion I2CController::GetTCRotation() {
-	Quaternion q = GetRotation(ThrusterC, mpuC);
+	Quaternion q = GetRotation(ThrusterCMPU, mpuC);
 
 	if (q.W == -1 && q.X == -1 && q.Y == -1 && q.Z == -1) {
 		return Quaternion(TCQ->W, TCQ->X, TCQ->Y, TCQ->Z);
@@ -156,7 +180,7 @@ Quaternion I2CController::GetTCRotation() {
 }
 
 Quaternion I2CController::GetTDRotation() {
-	Quaternion q = GetRotation(ThrusterD, mpuD);
+	Quaternion q = GetRotation(ThrusterDMPU, mpuD);
 
 	if (q.W == -1 && q.X == -1 && q.Y == -1 && q.Z == -1) {
 		return Quaternion(TDQ->W, TDQ->X, TDQ->Y, TDQ->Z);
@@ -169,7 +193,7 @@ Quaternion I2CController::GetTDRotation() {
 }
 
 Quaternion I2CController::GetTERotation() {
-	Quaternion q = GetRotation(ThrusterE, mpuE);
+	Quaternion q = GetRotation(ThrusterEMPU, mpuE);
 
 	if (q.W == -1 && q.X == -1 && q.Y == -1 && q.Z == -1) {
 		return Quaternion(TEQ->W, TEQ->X, TEQ->Y, TEQ->Z);
@@ -182,7 +206,7 @@ Quaternion I2CController::GetTERotation() {
 }
 
 
-Vector3D I2CController::GetLinearAcceleration(MPU dev, MPU6050 *mpu) {
+Vector3D I2CController::GetLinearAcceleration(Device dev, MPU6050 *mpu) {
 	SelectDevice(dev);
 
 	int mpuIntStatus = mpu->getIntStatus();
@@ -203,19 +227,19 @@ Vector3D I2CController::GetLinearAcceleration(MPU dev, MPU6050 *mpu) {
 
 		QuaternionFloat q = QuaternionFloat();
 
-		if (dev == Main) {
+		if (dev == MainMPU) {
 			q = QuaternionFloat(MQ->W, MQ->X, MQ->Y, MQ->Z);
 		}
-		else if (dev == ThrusterB) {
+		else if (dev == ThrusterBMPU) {
 			q = QuaternionFloat(TBQ->W, TBQ->X, TBQ->Y, TBQ->Z);
 		}
-		else if (dev == ThrusterC) {
+		else if (dev == ThrusterCMPU) {
 			q = QuaternionFloat(TCQ->W, TCQ->X, TCQ->Y, TCQ->Z);
 		}
-		else if (dev == ThrusterD) {
+		else if (dev == ThrusterDMPU) {
 			q = QuaternionFloat(TDQ->W, TDQ->X, TDQ->Y, TDQ->Z);
 		}
-		else if (dev == ThrusterE) {
+		else if (dev == ThrusterEMPU) {
 			q = QuaternionFloat(TEQ->W, TEQ->X, TEQ->Y, TEQ->Z);
 		}
 
@@ -241,7 +265,7 @@ Vector3D I2CController::GetLinearAcceleration(MPU dev, MPU6050 *mpu) {
 }
 
 Vector3D I2CController::GetMainWorldAcceleration() {
-	Vector3D v = GetLinearAcceleration(Main, mpuMain);
+	Vector3D v = GetLinearAcceleration(MainMPU, mpuMain);
 
 	if (v.X == -1000 && v.Y == -1000 && v.Z == -1000) {
 		return Vector3D(MV->X, MV->Y, MV->Z);
@@ -256,7 +280,7 @@ Vector3D I2CController::GetMainWorldAcceleration() {
 }
 
 Vector3D I2CController::GetTBWorldAcceleration() {
-	Vector3D v = GetLinearAcceleration(ThrusterB, mpuB);
+	Vector3D v = GetLinearAcceleration(ThrusterBMPU, mpuB);
 
 	if (v.X == -1000 && v.Y == -1000 && v.Z == -1000) {
 		return Vector3D(TBV->X, TBV->Y, TBV->Z);
@@ -271,7 +295,7 @@ Vector3D I2CController::GetTBWorldAcceleration() {
 }
 
 Vector3D I2CController::GetTCWorldAcceleration() {
-	Vector3D v = GetLinearAcceleration(ThrusterC, mpuC);
+	Vector3D v = GetLinearAcceleration(ThrusterCMPU, mpuC);
 
 	if (v.X == -1000 && v.Y == -1000 && v.Z == -1000) {
 		return Vector3D(TCV->X, TCV->Y, TCV->Z);
@@ -286,7 +310,7 @@ Vector3D I2CController::GetTCWorldAcceleration() {
 }
 
 Vector3D I2CController::GetTDWorldAcceleration() {
-	Vector3D v = GetLinearAcceleration(ThrusterD, mpuD);
+	Vector3D v = GetLinearAcceleration(ThrusterDMPU, mpuD);
 
 	if (v.X == -1000 && v.Y == -1000 && v.Z == -1000) {
 		return Vector3D(TDV->X, TDV->Y, TDV->Z);
@@ -301,7 +325,7 @@ Vector3D I2CController::GetTDWorldAcceleration() {
 }
 
 Vector3D I2CController::GetTEWorldAcceleration() {
-	Vector3D v = GetLinearAcceleration(ThrusterE, mpuE);
+	Vector3D v = GetLinearAcceleration(ThrusterEMPU, mpuE);
 
 	if (v.X == -1000 && v.Y == -1000 && v.Z == -1000) {
 		return Vector3D(TEV->X, TEV->Y, TEV->Z);
@@ -313,4 +337,28 @@ Vector3D I2CController::GetTEWorldAcceleration() {
 
 		return v;
 	}
+}
+
+void I2CController::SetBThrustVector(Vector3D tV) {
+	hPWM->SetInnerBAngle(tV.X);
+	hPWM->SetRotorBOutput(tV.Y);
+	hPWM->SetOuterBAngle(tV.Z);
+}
+
+void I2CController::SetCThrustVector(Vector3D tV) {
+	hPWM->SetInnerCAngle(tV.X);
+	hPWM->SetRotorCOutput(tV.Y);
+	hPWM->SetOuterCAngle(tV.Z);
+}
+
+void I2CController::SetDThrustVector(Vector3D tV) {
+	hPWM->SetInnerDAngle(tV.X);
+	hPWM->SetRotorDOutput(tV.Y);
+	hPWM->SetOuterDAngle(tV.Z);
+}
+
+void I2CController::SetEThrustVector(Vector3D tV) {
+	hPWM->SetInnerEAngle(tV.X);
+	hPWM->SetRotorEOutput(tV.Y);
+	hPWM->SetOuterEAngle(tV.Z);
 }

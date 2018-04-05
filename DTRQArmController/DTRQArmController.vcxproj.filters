@@ -90,6 +90,9 @@
     <ClCompile Include="I2CController.cpp">
       <Filter>Hardware Control\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PWMController.cpp">
+      <Filter>Hardware Control\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include Files">
@@ -206,6 +209,9 @@
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="helper_3dmath.h">
+      <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PWMController.h">
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

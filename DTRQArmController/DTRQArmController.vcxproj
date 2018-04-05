@@ -82,6 +82,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MPU6050.cpp" />
     <ClCompile Include="MPU6050_example_1.cpp" />
+    <ClCompile Include="PWMController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DTRQController\ADRC.h" />
@@ -116,6 +117,7 @@
     <ClInclude Include="MPU6050.h" />
     <ClInclude Include="I2CController.h" />
     <ClInclude Include="MPU6050_6Axis_MotionApps20.h" />
+    <ClInclude Include="PWMController.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
