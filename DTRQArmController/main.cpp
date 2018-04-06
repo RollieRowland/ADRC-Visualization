@@ -28,7 +28,7 @@ VectorFeedbackController *rot = new VectorFeedbackController{
 
 int main(void) {
 	i2cController = I2CController(0x70);
-	quad = Quadcopter(true, 0.3, 55, 0.05, pos, rot);
+	quad = Quadcopter(false, 0.3, 55, 0.05, pos, rot);
 
 	auto previousTime = std::chrono::system_clock::now();
 
@@ -54,15 +54,6 @@ int main(void) {
 
 		previousTime = std::chrono::system_clock::now();
 	}
-	//calculate dT estimate to be used as a constant - average
-
-	//initialize sensors and wait
-
-	//create quadcopter
-
-	////////////
-	//BEGIN LOOP
-	//read sensors
 
 	//ROTATION
 	//calculate quat from previous servo positions rotation matrix, convert 
@@ -78,14 +69,6 @@ int main(void) {
 	//write outputs
 	//END LOOP
 	//////////
-
-	//abstract i2c device
-	//mpu 6050 derived from i2c device
-	//mpu 9    derived from i2c device
-	//magnetometer derived from i2c device
-	//multiplexer contains multiple abstract i2c device instances (up to 8)
-	//
-	//
 
 	return 0;
 }

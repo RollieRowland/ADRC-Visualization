@@ -16,8 +16,8 @@ void PWMController::SetPWMFrequency(int frequency) {
 }
 
 void PWMController::Reset() {
-	WriteByte(Mode1, 0x00);
-	WriteByte(Mode2, 0x04);
+	WriteByte(Mode1, 0x80);
+	delay(10);
 }
 
 void PWMController::SetPWM(int device, int frequency) {
@@ -34,7 +34,9 @@ void PWMController::WriteByte(uint8_t addr, uint8_t value) {
 	sprintf(val, "%d", value);
 
 	bcm2835_i2c_setSlaveAddress(addr);
+	bcm2835_i2c_begin();
 	bcm2835_i2c_write(val , 1);
+	bcm2835_i2c_end();
 }
 
 

@@ -86,11 +86,13 @@
     <ClCompile Include="MPU6050.cpp">
       <Filter>Hardware Control\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MPU6050_example_1.cpp" />
     <ClCompile Include="I2CController.cpp">
       <Filter>Hardware Control\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PWMController.cpp">
+      <Filter>Hardware Control\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MPU9150.cpp">
       <Filter>Hardware Control\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -212,6 +214,12 @@
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PWMController.h">
+      <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MPU9150.h">
+      <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MPU9150_9Axis_MotionApps41.h">
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

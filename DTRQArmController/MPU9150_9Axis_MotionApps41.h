@@ -334,7 +334,11 @@ const prog_uchar dmpUpdates[MPU9150_DMP_UPDATES_SIZE] PROGMEM = {
     0x00,   0x60,   0x04,   0x00, 0x40, 0x00, 0x00
 };
 
-uint8_t MPU9150::dmpInitialize() {
+int address;
+
+uint8_t MPU9150::dmpInitialize(int addr) {
+	address = addr;
+
     // reset device
     DEBUG_PRINTLN(F("\n\nResetting MPU9150..."));
     reset();
@@ -496,10 +500,10 @@ uint8_t MPU9150::dmpInitialize() {
             writeMemoryBlock(dmpUpdate + 3, dmpUpdate[2], dmpUpdate[0], dmpUpdate[1]);
 
             DEBUG_PRINTLN(F("Disabling all standby flags..."));
-            I2Cdev::writeByte(0x68, MPU9150_RA_PWR_MGMT_2, 0x00);
+            I2Cdev::writeByte(address, MPU9150_RA_PWR_MGMT_2, 0x00);
 
             DEBUG_PRINTLN(F("Setting accelerometer sensitivity to +/- 2g..."));
-            I2Cdev::writeByte(0x68, MPU9150_RA_ACCEL_CONFIG, 0x00);
+            I2Cdev::writeByte(address, MPU9150_RA_ACCEL_CONFIG, 0x00);
 
             DEBUG_PRINTLN(F("Setting motion detection threshold to 2..."));
             setMotionDetectionThreshold(2);
@@ -519,35 +523,35 @@ uint8_t MPU9150::dmpInitialize() {
 
             // setup AK8975 (0x0E) as Slave 0 in read mode
             DEBUG_PRINTLN(F("Setting up AK8975 read slave 0..."));
-            I2Cdev::writeByte(0x68, MPU9150_RA_I2C_SLV0_ADDR, 0x8E);
-            I2Cdev::writeByte(0x68, MPU9150_RA_I2C_SLV0_REG,  0x01);
-            I2Cdev::writeByte(0x68, MPU9150_RA_I2C_SLV0_CTRL, 0xDA);
+            I2Cdev::writeByte(address, MPU9150_RA_I2C_SLV0_ADDR, 0x8E);
+            I2Cdev::writeByte(address, MPU9150_RA_I2C_SLV0_REG,  0x01);
+            I2Cdev::writeByte(address, MPU9150_RA_I2C_SLV0_CTRL, 0xDA);
 
             // setup AK8975 (0x0E) as Slave 2 in write mode
             DEBUG_PRINTLN(F("Setting up AK8975 write slave 2..."));
-            I2Cdev::writeByte(0x68, MPU9150_RA_I2C_SLV2_ADDR, 0x0E);
-            I2Cdev::writeByte(0x68, MPU9150_RA_I2C_SLV2_REG,  0x0A);
-            I2Cdev::writeByte(0x68, MPU9150_RA_I2C_SLV2_CTRL, 0x81);
-            I2Cdev::writeByte(0x68, MPU9150_RA_I2C_SLV2_DO,   0x01);
+            I2Cdev::writeByte(address, MPU9150_RA_I2C_SLV2_ADDR, 0x0E);
+            I2Cdev::writeByte(address, MPU9150_RA_I2C_SLV2_REG,  0x0A);
+            I2Cdev::writeByte(address, MPU9150_RA_I2C_SLV2_CTRL, 0x81);
+            I2Cdev::writeByte(address, MPU9150_RA_I2C_SLV2_DO,   0x01);
 
             // setup I2C timing/delay control
             DEBUG_PRINTLN(F("Setting up slave access delay..."));
-            I2Cdev::writeByte(0x68, MPU9150_RA_I2C_SLV4_CTRL, 0x18);
-            I2Cdev::writeByte(0x68, MPU9150_RA_I2C_MST_DELAY_CTRL, 0x05);
+            I2Cdev::writeByte(address, MPU9150_RA_I2C_SLV4_CTRL, 0x18);
+            I2Cdev::writeByte(address, MPU9150_RA_I2C_MST_DELAY_CTRL, 0x05);
 
             // enable interrupts
             DEBUG_PRINTLN(F("Enabling default interrupt behavior/no bypass..."));
-            I2Cdev::writeByte(0x68, MPU9150_RA_INT_PIN_CFG, 0x00);
+            I2Cdev::writeByte(address, MPU9150_RA_INT_PIN_CFG, 0x00);
 
             // enable I2C master mode and reset DMP/FIFO
             DEBUG_PRINTLN(F("Enabling I2C master mode..."));
-            I2Cdev::writeByte(0x68, MPU9150_RA_USER_CTRL, 0x20);
+            I2Cdev::writeByte(address, MPU9150_RA_USER_CTRL, 0x20);
             DEBUG_PRINTLN(F("Resetting FIFO..."));
-            I2Cdev::writeByte(0x68, MPU9150_RA_USER_CTRL, 0x24);
+            I2Cdev::writeByte(address, MPU9150_RA_USER_CTRL, 0x24);
             DEBUG_PRINTLN(F("Rewriting I2C master mode enabled because...I don't know"));
-            I2Cdev::writeByte(0x68, MPU9150_RA_USER_CTRL, 0x20);
+            I2Cdev::writeByte(address, MPU9150_RA_USER_CTRL, 0x20);
             DEBUG_PRINTLN(F("Enabling and resetting DMP/FIFO..."));
-            I2Cdev::writeByte(0x68, MPU9150_RA_USER_CTRL, 0xE8);
+            I2Cdev::writeByte(address, MPU9150_RA_USER_CTRL, 0xE8);
 
             DEBUG_PRINTLN(F("Writing final memory update 5/19 (function unknown)..."));
             for (j = 0; j < 4 || j < dmpUpdate[2] + 3; j++, pos++) dmpUpdate[j] = pgm_read_byte(&dmpUpdates[pos]);
@@ -602,7 +606,8 @@ uint8_t MPU9150::dmpInitialize() {
             DEBUG_PRINTLN(F("Waiting for FIRO count >= 46..."));
             while ((fifoCount = getFIFOCount()) < 46);
             DEBUG_PRINTLN(F("Reading FIFO..."));
-            getFIFOBytes(fifoBuffer, min(fifoCount, 128)); // safeguard only 128 bytes
+            getFIFOBytes(fifoBuffer, fifoCount < 128 ? fifoCount : 128); // safeguard only 128 bytes
+
             DEBUG_PRINTLN(F("Reading interrupt status..."));
             getIntStatus();
 
@@ -613,13 +618,13 @@ uint8_t MPU9150::dmpInitialize() {
             DEBUG_PRINTLN(F("Waiting for FIRO count >= 48..."));
             while ((fifoCount = getFIFOCount()) < 48);
             DEBUG_PRINTLN(F("Reading FIFO..."));
-            getFIFOBytes(fifoBuffer, min(fifoCount, 128)); // safeguard only 128 bytes
+            getFIFOBytes(fifoBuffer, fifoCount < 128 ? fifoCount : 128); // safeguard only 128 bytes
             DEBUG_PRINTLN(F("Reading interrupt status..."));
             getIntStatus();
             DEBUG_PRINTLN(F("Waiting for FIRO count >= 48..."));
             while ((fifoCount = getFIFOCount()) < 48);
             DEBUG_PRINTLN(F("Reading FIFO..."));
-            getFIFOBytes(fifoBuffer, min(fifoCount, 128)); // safeguard only 128 bytes
+            getFIFOBytes(fifoBuffer, fifoCount < 128 ? fifoCount : 128); // safeguard only 128 bytes
             DEBUG_PRINTLN(F("Reading interrupt status..."));
             getIntStatus();
 
@@ -719,7 +724,7 @@ uint8_t MPU9150::dmpGetQuaternion(int16_t *data, const uint8_t* packet) {
     data[3] = ((packet[12] << 8) + packet[13]);
     return 0;
 }
-uint8_t MPU9150::dmpGetQuaternion(Quaternion *q, const uint8_t* packet) {
+uint8_t MPU9150::dmpGetQuaternion(QuaternionFloat *q, const uint8_t* packet) {
     // TODO: accommodate different arrangements of sent data (ONLY default supported now)
     int16_t qI[4];
     uint8_t status = dmpGetQuaternion(qI, packet);
@@ -768,7 +773,7 @@ uint8_t MPU9150::dmpGetLinearAccel(VectorInt16 *v, VectorInt16 *vRaw, VectorFloa
     return 0;
 }
 // uint8_t MPU9150::dmpGetLinearAccelInWorld(long *data, const uint8_t* packet);
-uint8_t MPU9150::dmpGetLinearAccelInWorld(VectorInt16 *v, VectorInt16 *vReal, Quaternion *q) {
+uint8_t MPU9150::dmpGetLinearAccelInWorld(VectorInt16 *v, VectorInt16 *vReal, QuaternionFloat *q) {
     // rotate measured 3D acceleration vector into original state
     // frame of reference based on orientation quaternion
     memcpy(v, vReal, sizeof(VectorInt16));
@@ -780,7 +785,7 @@ uint8_t MPU9150::dmpGetLinearAccelInWorld(VectorInt16 *v, VectorInt16 *vReal, Qu
 // uint8_t MPU9150::dmpGetControlData(long *data, const uint8_t* packet);
 // uint8_t MPU9150::dmpGetTemperature(long *data, const uint8_t* packet);
 // uint8_t MPU9150::dmpGetGravity(long *data, const uint8_t* packet);
-uint8_t MPU9150::dmpGetGravity(VectorFloat *v, Quaternion *q) {
+uint8_t MPU9150::dmpGetGravity(VectorFloat *v, QuaternionFloat *q) {
     v -> x = 2 * (q -> x*q -> z - q -> w*q -> y);
     v -> y = 2 * (q -> w*q -> x + q -> y*q -> z);
     v -> z = q -> w*q -> w - q -> x*q -> x - q -> y*q -> y + q -> z*q -> z;
@@ -791,13 +796,13 @@ uint8_t MPU9150::dmpGetGravity(VectorFloat *v, Quaternion *q) {
 // uint8_t MPU9150::dmpGetExternalSensorData(long *data, int size, const uint8_t* packet);
 // uint8_t MPU9150::dmpGetEIS(long *data, const uint8_t* packet);
 
-uint8_t MPU9150::dmpGetEuler(float *data, Quaternion *q) {
+uint8_t MPU9150::dmpGetEuler(float *data, QuaternionFloat *q) {
     data[0] = atan2(2*q -> x*q -> y - 2*q -> w*q -> z, 2*q -> w*q -> w + 2*q -> x*q -> x - 1);   // psi
     data[1] = -asin(2*q -> x*q -> z + 2*q -> w*q -> y);                              // theta
     data[2] = atan2(2*q -> y*q -> z - 2*q -> w*q -> x, 2*q -> w*q -> w + 2*q -> z*q -> z - 1);   // phi
     return 0;
 }
-uint8_t MPU9150::dmpGetYawPitchRoll(float *data, Quaternion *q, VectorFloat *gravity) {
+uint8_t MPU9150::dmpGetYawPitchRoll(float *data, QuaternionFloat *q, VectorFloat *gravity) {
     // yaw: (about Z axis)
     data[0] = atan2(2*q -> x*q -> y - 2*q -> w*q -> z, 2*q -> w*q -> w + 2*q -> x*q -> x - 1);
     // pitch: (nose up/down, about Y axis)

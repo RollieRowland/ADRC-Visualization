@@ -3,7 +3,7 @@
 I2CController::I2CController(int addr) {
 	this->address = addr;
 
-	mpuMain = new MPU6050(address);
+	mpuMain = new MPU9150(address);
 	mpuB = new MPU6050(address);
 	mpuC = new MPU6050(address);
 	mpuD = new MPU6050(address);
@@ -12,10 +12,10 @@ I2CController::I2CController(int addr) {
 	hPWM = new PWMController(500);
 
 	InitializeMPU(MainMPU, mpuMain);
-	InitializeMPU(ThrusterBMPU, mpuMain);
-	InitializeMPU(ThrusterCMPU, mpuMain);
-	InitializeMPU(ThrusterDMPU, mpuMain);
-	InitializeMPU(ThrusterEMPU, mpuMain);
+	InitializeMPU(ThrusterBMPU, mpuB);
+	InitializeMPU(ThrusterCMPU, mpuC);
+	InitializeMPU(ThrusterDMPU, mpuD);
+	InitializeMPU(ThrusterEMPU, mpuE);
 }
 
 I2CController::~I2CController() {
@@ -47,7 +47,10 @@ void I2CController::SelectDevice(Device mpu) {
 
 		sprintf(buf, "%d", addr);
 
+		bcm2835_i2c_setSlaveAddress(address);
+		bcm2835_i2c_begin();
 		bcm2835_i2c_write(buf, 4);
+		bcm2835_i2c_end();
 	}
 	else if (mpu == ThrusterBMPU) {
 		int addr = 1 << 1;//1 * 2^i
@@ -55,7 +58,10 @@ void I2CController::SelectDevice(Device mpu) {
 
 		sprintf(buf, "%d", addr);
 
+		bcm2835_i2c_setSlaveAddress(address);
+		bcm2835_i2c_begin();
 		bcm2835_i2c_write(buf, 4);
+		bcm2835_i2c_end();
 	}
 	else if (mpu == ThrusterCMPU) {
 		int addr = 1 << 2;//1 * 2^i
@@ -63,7 +69,10 @@ void I2CController::SelectDevice(Device mpu) {
 
 		sprintf(buf, "%d", addr);
 
+		bcm2835_i2c_setSlaveAddress(address);
+		bcm2835_i2c_begin();
 		bcm2835_i2c_write(buf, 4);
+		bcm2835_i2c_end();
 	}
 	else if (mpu == ThrusterDMPU) {
 		int addr = 1 << 3;//1 * 2^i
@@ -71,7 +80,10 @@ void I2CController::SelectDevice(Device mpu) {
 
 		sprintf(buf, "%d", addr);
 
+		bcm2835_i2c_setSlaveAddress(address);
+		bcm2835_i2c_begin();
 		bcm2835_i2c_write(buf, 4);
+		bcm2835_i2c_end();
 	}
 	else if (mpu == ThrusterEMPU) {
 		int addr = 1 << 4;//1 * 2^i
@@ -79,7 +91,42 @@ void I2CController::SelectDevice(Device mpu) {
 
 		sprintf(buf, "%d", addr);
 
+		bcm2835_i2c_setSlaveAddress(address);
+		bcm2835_i2c_begin();
 		bcm2835_i2c_write(buf, 4);
+		bcm2835_i2c_end();
+	}
+}
+
+void I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
+	int dmpStatus;
+
+	SelectDevice(dev);
+	mpu->testConnection();
+	mpu->initialize();
+
+	std::cout << "Initializing DMP of " << dev << std::endl;
+
+	dmpStatus = mpu->dmpInitialize(address);
+
+	mpu->setXGyroOffset(220);
+	mpu->setYGyroOffset(76);
+	mpu->setZGyroOffset(-85);
+	mpu->setZAccelOffset(1788);
+
+	if (dmpStatus == 0) {
+		std::cout << "Enabling DMP" << std::endl;
+
+		mpu->setDMPEnabled(true);
+
+		//interupt setting
+
+		//dmpReady
+
+		packetSize = mpu->dmpGetFIFOPacketSize();
+	}
+	else {
+		std::cout << "DMP Initialization Failed on " << dev << std::endl;
 	}
 }
 
@@ -116,6 +163,31 @@ void I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
 }
 
 Quaternion I2CController::GetRotation(Device dev, MPU6050 *mpu) {
+	SelectDevice(dev);
+
+	int mpuIntStatus = mpu->getIntStatus();
+	int fifoCount = mpu->getFIFOCount();
+	uint8_t fifoBuffer[64]; // FIFO storage buffer
+
+	if (mpuIntStatus & 0x10 || fifoCount == 1024) {
+		mpu->resetFIFO();
+
+		return Quaternion(-1, -1, -1, -1);
+	}
+	else if (mpuIntStatus & 0x02) {
+		while (fifoCount < packetSize) fifoCount = mpu->getFIFOCount();
+
+		mpu->getFIFOBytes(fifoBuffer, packetSize);
+
+		fifoCount -= packetSize;
+
+		QuaternionFloat q = QuaternionFloat();
+
+		mpu->dmpGetQuaternion(&q, fifoBuffer);
+	}
+}
+
+Quaternion I2CController::GetRotation(Device dev, MPU9150 *mpu) {
 	SelectDevice(dev);
 
 	int mpuIntStatus = mpu->getIntStatus();

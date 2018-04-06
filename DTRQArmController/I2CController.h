@@ -2,6 +2,7 @@
 
 #include "bcm2835.h"
 #include "MPU6050_6Axis_MotionApps20.h"
+#include "MPU9150_9Axis_MotionApps41.h"
 #include <stdio.h>
 #include <iostream>
 #include "Rotation.h"
@@ -45,7 +46,7 @@ private:
 	int baudrate;
 	int packetSize;
 
-	MPU6050 *mpuMain;
+	MPU9150 *mpuMain;
 	MPU6050 *mpuB;
 	MPU6050 *mpuC;
 	MPU6050 *mpuD;
@@ -67,8 +68,12 @@ private:
 
 	void SelectDevice(Device mpu);
 	void InitializeMPU(Device dev, MPU6050 *mpu);
+	void InitializeMPU(Device dev, MPU9150 *mpu);
 
 	Quaternion GetRotation(Device dev, MPU6050 *mpu);
+	Quaternion GetRotation(Device dev, MPU9150 *mpu);
+
 	Vector3D GetLinearAcceleration(Device dev, MPU6050 *mpu);
+	Vector3D GetLinearAcceleration(Device dev, MPU9150 *mpu);
 
 };
