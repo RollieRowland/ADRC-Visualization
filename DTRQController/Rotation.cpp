@@ -348,7 +348,7 @@ AxisAngle Rotation::GetAxisAngle() {
 	AxisAngle axisAngle = AxisAngle(0, 0, 1, 0);
 	Quaternion q = QuaternionRotation;
 
-	q = (abs(q.W) > 1.0) ? q.UnitQuaternion() : q;
+	q = (std::abs(q.W) > 1.0) ? q.UnitQuaternion() : q;
 
 	axisAngle.Rotation = Mathematics::RadiansToDegrees(2.0 * acos(q.W));
 
@@ -357,7 +357,6 @@ AxisAngle Rotation::GetAxisAngle() {
 	if (quaternionCheck >= 0.001)//Prevents division by zero
 	{
 		//Normalizes axis
-		axisAngle.Axis;
 		axisAngle.Axis.X = q.X / quaternionCheck;
 		axisAngle.Axis.Y = q.Y / quaternionCheck;
 		axisAngle.Axis.Z = q.Z / quaternionCheck;
@@ -365,7 +364,6 @@ AxisAngle Rotation::GetAxisAngle() {
 	else
 	{
 		//If X is close to zero the axis doesn't matter
-		axisAngle.Axis;
 		axisAngle.Axis.X = 0.0;
 		axisAngle.Axis.Y = 1.0;
 		axisAngle.Axis.Z = 0.0;

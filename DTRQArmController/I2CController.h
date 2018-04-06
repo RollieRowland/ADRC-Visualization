@@ -5,7 +5,7 @@
 #include "MPU9150_9Axis_MotionApps41.h"
 #include <stdio.h>
 #include <iostream>
-#include "Rotation.h"
+#include "../DTRQController/Rotation.h"
 #include "PWMController.h"
 
 class I2CController {
@@ -46,7 +46,7 @@ private:
 	int baudrate;
 	int packetSize;
 
-	MPU9150 *mpuMain;
+	MPU6050 *mpuMain;
 	MPU6050 *mpuB;
 	MPU6050 *mpuC;
 	MPU6050 *mpuD;

@@ -210,10 +210,10 @@ Quaternion Quaternion::Absolute() {
 
 	return Quaternion
 	{
-		abs(current.W),
-		abs(current.X),
-		abs(current.Y),
-		abs(current.Z)
+		std::abs(current.W),
+		std::abs(current.X),
+		std::abs(current.Y),
+		std::abs(current.Z)
 	};
 }
 

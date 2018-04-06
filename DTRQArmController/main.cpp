@@ -1,18 +1,8 @@
 #include "I2CController.h"
-#include "Quadcopter.h"
-#include "VectorKalmanFilter.h"
-#include "QuaternionKalmanFilter.h"
+#include "../DTRQController/Quadcopter.h"
+#include "../DTRQController/VectorKalmanFilter.h"
+#include "../DTRQController/QuaternionKalmanFilter.h"
 #include <chrono>
-
-I2CController i2cController;
-Quadcopter quad;
-QuaternionKalmanFilter quatKF = QuaternionKalmanFilter(0.1, 20);
-VectorKalmanFilter accelKF = VectorKalmanFilter(0.2, 40);
-Vector3D velocity;
-Vector3D position;
-
-Vector3D targetPosition;
-Rotation targetRotation;
 
 VectorFeedbackController *pos = new VectorFeedbackController{
 	new PID{ 10, 0, 12.5 },
@@ -26,10 +16,17 @@ VectorFeedbackController *rot = new VectorFeedbackController{
 	new PID{ 0.05, 0, 0.325 }
 };
 
-int main(void) {
-	i2cController = I2CController(0x70);
-	quad = Quadcopter(false, 0.3, 55, 0.05, pos, rot);
+I2CController i2cController = I2CController(0x70);
+Quadcopter quad = Quadcopter(false, 0.3, 55, 0.05, pos, rot);
+QuaternionKalmanFilter quatKF = QuaternionKalmanFilter(0.1, 20);
+VectorKalmanFilter accelKF = VectorKalmanFilter(0.2, 40);
+Vector3D velocity;
+Vector3D position;
 
+Vector3D targetPosition;
+Rotation targetRotation;
+
+int main(void) {
 	auto previousTime = std::chrono::system_clock::now();
 
 	Quaternion rotation;
@@ -51,6 +48,8 @@ int main(void) {
 		quad.SetCurrent(position, Rotation(rotation));
 
 		quad.CalculateCombinedThrustVector();//Secondary Solver
+
+		//SET OUTPUTS
 
 		previousTime = std::chrono::system_clock::now();
 	}

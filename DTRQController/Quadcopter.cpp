@@ -227,6 +227,7 @@ Vector3D Quadcopter::RotationToHoverAngles(Rotation rotation) {
 	return Vector3D(outerJoint, 0, innerJoint);
 }
 
+//NOT CORRECTED
 void Quadcopter::CalculateGimbalLockedMotion(Vector3D &positionControl, Vector3D &thrusterOutputB,
 											 Vector3D &thrusterOutputC, Vector3D &thrusterOutputD,
 											 Vector3D &thrusterOutputE) {
@@ -238,7 +239,7 @@ void Quadcopter::CalculateGimbalLockedMotion(Vector3D &positionControl, Vector3D
 	double rotation = 40 * fadeIn;
 
 	double magnitude = sqrt(pow(positionControl.X, 2) + pow(positionControl.Z, 2));//Give hypotenuse for origin rotation, magnitude
-	double angle = Mathematics::RadiansToDegrees(Mathematics::Sign(hoverAngles.Z) * atan2(magnitude, 0) - atan2(positionControl.Z, positionControl.X));//Determine angle of output, -180 -> 180
+	//double angle = Mathematics::RadiansToDegrees(Mathematics::Sign(hoverAngles.Z) * atan2(magnitude, 0) - atan2(positionControl.Z, positionControl.X));//Determine angle of output, -180 -> 180
 																													  //Rotation matrix on position control copy
 	//Vector3D RotatedControl = RotationMatrix::RotateVector(Vector3D(0, CurrentEulerRotation.Y, 0), Vector3D(positionControl.X, 0, positionControl.Z));
 	Vector3D rotatedControl = CurrentRotation.GetQuaternion().RotateVector(positionControl);

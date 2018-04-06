@@ -29,7 +29,7 @@ double NonlinearCombiner::SetPointJumpPrevention(double target, double targetDer
 	a0 = h * targetDerivative;
 	y = target + a0;
 
-	a1 = sqrt(d * (d + 8 * abs(y)));
+	a1 = sqrt(d * (d + 8 * std::abs(y)));
 	a2 = a0 + Mathematics::Sign(y) * (a1 - d) / 2;
 	sy = (Mathematics::Sign(y + d) - Mathematics::Sign(y - d)) / 2;//returns 1, or -1
 

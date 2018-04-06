@@ -11,7 +11,7 @@ TriangleWaveFader::TriangleWaveFader(double curvature, double amplitude) {
 }
 
 double TriangleWaveFader::CalculateRatio(double value) {
-	return (1.0 / amplitude) * pow((amplitude - abs(fmod(value,(amplitude * 2.0)) - amplitude)), curvature) / pow(amplitude, curvature - 1.0);
+	return (1.0 / amplitude) * pow((amplitude - std::abs(fmod(value,(amplitude * 2.0)) - amplitude)), curvature) / pow(amplitude, curvature - 1.0);
 
 }
 

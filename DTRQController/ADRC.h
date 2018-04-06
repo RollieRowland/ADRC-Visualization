@@ -19,5 +19,6 @@ private:
 
 public:
 	ADRC(double amplification, double damping, double plant, double precisionModifier, PID pid);
+	~ADRC();
 	double Calculate(double setpoint, double processVariable, double dT);
 };

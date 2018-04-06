@@ -15,6 +15,7 @@ private:
 
 public:
 	PID();
+	~PID();
 	PID(double kp, double ki, double kd);
 	double Calculate(double setpoint, double processVariable, double dT);
 };

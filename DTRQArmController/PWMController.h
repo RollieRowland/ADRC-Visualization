@@ -2,6 +2,8 @@
 
 #include "bcm2835.h"
 #include <stdio.h>
+#include <iostream>
+#include <string>
 
 class PWMController {
 private:
@@ -37,7 +39,12 @@ private:
 
 	void WriteByte(uint8_t addr, uint8_t value);
 
+	void InitializeESCs();
+
 public:
+	const double MAXROTOROUTPUT = 39.2;
+	const double MINROTOROUTPUT = 39.2;
+
 	PWMController(int frequency);//24 -> 1526Hz
 
 	void SetOuterBAngle(double angle);

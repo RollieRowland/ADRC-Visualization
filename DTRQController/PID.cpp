@@ -6,6 +6,10 @@ PID::PID() {
 	this->kd = 0;
 }
 
+PID::~PID() {
+
+}
+
 PID::PID(double kp, double ki, double kd) {
 	this->kp = kp;
 	this->ki = ki;

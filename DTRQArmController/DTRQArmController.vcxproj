@@ -32,6 +32,12 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <SourcesToCopyRemotelyOverride>@(SourcesToCopyRemotely);@(DataFilesToCopyRemotely);</SourcesToCopyRemotelyOverride>
+    <AdditionalSourcesToCopyMapping>%(AdditionalIncludeDirectories);$(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
+    <RemoteProjectDir>$(RemoteRootDir)</RemoteProjectDir>
+    <IncludePath>C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQController;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
       <LibraryDependencies>wiringPi</LibraryDependencies>
@@ -67,6 +73,7 @@
     <ClCompile Include="..\DTRQController\PID.cpp" />
     <ClCompile Include="..\DTRQController\Quadcopter.cpp" />
     <ClCompile Include="..\DTRQController\Quaternion.cpp" />
+    <ClCompile Include="..\DTRQController\QuaternionKalmanFilter.cpp" />
     <ClCompile Include="..\DTRQController\Rotation.cpp" />
     <ClCompile Include="..\DTRQController\RotationMatrix.cpp" />
     <ClCompile Include="..\DTRQController\Servo.cpp" />
@@ -102,6 +109,7 @@
     <ClInclude Include="..\DTRQController\PID.h" />
     <ClInclude Include="..\DTRQController\Quadcopter.h" />
     <ClInclude Include="..\DTRQController\Quaternion.h" />
+    <ClInclude Include="..\DTRQController\QuaternionKalmanFilter.h" />
     <ClInclude Include="..\DTRQController\Rotation.h" />
     <ClInclude Include="..\DTRQController\RotationMatrix.h" />
     <ClInclude Include="..\DTRQController\Servo.h" />
@@ -124,6 +132,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Users\steve\Documents\GitHub\Dual-Tilt-Rotor-Quadcopter\DTRQController;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ThreadSafeStatics>No</ThreadSafeStatics>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

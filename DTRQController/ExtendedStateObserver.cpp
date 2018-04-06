@@ -13,7 +13,7 @@ ExtendedStateObserver::State ExtendedStateObserver::ObserveState(double sampling
 
 	if (linear)
 	{
-		State gain = State{
+		gain = State{
 			1,
 			1 / (3 * samplingPeriod),
 			2 / (pow(8, 2) * pow(samplingPeriod, 2))
@@ -21,7 +21,7 @@ ExtendedStateObserver::State ExtendedStateObserver::ObserveState(double sampling
 	}
 	else
 	{
-		State gain = State{
+		gain = State{
 			1,
 			1 / (2 * pow(samplingPeriod, 0.5)),
 			2 / (pow(5, 2) * pow(samplingPeriod, 1.2))
@@ -42,12 +42,12 @@ ExtendedStateObserver::State ExtendedStateObserver::ObserveState(double sampling
 }
 
 double ExtendedStateObserver::NonlinearFunction(double eta, double alpha, double delta) {
-	if (abs(eta) <= delta)
+	if (std::abs(eta) <= delta)
 	{
 		return eta / (pow(delta, 1 - alpha));
 	}
 	else
 	{
-		return pow(abs(eta), alpha) * Mathematics::Sign(eta);
+		return pow(std::abs(eta), alpha) * Mathematics::Sign(eta);
 	}
 }

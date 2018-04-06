@@ -3,6 +3,10 @@
 PWMController::PWMController(int frequency) {
 	Reset();
 	SetPWMFrequency(frequency);
+
+	delay(20);
+
+	InitializeESCs();
 }
 
 //No custom on time
@@ -52,15 +56,14 @@ int PWMController::CalculateServoFrequency(double angle) {
 		ratio = 1;
 	}
 
-	int output = ratio * 4096.0;
+	int output = (int)(ratio * 4096.0);
 
 	return output;
 }
 
 int PWMController::CalculateRotorFrequency(double force) {
-	force = force + 39.2;//4g center -4g to +4g to 0 to 8g
-
-	double ratio = force / 78.4;
+	//4g center -4g to +4g to 0 to 8g
+	double ratio = force / 39.2;
 
 	if (ratio < 0) {
 		ratio = 0;
@@ -69,9 +72,36 @@ int PWMController::CalculateRotorFrequency(double force) {
 		ratio = 1;
 	}
 
-	int output = ratio * 4096.0;
+	int output = (int)(ratio * 4096.0);
 
 	return output;
+}
+
+void PWMController::InitializeESCs() {
+	std::cout << "Disconnect power to ESCs." << std::endl;
+
+	//cut power
+	SetRotorBOutput(MAXROTOROUTPUT);//max
+	SetRotorCOutput(MAXROTOROUTPUT);//max
+	SetRotorDOutput(MAXROTOROUTPUT);//max
+	SetRotorEOutput(MAXROTOROUTPUT);//max
+
+	std::cout << "Press enter when power is connected." << std::endl;
+
+	std::string temp;
+
+	std::getline(std::cin, temp);
+
+	std::cout << "Waiting for ESCs to configure." << std::endl;
+
+	delay(5000);
+
+	std::cout << "Done initializing ESCs." << std::endl;
+
+	SetRotorBOutput(MINROTOROUTPUT);//min
+	SetRotorCOutput(MINROTOROUTPUT);//min
+	SetRotorDOutput(MINROTOROUTPUT);//min
+	SetRotorEOutput(MINROTOROUTPUT);//min
 }
 
 

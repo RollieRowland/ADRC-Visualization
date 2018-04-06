@@ -3,13 +3,13 @@
 I2CController::I2CController(int addr) {
 	this->address = addr;
 
-	mpuMain = new MPU9150(address);
+	mpuMain = new MPU6050(address);
 	mpuB = new MPU6050(address);
 	mpuC = new MPU6050(address);
 	mpuD = new MPU6050(address);
 	mpuE = new MPU6050(address);
 
-	hPWM = new PWMController(500);
+	//hPWM = new PWMController(500);
 
 	InitializeMPU(MainMPU, mpuMain);
 	InitializeMPU(ThrusterBMPU, mpuB);
@@ -279,6 +279,64 @@ Quaternion I2CController::GetTERotation() {
 
 
 Vector3D I2CController::GetLinearAcceleration(Device dev, MPU6050 *mpu) {
+	SelectDevice(dev);
+
+	int mpuIntStatus = mpu->getIntStatus();
+	int fifoCount = mpu->getFIFOCount();
+	uint8_t fifoBuffer[64]; // FIFO storage buffer
+
+	if (mpuIntStatus & 0x10 || fifoCount == 1024) {
+		mpu->resetFIFO();
+
+		return Vector3D(-1000, -1000, -1000);
+	}
+	else if (mpuIntStatus & 0x02) {
+		while (fifoCount < packetSize) fifoCount = mpu->getFIFOCount();
+
+		mpu->getFIFOBytes(fifoBuffer, packetSize);
+
+		fifoCount -= packetSize;
+
+		QuaternionFloat q = QuaternionFloat();
+
+		if (dev == MainMPU) {
+			q = QuaternionFloat(MQ->W, MQ->X, MQ->Y, MQ->Z);
+		}
+		else if (dev == ThrusterBMPU) {
+			q = QuaternionFloat(TBQ->W, TBQ->X, TBQ->Y, TBQ->Z);
+		}
+		else if (dev == ThrusterCMPU) {
+			q = QuaternionFloat(TCQ->W, TCQ->X, TCQ->Y, TCQ->Z);
+		}
+		else if (dev == ThrusterDMPU) {
+			q = QuaternionFloat(TDQ->W, TDQ->X, TDQ->Y, TDQ->Z);
+		}
+		else if (dev == ThrusterEMPU) {
+			q = QuaternionFloat(TEQ->W, TEQ->X, TEQ->Y, TEQ->Z);
+		}
+
+		VectorInt16 a = VectorInt16();
+		VectorFloat g = VectorFloat();
+		VectorInt16 lA = VectorInt16();
+
+		mpu->dmpGetAccel(&a, fifoBuffer);
+		mpu->dmpGetGravity(&g, &q);
+		mpu->dmpGetLinearAccel(&lA, &a, &g);
+
+		Vector3D gAccel = Vector3D(lA.x, lA.y, lA.z);
+
+		//ax = raw / sensitivity SET TO 4 CURRENTLY
+		//2g = sensitivity of 16384
+		//4g = sensitivity of 8192
+		//8g = sensitivity of 4096
+		//16g = sensitivity of 2048
+		gAccel = gAccel / 8192;//Scaling factor from 8192+/- to 
+
+		return gAccel;
+	}
+}
+
+Vector3D I2CController::GetLinearAcceleration(Device dev, MPU9150 *mpu) {
 	SelectDevice(dev);
 
 	int mpuIntStatus = mpu->getIntStatus();

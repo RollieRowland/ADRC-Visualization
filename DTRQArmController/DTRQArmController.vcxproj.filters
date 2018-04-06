@@ -95,6 +95,9 @@
     <ClCompile Include="MPU9150.cpp">
       <Filter>Hardware Control\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\DTRQController\QuaternionKalmanFilter.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include Files">
@@ -221,6 +224,9 @@
     </ClInclude>
     <ClInclude Include="MPU9150_9Axis_MotionApps41.h">
       <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\QuaternionKalmanFilter.h">
+      <Filter>Include Files\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

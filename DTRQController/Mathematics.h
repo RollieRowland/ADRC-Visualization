@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include <math.h>
+#include <cmath>
 #include <sstream>
 #include <stdarg.h>
 #include <string>
