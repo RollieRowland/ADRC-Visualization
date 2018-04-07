@@ -124,9 +124,7 @@
     <ClInclude Include="I2Cdev.h" />
     <ClInclude Include="MPU6050.h" />
     <ClInclude Include="I2CController.h" />
-    <ClInclude Include="MPU6050_6Axis_MotionApps20.h" />
     <ClInclude Include="MPU9150.h" />
-    <ClInclude Include="MPU9150_9Axis_MotionApps41.h" />
     <ClInclude Include="PWMController.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">

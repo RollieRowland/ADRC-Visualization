@@ -1,8 +1,8 @@
 #pragma once
 
 #include "bcm2835.h"
-#include "MPU6050_6Axis_MotionApps20.h"
-#include "MPU9150_9Axis_MotionApps41.h"
+#include "MPU6050.h"
+#include "MPU9150.h"
 #include <stdio.h>
 #include <iostream>
 #include "../DTRQController/Rotation.h"

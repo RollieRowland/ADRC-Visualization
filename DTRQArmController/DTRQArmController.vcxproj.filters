@@ -210,9 +210,6 @@
     <ClInclude Include="I2CController.h">
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MPU6050_6Axis_MotionApps20.h">
-      <Filter>Hardware Control\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="helper_3dmath.h">
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
@@ -220,9 +217,6 @@
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MPU9150.h">
-      <Filter>Hardware Control\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MPU9150_9Axis_MotionApps41.h">
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\DTRQController\QuaternionKalmanFilter.h">
