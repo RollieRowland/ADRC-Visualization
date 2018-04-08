@@ -268,6 +268,59 @@ V_\textrm{ZDragForce} = D_\textrm{AirDensity} \times D_\textrm{ZCurrentVelocity}
 V_\textrm{CurrentAcceleration} = V_\textrm{ThrustSum} + V_\textrm{WorldAcceleration}\\
 V_\textrm{CurrentVelocity} = V_\textrm{CurrentVelocity} + V_\textrm{CurrentAcceleration} \times D_\textrm{TimeDerivative} \\
 V_\textrm{CurrentPosition} = V_\textrm{CurrentPosition} + V_\textrm{CurrentVelocity} \times D_\textrm{TimeDerivative} \\
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+$
+
+
+\section{Quadcopter Estimate Rotation}
+$
+V_\textrm{TB} = V_\textrm{TBThrustVector}\\
+V_\textrm{TC} = V_\textrm{TCThrustVector}\\
+V_\textrm{TD} = V_\textrm{TDThrustVector}\\
+V_\textrm{TE} = V_\textrm{TEThrustVector}\\
+\newline
+V_\textrm{TB} = Q_\textrm{CurrentRotation}.RotateVector( TB )\\
+V_\textrm{TC} = Q_\textrm{CurrentRotation}.RotateVector( TC )\\
+V_\textrm{TD} = Q_\textrm{CurrentRotation}.RotateVector( TD )\\
+V_\textrm{TE} = Q_\textrm{CurrentRotation}.RotateVector( TE )\\
+\newline
+D_\textrm{Torque} = D_\textrm{ArmLength} \times sin( 180 - D_\textrm{ArmAngle} )\\
+\newline
+V_\textrm{XAngularAcceleration} \hspace{2ex}= ( \hspace{2ex}V_\textrm{TBY} + V_\textrm{TCY} - V_\textrm{TDY} - V_\textrm{TEY} ) \times D_\textrm{Torque}\\
+V_\textrm{YAngularAcceleration} \hspace{2ex}= ( \hspace{2ex}V_\textrm{TBX} + V_\textrm{TCX} - V_\textrm{TDX} - V_\textrm{TEY} ) \times D_\textrm{Torque}\\
+V_\textrm{YAngularAcceleration}                     += ( \hspace{2ex}V_\textrm{TBZ} - V_\textrm{TCZ} - V_\textrm{TDZ} + V_\textrm{TEZ} ) \times D_\textrm{Torque}\\
+V_\textrm{ZAngularAcceleration} \hspace{2ex}= ( -V_\textrm{TBY} + V_\textrm{TCY} + V_\textrm{TDY} - V_\textrm{TEY} ) \times D_\textrm{Torque}\\
+\newline
+V_\textrm{XDragForce} = D_\textrm{AirDensity} \times D_\textrm{XAngularVelocity}^2 \times D_\textrm{DragCoefficient} \times Sign ( XAngularVelocity ) \\
+V_\textrm{YDragForce} = D_\textrm{AirDensity} \times D_\textrm{YAngularVelocity}^2 \times D_\textrm{DragCoefficient} \times Sign ( YAngularVelocity ) \\
+V_\textrm{ZDragForce} = D_\textrm{AirDensity} \times D_\textrm{ZAngularVelocity}^2 \times D_\textrm{DragCoefficient} \times Sign ( ZAngularVelocity ) \\
+\newline
+V_\textrm{DifferentialThrust} = V_\textrm{TB} + V_\textrm{TC} - V_\textrm{TD} - V_\textrm{TE}\\
+V_\textrm{AngularAcceleration} = V_\textrm{AngularAcceleration} + V_\textrm{DifferentialThrust}\\
+V_\textrm{AngularVelocity} = V_\textrm{AngularVelocity} + ( V_\textrm{AngularAcceleration} - V_\textrm{DragForce} ) \times D_\textrm{TimeDerivative}\\
+Q_\textrm{AngularRotation} = \frac {V_\textrm{AngularVelocity} \times D_\textrm{TimeDerivative}} {2}\\
+Q_\textrm{AngularPosition} = Q_\textrm{AngularPosition} + Q_\textrm{AngularRotation} \times Q_\textrm{AngularPosition}\\
+$
+
+\section{Quadcopter Calculate 3D Yaw}
+$
+V_\textrm{HoverRotation} = HoverAnglesFromQuaternion(Q_\textrm{CurrentRotation})\\
+Q_\textrm{Hover} = EA(V_\textrm{HoverRotation})\\
+Q_\textrm{Yaw3D} = Q_\textrm{Hover} \times Q_\textrm{CurrentRotation}.MultiplicativeInverse()\\
 $
 
 \end{document}
