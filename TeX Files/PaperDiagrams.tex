@@ -1,0 +1,273 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{lineno}
+\usepackage{mathtools}
+\title{Q Multiplication}
+
+\begin{document}
+
+
+\section{Quaternion Multiplication}
+\begin{linenomath}
+\begin{center}
+$
+Q_\textrm{Wnew} = Q_\textrm{W1}(Q_\textrm{W2}) - Q_\textrm{X1}(Q_\textrm{X2}) - Q_\textrm{Y1}(Q_\textrm{Y2}) - Q_\textrm{Z1}(Q_\textrm{Z2}) \newline
+Q_\textrm{Xnew} = Q_\textrm{W1}(Q_\textrm{X2}) - Q_\textrm{X1}(Q_\textrm{W2}) - Q_\textrm{Y1}(Q_\textrm{Z2}) - Q_\textrm{Z1}(Q_\textrm{Y2}) \newline
+Q_\textrm{Ynew} = Q_\textrm{W1}(Q_\textrm{Y2}) - Q_\textrm{X1}(Q_\textrm{Z2}) - Q_\textrm{Y1}(Q_\textrm{W2}) - Q_\textrm{Z1}(Q_\textrm{X2}) \newline
+Q_\textrm{Znew} = Q_\textrm{W1}(Q_\textrm{Z2}) - Q_\textrm{X1}(Q_\textrm{Y2}) - Q_\textrm{Y1}(Q_\textrm{X2}) - Q_\textrm{Z1}(Q_\textrm{W2}) \newline
+$
+\end{center}
+\end{linenomath}
+
+
+
+\section{Quaternion Division}
+\begin{linenomath}
+\begin{center}
+$
+Q_\textrm{Wnew} =  \hspace{1ex}Q_\textrm{W1}(Q_\textrm{W2}) + Q_\textrm{X1}(Q_\textrm{X2}) + Q_\textrm{Y1}(Q_\textrm{Y2}) + Q_\textrm{Z1}(Q_\textrm{Z2}) \newline
+Q_\textrm{Xnew} = -Q_\textrm{W1}(Q_\textrm{X2}) + Q_\textrm{X1}(Q_\textrm{W2}) + Q_\textrm{Y1}(Q_\textrm{Z2}) - Q_\textrm{Z1}(Q_\textrm{Y2}) \newline
+Q_\textrm{Ynew} = -Q_\textrm{W1}(Q_\textrm{Y2}) - Q_\textrm{X1}(Q_\textrm{Z2}) + Q_\textrm{Y1}(Q_\textrm{W2}) + Q_\textrm{Z1}(Q_\textrm{X2}) \newline
+Q_\textrm{Znew} = -Q_\textrm{W1}(Q_\textrm{Z2}) + Q_\textrm{X1}(Q_\textrm{Y2}) - Q_\textrm{Y1}(Q_\textrm{X2}) + Q_\textrm{Z1}(Q_\textrm{W2}) \newline
+$
+\end{center}
+\end{linenomath}
+
+
+\section{Quaternion Conjugate}
+\begin{linenomath}
+\begin{center}
+$
+Q_\textrm{Wconjugate} =  \hspace{1ex}Q_\textrm{Winput}\newline
+Q_\textrm{Xconjugate} =  -Q_\textrm{Xinput}\newline
+Q_\textrm{Yconjugate} = -Q_\textrm{Yinput}\newline
+Q_\textrm{Zconjugate} =  -Q_\textrm{Zinput}\newline
+$
+\end{center}
+\end{linenomath}
+
+
+\section{Quaternion Normal}
+\begin{linenomath}
+\begin{center}
+$
+Normal_\textrm{rational} = Q_W^2 + Q_X^2 + Q_Y^2 + Q_Z^2 \newline
+$
+\end{center}
+\end{linenomath}
+
+
+\section{Quaternion Multiplicative Inverse}
+\begin{linenomath}
+\begin{center}
+$
+Q_\textrm{reciprocal} = Q_\textrm{conjugate} × \frac{1}{Q_\textrm{normal}} \newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+$
+\end{center}
+\end{linenomath}
+
+
+\section{Quaternion Vector Rotation}
+\begin{linenomath}
+\begin{center}
+$
+Q_\textrm{Wbivector} =\hspace{1ex} 0 \newline
+Q_\textrm{Xbivector} = V_X \newline
+Q_\textrm{Ybivector} = V_Y \newline
+Q_\textrm{Zbivector} = V_Z \newline
+\newline
+Q_\textrm{rotation} = Q_\textrm{current}(Q_\textrm{bivector})(Q_\textrm{reciprocal}) \newline
+\newline
+V_\textrm{Xrotated} = Q_\textrm{Xrotation} \newline
+V_\textrm{Yrotated} = Q_\textrm{Yrotation} \newline
+V_\textrm{Zrotated} = Q_\textrm{Zrotation} \newline
+$
+\end{center}
+\end{linenomath}
+
+
+\section{Quaternion Vector Rotation Removal}
+\begin{linenomath}
+\begin{center}
+$
+Q_\textrm{Wbivector} =\hspace{1ex} 0 \newline
+Q_\textrm{Xbivector} = V_X \newline
+Q_\textrm{Ybivector} = V_Y \newline
+Q_\textrm{Zbivector} = V_Z \newline
+\newline
+Q_\textrm{rotation} = Q_\textrm{conjugate}(Q_\textrm{bivector})(Q_\textrm{reciprocal}) \newline
+\newline
+V_\textrm{Xrotated} = Q_\textrm{Xrotation} \newline
+V_\textrm{Yrotated} = Q_\textrm{Yrotation} \newline
+V_\textrm{Zrotated} = Q_\textrm{Zrotation} \newline
+$
+\end{center}
+\end{linenomath}
+
+
+\section{Unit Quaternion}
+\begin{linenomath}
+\begin{center}
+$
+Q_\textrm{Wunit} =  \frac{Q_\textrm{Winput}}{Q_\textrm{normal}}\newline
+Q_\textrm{Xunit} =  \frac{Q_\textrm{Xinput}}{Q_\textrm{normal}}\newline
+Q_\textrm{Yunit} = \frac{Q_\textrm{Yinput}}{Q_\textrm{normal}}\newline
+Q_\textrm{Zunit} =  \frac{Q_\textrm{Zinput}}{Q_\textrm{normal}}\newline
+$
+\end{center}
+\end{linenomath}
+
+\section{Quaternion Dot Product}
+\begin{linenomath}
+\begin{center}
+$
+D_\textrm{dot} = Q_\textrm{W1}(Q_\textrm{W2}) + Q_\textrm{X1}(Q_\textrm{X2}) + Q_\textrm{Y1}(Q_\textrm{Y2}) + Q_\textrm{Z1}(Q_\textrm{Z2}) \newline
+$
+\end{center}
+\end{linenomath}
+
+\section{Quaternion Magnitude}
+\begin{linenomath}
+\begin{center}
+$
+M_\textrm{magnitude} = \sqrt{Q_\textrm{normal}} \newline
+$
+\end{center}
+\end{linenomath}
+
+\section{Quaternion Additive Inverse}
+\begin{linenomath}
+\begin{center}
+$
+Q_\textrm{Wnegative} =  -Q_\textrm{Winput} \newline
+Q_\textrm{Xnegative} =  -Q_\textrm{Xinput} \newline
+Q_\textrm{Ynegative} =  -Q_\textrm{Yinput} \newline
+Q_\textrm{Znegative} =  -Q_\textrm{Zinput} \newline
+$
+\end{center}
+\end{linenomath}
+
+\section{Quaternion Smooth Interpolation Between Quaternions}
+\begin{linenomath}
+$
+Q_\textrm{initial} = Q_\textrm{Unit initial} \newline
+Q_\textrm{final} = Q_\textrm{Unit final} \newline
+\newline
+D_\textrm{dot} = Q_\textrm{initial} \cdot Q_\textrm{final} \newline
+\newline
+\newline
+Q_\textrm{initial} = \begin{cases}
+    Q_\textrm{initial} = Q_\textrm{initial(additive inverse)}, & \text{if $D_\textrm{dot}<0$}.\\
+     \hspace{1ex}Q_\textrm{initial}, & \text{otherwise}.\\
+\end{cases}
+\newline
+\newline
+\newline
+D_\textrm{dot}=|D_\textrm{dot}|\newline
+\newline
+D_\textrm{dot}=\begin{cases}
+    \hspace{1ex}1, & \text{if $D_\textrm{dot}>1$}.\\
+     \hspace{1ex}D_\textrm{dot}, & \text{otherwise}.\\
+\end{cases}
+\newline
+\newline
+\newline
+\theta = arccos(D_\textrm{dot}) \times ratio\\
+\newline
+Q_\textrm{orthonomal} = Q_\textrm{final} - Q_\textrm{initial} \times D_\textrm{dot}\\
+Q_\textrm{output} = Q_{initial} \times cos(\theta) + Q_\textrm{orthonomal} \times sin(\theta)\newline
+\newline
+\newline
+\newline
+$
+\end{linenomath}
+
+
+\section{Quadcopter Combined Thrust Vector}
+$
+Q_\textrm{change} =  ( \frac{2  \times (Q_\textrm{target} - Q_\textrm{current}) \times Q_\textrm{current conjugate}}{dT} ) \\
+\\
+V_\textrm{Xchange} = Q_\textrm{Xchange}\\
+V_\textrm{Ychange} = Q_\textrm{Ychange}\\
+V_\textrm{Zchange} = Q_\textrm{Zchange}\\
+\\
+V_\textrm{RotationOutput} = FeedbackController_\textrm{rotation}.Calculate(0, V_\textrm{change})\\
+V_\textrm{PositionOutput} = FeedbackController_\textrm{position}.Calculate(0, V_\textrm{CurrentPosition} - V_\textrm{TargetPosition})\\
+\\
+V_\textrm{YThrusterBOutput} = -V_\textrm{XRotationOutput} + V_\textrm{ZRotationOutput} - V_\textrm{YRotationOutput} \\
+V_\textrm{YThrusterCOutput} = -V_\textrm{XRotationOutput} - V_\textrm{ZRotationOutput} + V_\textrm{YRotationOutput} \\
+V_\textrm{YThrusterDOutput} = \hspace{2ex}V_\textrm{XRotationOutput} - V_\textrm{ZRotationOutput} - V_\textrm{YRotationOutput} \\
+V_\textrm{YThrusterEOutput} = \hspace{2ex}V_\textrm{XRotationOutput} + V_\textrm{ZRotationOutput} + V_\textrm{YRotationOutput} \\
+\\
+V_\textrm{HoverAngles} = RotationToHoverAngles(Q_\textrm{CurrentRotation})\\
+\\
+V_\textrm{PositionOutput} = CalculateRotationOffset(Q_\textrm{CurrentRotation}).RotateVector(V_\textrm{PositionOutput})\\
+\\
+V_\textrm{XPositionOutput} = V_\textrm{XPositionOutput} + V_\textrm{ZHoverAngles}\\
+V_\textrm{ZPositionOutput} = V_\textrm{ZPositionOutput} - V_\textrm{XHoverAngles}\\
+\\
+V_\textrm{ThrusterBOutput} = V_\textrm{ThrusterBOutput} + V_\textrm{PositionOutput}\\
+V_\textrm{ThrusterCOutput} = V_\textrm{ThrusterCOutput} + V_\textrm{PositionOutput}\\
+V_\textrm{ThrusterDOutput} = V_\textrm{ThrusterDOutput} + V_\textrm{PositionOutput}\\
+V_\textrm{ThrusterEOutput} = V_\textrm{ThrusterEOutput} + V_\textrm{PositionOutput}
+$
+
+
+\section{Quadcopter Thruster Position Calculation}
+$
+V_\textrm{ThrusterBPosition} = Q_\textrm{CurrentRotation}.RotateVector(V_\textrm{ThrusterBOffset}) + V_\textrm{TargetPosition}\\
+V_\textrm{ThrusterCPosition} = Q_\textrm{CurrentRotation}.RotateVector(V_\textrm{ThrusterCOffset}) + V_\textrm{TargetPosition}\\
+V_\textrm{ThrusterDPosition} = Q_\textrm{CurrentRotation}.RotateVector(V_\textrm{ThrusterDOffset}) + V_\textrm{TargetPosition}\\
+V_\textrm{ThrusterEPosition} = Q_\textrm{CurrentRotation}.RotateVector(V_\textrm{ThrusterEOffset}) + V_\textrm{TargetPosition}
+$
+
+
+\section{Quadcopter Hover Angle Calculation}
+$
+DA_\textrm{Direction} = RotationMatrix.RotateVector(EA_\textrm{rotate} (0, -90, 0), DA_\textrm{Direction} )\\
+\newline
+DA_\textrm{Direction} = RotationMatrix.RotateVector(EA_\textrm{rotate} (0, DA_\textrm{Rotation}, 0), DA_\textrm{Direction} )\\
+\newline
+D_\textrm{InnerJoint} = RadiansToDegrees( arcsin(D_\textrm{DirectionVectorZ}) )\\
+D_\textrm{OuterJoint} = RadiansToDegrees( arctan2(D_\textrm{DirectionVectorX}, D_\textrm{DirectionVectorY}) )\\
+$
+
+
+\section{Quadcopter Estimate Position}
+$
+V_\textrm{TBThrust} = Vector(0, ThrustBOutputY, 0)\\
+V_\textrm{TCThrust} = Vector(0, ThrustCOutputY, 0)\\
+V_\textrm{TDThrust} = Vector(0, ThrustDOutputY, 0)\\
+V_\textrm{TEThrust} = Vector(0, ThrustEOutputY, 0)\\
+\newline
+Q_\textrm{TBR} = EA(ThrustBOutput.X, 0, -ThrustBOutput.Z)\\
+Q_\textrm{TCR} = EA(ThrustCOutput.X, 0, -ThrustCOutput.Z)\\
+Q_\textrm{TDR} = EA(ThrustDOutput.X, 0, -ThrustDOutput.Z)\\
+Q_\textrm{TER} = EA(ThrustEOutput.X, 0, -ThrustEOutput.Z)\\
+\newline
+V_\textrm{TBThrust} = Q_\textrm{TBR}.RotateVector( TBThrust )\\
+V_\textrm{TCThrust} = Q_\textrm{TCR}.RotateVector( TCThrust )\\
+V_\textrm{TDThrust} = Q_\textrm{TDR}.RotateVector( TDThrust )\\
+V_\textrm{TEThrust} = Q_\textrm{TER}.RotateVector( TEThrust )\\
+\newline
+V_\textrm{ThrustSum} = V_\textrm{TBThrust} + V_\textrm{TCThrust} + V_\textrm{TDThrust} + V_\textrm{TEThrust}\\
+V_\textrm{ThrustSum} = Q_\textrm{current}.RotateVector( V_\textrm{ThrustSum} )\\
+\newline
+V_\textrm{XDragForce} = D_\textrm{AirDensity} \times D_\textrm{XCurrentVelocity}^2 \times D_\textrm{DragCoefficient} \times Sign ( XCurrentVelocity ) \\
+V_\textrm{YDragForce} = D_\textrm{AirDensity} \times D_\textrm{YCurrentVelocity}^2 \times D_\textrm{DragCoefficient} \times Sign ( YCurrentVelocity ) \\
+V_\textrm{ZDragForce} = D_\textrm{AirDensity} \times D_\textrm{ZCurrentVelocity}^2 \times D_\textrm{DragCoefficient} \times Sign ( ZCurrentVelocity ) \\
+\newline
+V_\textrm{CurrentAcceleration} = V_\textrm{ThrustSum} + V_\textrm{WorldAcceleration}\\
+V_\textrm{CurrentVelocity} = V_\textrm{CurrentVelocity} + V_\textrm{CurrentAcceleration} \times D_\textrm{TimeDerivative} \\
+V_\textrm{CurrentPosition} = V_\textrm{CurrentPosition} + V_\textrm{CurrentVelocity} \times D_\textrm{TimeDerivative} \\
+$
+
+\end{document}

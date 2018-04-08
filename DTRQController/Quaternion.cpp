@@ -68,8 +68,7 @@ Quaternion Quaternion::SphericalInterpolation(Quaternion q1, Quaternion q2, doub
 
 	if (dot > 0.9995)//Linearly interpolates if results are close
 	{
-		Quaternion result = (q1 + ratio * (q1 - q2)).UnitQuaternion();
-		return result;
+		return (q1 + ratio * (q1 - q2)).UnitQuaternion();
 	}
 	else
 	{
@@ -108,7 +107,7 @@ Quaternion Quaternion::Subtract(Quaternion quaternion) {
 
 Quaternion Quaternion::Multiply(Quaternion quaternion) {
 	Quaternion current = Quaternion(this->W, this->X, this->Y, this->Z);
-
+	
 	return Quaternion
 	{
 		current.W * quaternion.W - current.X * quaternion.X - current.Y * quaternion.Y - current.Z * quaternion.Z,
@@ -147,7 +146,7 @@ Quaternion Quaternion::Divide(Quaternion quaternion) {
 
 	return Quaternion
 	{
-		(current.W * quaternion.W + current.X * quaternion.X + current.Y * quaternion.Y + current.Z * quaternion.Z) / scale,
+		( current.W * quaternion.W + current.X * quaternion.X + current.Y * quaternion.Y + current.Z * quaternion.Z) / scale,
 		(-current.W * quaternion.X + current.X * quaternion.W + current.Y * quaternion.Z - current.Z * quaternion.Y) / scale,
 		(-current.W * quaternion.Y - current.X * quaternion.Z + current.Y * quaternion.W + current.Z * quaternion.X) / scale,
 		(-current.W * quaternion.Z + current.X * quaternion.Y - current.Y * quaternion.X + current.Z * quaternion.W) / scale
@@ -251,7 +250,7 @@ Quaternion Quaternion::Conjugate() {
 Quaternion Quaternion::UnitQuaternion() {
 	Quaternion current = Quaternion(this->W, this->X, this->Y, this->Z);
 
-	double n = sqrt(pow(current.W, 2) + pow(current.X, 2) + pow(current.Y, 2) + pow(current.Z, 2));
+	double n = current.Normal();
 
 	current.W /= n;
 	current.X /= n;

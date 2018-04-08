@@ -107,7 +107,7 @@ void I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
 
 	std::cout << "Initializing DMP of " << dev << std::endl;
 
-	dmpStatus = mpu->dmpInitialize(address);
+	dmpStatus = mpu->dmpInitialize();
 
 	mpu->setXGyroOffset(220);
 	mpu->setYGyroOffset(76);

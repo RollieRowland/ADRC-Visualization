@@ -48,9 +48,9 @@ void Quadcopter::CalculateArmPositions(double armLength, double armAngle) {
 		" Z:" + Mathematics::DoubleToCleanString(ZLength) +
 		" dT:" + Mathematics::DoubleToCleanString(dT) << std::endl;
 
-	TB = new Thruster(Vector3D(-XLength, 0, ZLength), "TB", simulation, dT);
-	TC = new Thruster(Vector3D(XLength, 0, ZLength), "TC", simulation, dT);
-	TD = new Thruster(Vector3D(XLength, 0, -ZLength), "TD", simulation, dT);
+	TB = new Thruster(Vector3D(-XLength, 0, ZLength),  "TB", simulation, dT);
+	TC = new Thruster(Vector3D( XLength, 0, ZLength),  "TC", simulation, dT);
+	TD = new Thruster(Vector3D( XLength, 0, -ZLength), "TD", simulation, dT);
 	TE = new Thruster(Vector3D(-XLength, 0, -ZLength), "TE", simulation, dT);
 }
 
