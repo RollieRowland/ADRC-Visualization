@@ -233,7 +233,7 @@ void Quadcopter::CalculateGimbalLockedMotion(Vector3D &positionControl, Vector3D
 											 Vector3D &thrusterOutputE) {
 	Vector3D hoverAngles = RotationToHoverAngles(CurrentRotation);
 
-	double fadeIn = gimbalLockFader.CalculateRatio(hoverAngles.Z);//0 -> 1, New position control faders, approaches 1 when z rot is -90/90
+	double fadeIn = gimbalLockFader.CalculateRatio(hoverAngles.Z);//-1 -> 1, New position control faders, approaches 1 when z rot is -90/90
 	double fadeOut = 1 - fadeIn;//1 -> 0, Rotation magnitude faders, approaches 0 when Z rot is -90/90 degrees
 
 	double rotation = 40 * fadeIn;
@@ -242,7 +242,7 @@ void Quadcopter::CalculateGimbalLockedMotion(Vector3D &positionControl, Vector3D
 	//double angle = Mathematics::RadiansToDegrees(Mathematics::Sign(hoverAngles.Z) * atan2(magnitude, 0) - atan2(positionControl.Z, positionControl.X));//Determine angle of output, -180 -> 180
 																													  //Rotation matrix on position control copy
 	//Vector3D RotatedControl = RotationMatrix::RotateVector(Vector3D(0, CurrentEulerRotation.Y, 0), Vector3D(positionControl.X, 0, positionControl.Z));
-	Vector3D rotatedControl = CurrentRotation.GetQuaternion().RotateVector(positionControl);
+	Vector3D rotatedControl = CalculateRotationOffset().RotateVector(positionControl);
 
 	//---- (X-), ++++ (X+), +-+- (Z+), -+-+ (Z-)
 	thrusterOutputB.X = thrusterOutputB.X * fadeOut + (rotatedControl.X * fadeIn) + (rotatedControl.Z * fadeIn);

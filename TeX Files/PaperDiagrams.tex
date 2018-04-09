@@ -321,6 +321,128 @@ $
 V_\textrm{HoverRotation} = HoverAnglesFromQuaternion(Q_\textrm{CurrentRotation})\\
 Q_\textrm{Hover} = EA(V_\textrm{HoverRotation})\\
 Q_\textrm{Yaw3D} = Q_\textrm{Hover} \times Q_\textrm{CurrentRotation}.MultiplicativeInverse()\\
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
 $
+
+\section{Quadcopter Gimbal Locked Translation}
+$
+D_\textrm{Fade} = TriangleWaveGenerator(-90 \longrightarrow 90) \Longrightarrow (0 \longrightarrow 1)\\
+D_\textrm{InverseFade} = 1 -  D_\textrm{fade}\\
+D_\textrm{Rotation} = 45 \times D_\textrm{fade}\\
+\newline
+V_\textrm{RotatedControl} = Q_{Calculate3DYaw(CurrentRotation)}.RotateVector(V_\textrm{PositionFeedbackControlOutput})\\
+\newline
+D_\textrm{TBX} = D_\textrm{TBX} \times D_\textrm{InverseFade} + D_\textrm{RotatedControlX} \times D_\textrm{Fade} + D_\textrm{RotatedControlZ} \times D_\textrm{Fade}\\
+D_\textrm{TCX} = D_\textrm{TCX} \times D_\textrm{InverseFade} + D_\textrm{RotatedControlX} \times D_\textrm{Fade} + D_\textrm{RotatedControlZ} \times D_\textrm{Fade}\\
+D_\textrm{TDX} = D_\textrm{TDX} \times D_\textrm{InverseFade} + D_\textrm{RotatedControlX} \times D_\textrm{Fade} + D_\textrm{RotatedControlZ} \times D_\textrm{Fade}\\
+D_\textrm{TEX} = D_\textrm{TEX} \times D_\textrm{InverseFade} + D_\textrm{RotatedControlX} \times D_\textrm{Fade} + D_\textrm{RotatedControlZ} \times D_\textrm{Fade}\\
+\newline
+D_\textrm{TBZ} = D_\textrm{TBZ} \times D_\textrm{InverseFade} +  D_\textrm{Rotation}\\
+D_\textrm{TCZ} = D_\textrm{TCZ} \times D_\textrm{InverseFade} -  D_\textrm{Rotation}\\
+D_\textrm{TDZ} = D_\textrm{TDZ} \times D_\textrm{InverseFade} +  D_\textrm{Rotation}\\
+D_\textrm{TEZ} = D_\textrm{TEZ} \times D_\textrm{InverseFade} -  D_\textrm{Rotation}\\
+\newline
+D_\textrm{PostionControlX} = D_\textrm{PostionControlX} \times D_\textrm{InverseFade}\\
+D_\textrm{PostionControlZ} = D_\textrm{PostionControlZ} \times D_\textrm{InverseFade}\\
+$
+
+
+
+\section{ADRC}
+$
+D_\textrm{Amplificiation}\\
+D_\textrm{Damping}\\
+D_\textrm{Plant}\\
+P_\textrm{PID}\\
+D_\textrm{PrecisionModifier}\\
+\newline
+D_\textrm{Precision} = D_\textrm{TimeDerivative} \times D_\textrm{PrecisionModifier}
+\newline
+O_\textrm{CurrentOutput} = (P_\textrm{PID}.Calculate(D_\textrm{SetPoint}, D_\textrm{ProcessVariable}, D_\textrm{TimeDerivate}), O_\textrm{PreviousOutput} )\\
+\newline
+S_\textrm{State} = ESO_\textrm{ExtendedStateObserver}.Observe(D_\textrm{TimeDerivative}, O_\textrm{CurrentOutput}, D_\textrm{Plant}, D_\textrm{ProcessVariable})\\
+\newline
+D_\textrm{PreviousOutput} = D_\textrm{CurrentOutput}\\
+D_\textrm{CurrentOutput} = NLC_\textrm{NonlinearCombiner}.Combine(O_\textrm{CurrentOutput}, D_\textrm{Plant}, S_\textrm{State}, D_\textrm{Precision})\\
+\newline
+\newline
+\newline
+\newline
+$
+
+\section{Setpoint Jump Prevention}
+$
+D_\textrm{Amp2Prec} = D_\textrm{Amplification}^2 \times D_\textrm{Precision}\\
+D_\textrm{PrecTD} = D_\textrm{Precision} \times D_\textrm{TargetDerivative}\\
+D_\textrm{TargetPrecTD} = D_\textrm{Target} + D_\textrm{PrecTD}\\
+\newline
+D_\textrm{A1} = \sqrt{D_\textrm{Amp2Prec} \times (D_\textrm{Amp2Prec} + (8 \times |D_\textrm{TargetPrecTD}|))}\\
+\newline
+D_\textrm{A2} =\frac{ D_\textrm{PrecTD} + Sign(D_\textrm{TargetPrecTD}) \times (D_\textrm{A1} - D_\textrm{Amp2Prec})} {2}\\
+\newline
+D_\textrm{SignTargetPrecTD} = \frac{Sign(D_\textrm{TargetPrecTD} + D_\textrm{Amp2Prec}) - Sign(D_\textrm{TargetPrecTD} - D_\textrm{Amp2Prec})} {2}
+\newline
+\newline
+D_\textrm{A} = (D_\textrm{PrecTD} + D_\textrm{TargetPrecTD} - D_\textrm{A2}) \times D_\textrm{SignTargetPrecTD} + D_\textrm{A2}\\
+\newline
+D_\textrm{SignA} = \frac{Sign(D_\textrm{A} + D_\textrm{Amp2Prec}) - Sign(D_\textrm{A} - D_\textrm{Amp2Prec})} {2}
+\newline
+\newline
+D_\textrm{SetpointJumpPrevention} = -D_\textrm{Amplification} \times (\frac{D_\textrm{A}}{D_\textrm{Amp2Prec}})- Sign(D_\textrm{A}) \times D_\textrm{SignA} - D_\textrm{Amplification} \times Sign(D_\textrm{A})\\
+$
+
+\section{Nonlinear Combiner}
+$
+D_\textrm{EstimationE1} = O_\textrm{CurrentOutput} - S_\textrm{StateZ1}\\
+D_\textrm{EstimationE2} = O_\textrm{PreviousOutput} - S_\textrm{StateZ2}\\
+D_\textrm{NominalControlSignal} = SetPointJumpPrevention(D_\textrm{Target}, D_\textrm{TargetDerivate}, D_\textrm{Amplificiation}, D_\textrm{Precision})\\
+\newline
+D_\textrm{Combine} = \frac{D_\textrm{NominalControlSignal} + S_\textrm{StateZ3}} {D_\textrm{Plant}}\\
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+$
+
+\section{Extended State Observer}
+$
+S_\textrm{Gain1} = 1\\
+\newline
+S_\textrm{Gain2} = \frac{1} {2 \times dT^{0.5}}\\
+\newline
+S_\textrm{Gain3} = \frac{2} {25 \times dT^{1.2}}\\
+\newline
+\newline
+D_\textrm{E} = D_\textrm{StateZ1} - D_\textrm{ProcessVariable}\\
+D_\textrm{FE} = NonlinearFunction(D_\textrm{E}, 0.5, dT)\\
+D_\textrm{FE1} = NonlinearFunction(D_\textrm{E}, 0.25, dT)\\
+\newline
+S_\textrm{StateZ1} = S_\textrm{StateZ1} + (dT \times S_\textrm{StateZ2}) - (S_\textrm{GainZ1} \times D_\textrm{E})\\
+S_\textrm{StateZ2} = S_\textrm{StateZ2} + (dT \times (S_\textrm{StateZ3} + (D_\textrm{Plant} \times D_\textrm{Output}))) - (S_\textrm{GainZ2} \times D_\textrm{FE})\\
+S_\textrm{StateZ3} = S_\textrm{StateZ3} - S_\textrm{GainZ3} \times D_\textrm{FE1}\\
+$
+
+\section{Nonlinear Function}
+$
+ Output = \begin{cases}
+   \frac{ \eta } { \delta^{(1 - \alpha)} }, & \text{if $|\eta| \le \delta$}.\\
+   |\eta|^{\alpha} \times Sign(\eta), & \text{otherwise}.\\
+\end{cases}
+$
+
 
 \end{document}
