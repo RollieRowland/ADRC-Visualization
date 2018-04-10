@@ -445,4 +445,191 @@ $
 $
 
 
+\section{Axis-Angle to Quaternion}
+$
+D_\textrm{Rotation} = \frac{ AA_\textrm{AxisAngleRotation} \times \pi} {180}\\
+\newline
+D_\textrm{Scale} = sin( \frac{D_\textrm{Rotation}} {2} )\\
+\newline
+Q_\textrm{W} = cos( \frac{D_\textrm{Rotation}} {2} )\\
+Q_\textrm{X} = AA_\textrm{AxisAngleX} \times D_\textrm{Scale}\\
+Q_\textrm{Y} = AA_\textrm{AxisAngleY} \times D_\textrm{Scale}\\
+Q_\textrm{Z} = AA_\textrm{AxisAngleZ} \times D_\textrm{Scale}\\
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+$
+
+\section{Quaternion to Axis-Angle}
+$
+AA_\textrm{Rotation} = 2 \times acos( Q_\textrm{W} )\\
+\newline
+D_\textrm{QuaternionCheck} = \sqrt{ 1 - Q_\textrm{W}^2 }\\
+\newline
+\newline
+AA_\textrm{AxisX} = \begin{cases}
+   \frac{ Q_\textrm{X} } {D_\textrm{QuaternionCheck}}, & \text{if $D_\textrm{QuaternionCheck} \ge 0.001$}.\\
+   0, & \text{otherwise}.\\
+\end{cases}\\
+AA_\textrm{AxisY} = \begin{cases}
+   \frac{ Q_\textrm{Y} } {D_\textrm{QuaternionCheck}}, & \text{if $D_\textrm{QuaternionCheck} \ge 0.001$}.\\
+   0, & \text{otherwise}.\\
+\end{cases}\\
+AA_\textrm{AxisZ} = \begin{cases}
+   \frac{ Q_\textrm{Z} } {D_\textrm{QuaternionCheck}}, & \text{if $D_\textrm{QuaternionCheck} \ge 0.001$}.\\
+   0, & \text{otherwise}.\\
+\end{cases}\\
+$
+
+
+
+\section{Direction-Angle to Quaternion}
+$
+V_\textrm{Right} = Vector(1, 0, 0)\\
+V_\textrm{Up} = Vector(0, 1, 0)\\
+V_\textrm{Forward} = Vector(0, 0, 1)\\
+\newline
+V_\textrm{RotatedUp} = DA_\textrm{DirectionAngleDirection}\\
+\newline
+Q_\textrm{Rotation} = QuaternionFromDirectionVectors(V_\textrm{Up}, V_\textrm{RotatedUp})\\
+\newline
+V_\textrm{RotatedRight} = RM_\textrm{RotationMatrix}.Rotate( Vector(0, -DA_\textrm{DirectionAngleRotation}, 0), V_\textrm{Right})\\
+V_\textrm{RotatedForward} = RM_\textrm{RotationMatrix}.Rotate( Vector(0, -DA_\textrm{DirectionAngleRotation}, 0), V_\textrm{Forward})\\
+\newline
+V_\textrm{RotatedRight} = Q_\textrm{Rotation}.RotateVector(V_\textrm{RotatedRight})\\
+V_\textrm{RotatedForward} = Q_\textrm{Rotation}.RotateVector(V_\textrm{RotatedForward})\\
+\newline
+Q_\textrm{Quaternion} = RMToQuaternion(RotationMatrix(V_\textrm{RotatedRight}, V_\textrm{RotatedUp}, V_\textrm{RotatedForward}))\\
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+$
+
+\section{Quaternion to Direction-Angle}
+$
+V_\textrm{Up} = Vector(0, 1, 0)\\
+V_\textrm{Right} = Vector(1, 0, 0)\\
+V_\textrm{RotatedUp} = Q_\textrm{Quaternion}.RotateVector(V_\textrm{Up})\\
+V_\textrm{RotatedRight} = Q_\textrm{Quaternion}.RotateVector(V_\textrm{Right})\\
+\newline
+Q_\textrm{Rotation} = QuaternionFromDirectionVectors(V_\textrm{Up}, V_\textrm{RotateUp})\\
+\newline
+V_\textrm{RightCompensated} = Q_\textrm{Rotation}.UnrotateVector(V_\textrm{RotatedRight})\\
+\newline
+D_\textrm{RightAngle} = \frac{ atan2(D_\textrm{RightZ}, D_\textrm{RightX}) \times \pi} {180}\\
+D_\textrm{RightRotatedAngle} = \frac{ atan2(D_\textrm{RightCompensatedZ}, D_\textrm{RightCompensatedX}) \times \pi} {180}\\
+\newline
+DA_\textrm{Rotation} = D_\textrm{RightAngle} - D_\textrm{RightRotateAngle}\\
+DA_\textrm{Direction} = V_\textrm{RotatedUp}\\
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+$
+
+
+\section{Rotation Matrix to Quaternion}
+$
+D_\textrm{MatrixTrace} = V_\textrm{XAxisX} + V_\textrm{YAxisY} + V_\textrm{ZAxisZ}\\
+\newline
+D_\textrm{Square} = \begin{cases}
+   \sqrt{1 + MatrixTrace} \times 2, & \text{if $D_\textrm{MatrixTrace}$} > 0.\\
+   \sqrt{1 + D_\textrm{XAxisX} - D_\textrm{YAxisY} - D_\textrm{ZAxisZ}} \times 2, & \text{if $D_\textrm{XAxisX} > D_\textrm{YAxisY}$ and $D_\textrm{XAxisX} > D_\textrm{ZAxisZ}$}.\\
+   \sqrt{1 + D_\textrm{YAxisY} - D_\textrm{XAxisX} - D_\textrm{ZAxisZ}} \times 2, & \text{if $D_\textrm{YAxisY} > D_\textrm{ZAxisZ}$}.\\
+   \sqrt{1 + D_\textrm{ZAxisZ} - D_\textrm{XAxisX} - D_\textrm{YAxisY}} \times 2, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+Q_\textrm{W} = \begin{cases}
+   \frac{D_\textrm{Square}}{4}, & \text{if $D_\textrm{MatrixTrace}$} > 0.\\
+   \frac{D_\textrm{ZAxisY} - D_\textrm{YAxisZ}}{D_\textrm{Square}}, & \text{if $D_\textrm{XAxisX} > D_\textrm{YAxisY}$ and $D_\textrm{XAxisX} > D_\textrm{ZAxisZ}$}.\\
+   \frac{D_\textrm{XAxisZ} - D_\textrm{ZAxisX}}{D_\textrm{Square}}, & \text{if $D_\textrm{YAxisY} > D_\textrm{ZAxisZ}$}.\\
+   \frac{D_\textrm{YAxisX} - D_\textrm{XAxisY}}{D_\textrm{Square}}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+Q_\textrm{X} = \begin{cases}
+   \frac{D_\textrm{ZAxisY} - D_\textrm{YAxisZ}}{D_\textrm{Square}}, & \text{if $D_\textrm{MatrixTrace}$} > 0.\\
+   \frac{D_\textrm{Square}}{4}, & \text{if $D_\textrm{XAxisX} > D_\textrm{YAxisY}$ and $D_\textrm{XAxisX} > D_\textrm{ZAxisZ}$}.\\
+   \frac{D_\textrm{XAxisY} - D_\textrm{YAxisX}}{D_\textrm{Square}}, & \text{if $D_\textrm{YAxisY} > D_\textrm{ZAxisZ}$}.\\
+   \frac{D_\textrm{XAxisZ} - D_\textrm{ZAxisX}}{D_\textrm{Square}}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+Q_\textrm{Y} = \begin{cases}
+   \frac{D_\textrm{XAxisZ} - D_\textrm{ZAxisX}}{D_\textrm{Square}}, & \text{if $D_\textrm{MatrixTrace}$} > 0.\\
+   \frac{D_\textrm{XAxisY} - D_\textrm{YAxisX}}{D_\textrm{Square}}, & \text{if $D_\textrm{XAxisX} > D_\textrm{YAxisY}$ and $D_\textrm{XAxisX} > D_\textrm{ZAxisZ}$}.\\
+   \frac{D_\textrm{Square}}{4}, & \text{if $D_\textrm{YAxisY} > D_\textrm{ZAxisZ}$}.\\
+   \frac{D_\textrm{YAxisZ} - D_\textrm{ZAxisY}}{D_\textrm{Square}}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+Q_\textrm{Z} = \begin{cases}
+   \frac{D_\textrm{YAxisZ} - D_\textrm{ZAxisY}}{D_\textrm{Square}}, & \text{if $D_\textrm{MatrixTrace}$} > 0.\\
+   \frac{D_\textrm{XAxisZ} - D_\textrm{ZAxisX}}{D_\textrm{Square}}, & \text{if $D_\textrm{XAxisX} > D_\textrm{YAxisY}$ and $D_\textrm{XAxisX} > D_\textrm{ZAxisZ}$}.\\
+   \frac{D_\textrm{YAxisZ} - D_\textrm{ZAxisY}}{D_\textrm{Square}}, & \text{if $D_\textrm{YAxisY} > D_\textrm{ZAxisZ}$}.\\
+   \frac{D_\textrm{Square}}{4}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+\newline
+Q_\textrm{WXYZ} = Conjugate(Q_\textrm{WXYZ})\\ 
+$
+
+\section{Quaternion to Rotation Matrix}
+$
+V_\textrm{Right} = Vector(1, 0, 0)\\
+V_\textrm{Up} = Vector(0, 1, 0)\\
+V_\textrm{Forward} = Vector(0, 0, 1)\\
+\newline
+RM_\textrm{XAxis} = Q_\textrm{Rotation}.RotateVector(V_\textrm{Right})\\
+RM_\textrm{YAxis} = Q_\textrm{Rotation}.RotateVector(V_\textrm{Up})\\
+RM_\textrm{ZAxis} = Q_\textrm{Rotation}.RotateVector(V_\textrm{Forward})\\
+$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \end{document}
