@@ -8,16 +8,14 @@
 
 
 \section{Quaternion Multiplication}
-\begin{linenomath}
-\begin{center}
-$
-Q_\textrm{Wnew} = Q_\textrm{W1}(Q_\textrm{W2}) - Q_\textrm{X1}(Q_\textrm{X2}) - Q_\textrm{Y1}(Q_\textrm{Y2}) - Q_\textrm{Z1}(Q_\textrm{Z2}) \newline
-Q_\textrm{Xnew} = Q_\textrm{W1}(Q_\textrm{X2}) - Q_\textrm{X1}(Q_\textrm{W2}) - Q_\textrm{Y1}(Q_\textrm{Z2}) - Q_\textrm{Z1}(Q_\textrm{Y2}) \newline
-Q_\textrm{Ynew} = Q_\textrm{W1}(Q_\textrm{Y2}) - Q_\textrm{X1}(Q_\textrm{Z2}) - Q_\textrm{Y1}(Q_\textrm{W2}) - Q_\textrm{Z1}(Q_\textrm{X2}) \newline
-Q_\textrm{Znew} = Q_\textrm{W1}(Q_\textrm{Z2}) - Q_\textrm{X1}(Q_\textrm{Y2}) - Q_\textrm{Y1}(Q_\textrm{X2}) - Q_\textrm{Z1}(Q_\textrm{W2}) \newline
-$
-\end{center}
-\end{linenomath}
+\begin{linenomath*}
+\begin{equation}
+Q_\textrm{Wnew} = Q_\textrm{W1}(Q_\textrm{W2}) - Q_\textrm{X1}(Q_\textrm{X2}) - Q_\textrm{Y1}(Q_\textrm{Y2}) - Q_\textrm{Z1}(Q_\textrm{Z2}) \\
+Q_\textrm{Xnew} = Q_\textrm{W1}(Q_\textrm{X2}) - Q_\textrm{X1}(Q_\textrm{W2}) - Q_\textrm{Y1}(Q_\textrm{Z2}) - Q_\textrm{Z1}(Q_\textrm{Y2}) \\
+Q_\textrm{Ynew} = Q_\textrm{W1}(Q_\textrm{Y2}) - Q_\textrm{X1}(Q_\textrm{Z2}) - Q_\textrm{Y1}(Q_\textrm{W2}) - Q_\textrm{Z1}(Q_\textrm{X2}) \\
+Q_\textrm{Znew} = Q_\textrm{W1}(Q_\textrm{Z2}) - Q_\textrm{X1}(Q_\textrm{Y2}) - Q_\textrm{Y1}(Q_\textrm{X2}) - Q_\textrm{Z1}(Q_\textrm{W2}) \\
+\end{equation}
+\end{linenomath*}
 
 
 
@@ -48,18 +46,12 @@ $
 
 
 \section{Quaternion Normal}
-\begin{linenomath}
-\begin{center}
 $
 Normal_\textrm{rational} = Q_W^2 + Q_X^2 + Q_Y^2 + Q_Z^2 \newline
 $
-\end{center}
-\end{linenomath}
 
 
 \section{Quaternion Multiplicative Inverse}
-\begin{linenomath}
-\begin{center}
 $
 Q_\textrm{reciprocal} = Q_\textrm{conjugate} × \frac{1}{Q_\textrm{normal}} \newline
 \newline
@@ -71,13 +63,9 @@ Q_\textrm{reciprocal} = Q_\textrm{conjugate} × \frac{1}{Q_\textrm{normal}} \new
 \newline
 \newline
 $
-\end{center}
-\end{linenomath}
 
 
 \section{Quaternion Vector Rotation}
-\begin{linenomath}
-\begin{center}
 $
 Q_\textrm{Wbivector} =\hspace{1ex} 0 \newline
 Q_\textrm{Xbivector} = V_X \newline
@@ -90,13 +78,9 @@ V_\textrm{Xrotated} = Q_\textrm{Xrotation} \newline
 V_\textrm{Yrotated} = Q_\textrm{Yrotation} \newline
 V_\textrm{Zrotated} = Q_\textrm{Zrotation} \newline
 $
-\end{center}
-\end{linenomath}
 
 
 \section{Quaternion Vector Rotation Removal}
-\begin{linenomath}
-\begin{center}
 $
 Q_\textrm{Wbivector} =\hspace{1ex} 0 \newline
 Q_\textrm{Xbivector} = V_X \newline
@@ -109,8 +93,6 @@ V_\textrm{Xrotated} = Q_\textrm{Xrotation} \newline
 V_\textrm{Yrotated} = Q_\textrm{Yrotation} \newline
 V_\textrm{Zrotated} = Q_\textrm{Zrotation} \newline
 $
-\end{center}
-\end{linenomath}
 
 
 \section{Unit Quaternion}
@@ -610,15 +592,149 @@ RM_\textrm{YAxis} = Q_\textrm{Rotation}.RotateVector(V_\textrm{Up})\\
 RM_\textrm{ZAxis} = Q_\textrm{Rotation}.RotateVector(V_\textrm{Forward})\\
 $
 
+\section{Direction Vectors to Quaternion}
+$
+V_\textrm{XAxis} = Vector(1, 0, 0)\\
+V_\textrm{YAxis} = Vector(0, 1, 0)\\
+D_\textrm{Dot} = V_\textrm{Initial} \dot V_\textrm{Final}\\
+\newline
+C_\textrm{Cross} = \begin{cases}
+   V_\textrm{XAxis} \times V_\textrm{Initial}, & \text{if $D_\textrm{Dot}$} < -0.999.\\
+   Vector(0, 0, 0), & \text{if $D_\textrm{Dot} > 0.999$}.\\
+   V_\textrm{Initial} \times V_\textrm{Final}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+C_\textrm{Cross} = \begin{cases}
+   V_\textrm{YAxis} \times V_\textrm{Initial}, & \text{if $D_\textrm{CrossLength}$} < 0.001.\\
+\end{cases}\\
+\newline
+AA_\textrm{AxisAngle} = AxisAngle(\pi, V_\textrm{Cross})
+\newline
+Q_\textrm{W} = \begin{cases}
+   D_\textrm{AxisAngleRotation}, & \text{if $D_\textrm{Dot}$} < -0.999.\\
+   1, & \text{if $D_\textrm{Dot}$} > 0.999.\\
+   1 + D_\textrm{Dot}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+Q_\textrm{X} = \begin{cases}
+   D_\textrm{AxisAngleAxisX}, & \text{if $D_\textrm{Dot}$} < -0.999.\\
+   0, & \text{if $D_\textrm{Dot}$} > 0.999.\\
+   D_\textrm{CrossX}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+Q_\textrm{Y} = \begin{cases}
+   D_\textrm{AxisAngleAxisY}, & \text{if $D_\textrm{Dot}$} < -0.999.\\
+   0, & \text{if $D_\textrm{Dot}$} > 0.999.\\
+   D_\textrm{CrossY}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+Q_\textrm{Z} = \begin{cases}
+   D_\textrm{AxisAngleAxisZ}, & \text{if $D_\textrm{Dot}$} < -0.999.\\
+   0, & \text{if $D_\textrm{Dot}$} > 0.999.\\
+   D_\textrm{CrossZ}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+$
+
+\section{Euler Angles to Quaternion}
+$
+D_\textrm{Rotating} = D_\textrm{EulerX}\\
+\newline
+D_\textrm{EulerX} = \begin{cases}
+   D_\textrm{EulerZ}, & \text{if $F_\textrm{Frame} = F_\textrm{Rotating}$}\\
+   D_\textrm{EulerX}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+D_\textrm{EulerZ} = \begin{cases}
+   D_\textrm{Rotating}, & \text{if $F_\textrm{Frame} = F_\textrm{Rotating}$}\\
+   D_\textrm{EulerZ}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+D_\textrm{EulerY} = \begin{cases}
+   -D_\textrm{EulerY}, & \text{if $P_\textrm{AxisPermutation} = P_\textrm{Odd}$}\\
+   D_\textrm{EulerY}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+\newline
+D_\textrm{SineX} = sin(\frac{D_\textrm{EulerX}}{2})\\
+D_\textrm{SineY} = sin(\frac{D_\textrm{EulerY}}{2})\\
+D_\textrm{SineZ} = sin(\frac{D_\textrm{EulerZ}}{2})\\
+\newline
+D_\textrm{CosineX} = cos(\frac{D_\textrm{EulerX}}{2})\\
+D_\textrm{CosineY} = cos\frac{D_\textrm{EulerY}}{2})\\
+D_\textrm{CosineZ} = cos\frac{D_\textrm{EulerZ}}{2})\\
+\newline
+\newline
+D_\textrm{CC} = D_\textrm{CosineX} \times D_\textrm{CosineZ}\\
+D_\textrm{CS} = D_\textrm{CosineX} \times D_\textrm{SineZ}\\
+D_\textrm{SC} = D_\textrm{SineX} \times D_\textrm{CosineZ}\\
+D_\textrm{SS} = D_\textrm{SineX} \times D_\textrm{SineZ}\\
+\newline
+Q_\textrm{W} = \begin{cases}
+   D_\textrm{CosineY} \times (D_\textrm{CC} - D_\textrm{SS}), & \text{if $A_\textrm{AxisRepetition} = A_\textrm{Yes}$}\\
+   D_\textrm{CosineY} \times D_\textrm{CC} + D_\textrm{SineY} \times D_\textrm{SS}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+Q_\textrm{X} = \begin{cases}
+   D_\textrm{CosineY} \times (D_\textrm{CS} + D_\textrm{SC}), & \text{if $A_\textrm{AxisRepetition} = A_\textrm{Yes}$}\\
+   D_\textrm{CosineY} \times D_\textrm{SC} - D_\textrm{SineY} \times D_\textrm{CS}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+Q_\textrm{Y} = \begin{cases}
+   D_\textrm{SineY} \times (D_\textrm{CC} + D_\textrm{SS}), & \text{if $A_\textrm{AxisRepetition} = A_\textrm{Yes}$}\\
+   D_\textrm{CosineY} \times D_\textrm{SS} + D_\textrm{SineY} \times D_\textrm{CC}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+Q_\textrm{Z} = \begin{cases}
+   D_\textrm{SineY} \times (D_\textrm{CS} - D_\textrm{SC}), & \text{if $A_\textrm{AxisRepetition} = A_\textrm{Yes}$}\\
+   D_\textrm{CosineY} \times D_\textrm{CS} - D_\textrm{SineY} \times D_\textrm{SC}, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+Q_\textrm{WXYZ} = Q_\textrm{WXYZ}.Permutate(V_\textrm{Permutation})\\
+\newline
+Q_\textrm{Y} = \begin{cases}
+   -Q_\textrm{Y}, & \text{if $P_\textrm{AxisPermutation} = P_\textrm{Odd}$}\\
+   Q_\textrm{Y}, & \text{otherwise}.\\
+\end{cases}\\
+$
 
 
-
-
-
-
-
-
-
+\section{Quaternion to Euler Angles}
+$
+D_\textrm{Norm} = D_\textrm{QuaternionNormal}\\
+D_\textrm{Scale} = \begin{cases}
+   \frac{2}{D_\textrm{Norm}}, & \text{if $D_\textrm{Norm}$} > 0\\
+   0, & \text{otherwise}.\\
+\end{cases}\\
+\newline
+V_\textrm{SB} = Vector(Q_\textrm{X} \times D_\textrm{Scale}, Q_\textrm{Y} \times D_\textrm{Scale}, Q_\textrm{Z} \times D_\textrm{Scale})\\
+V_\textrm{W} = Vector(Q_\textrm{W} \times SB_\textrm{X}, Q_\textrm{W} \times SB_\textrm{Y}, Q_\textrm{W} \times SB_\textrm{Z} )\\
+V_\textrm{X} = Vector(Q_\textrm{X} \times SB_\textrm{X}, Q_\textrm{X} \times SB_\textrm{Y}, Q_\textrm{X} \times SB_\textrm{Z} )\\
+V_\textrm{Y} = Vector(0, Q_\textrm{Y} \times SB_\textrm{Y}, Q_\textrm{Y} \times SB_\textrm{Z} )\\
+V_\textrm{Z} = Vector(0, 0, Q_\textrm{Z} \times SB_\textrm{Z} )\\
+\newline
+V_\textrm{XAxis} = Vector(1 - D_\textrm{YY} + D_\textrm{ZZ}, D_\textrm{XY} - D_\textrm{WZ}, D_\textrm{XZ} + D_\textrm{WY})\\
+V_\textrm{YAxis} = Vector(D_\textrm{XY} + D_\textrm{WZ}, 1- D_\textrm{XX} - D_\textrm{ZZ}, D_\textrm{YZ} - D_\textrm{WX})\\
+V_\textrm{ZAxis} = Vector(D_\textrm{XZ} - D_\textrm{WY}, D_\textrm{YZ} - D_\textrm{WX}, 1 - D_\textrm{XX} + D_\textrm{YY})\\
+\newline
+RM_\textrm{RotationMatrix} = RotationMatrix(V_\textrm{XAxis}, V_\textrm{YAxis}, V_\textrm{ZAxis})\\
+\newline
+D_\textrm{SineY} = \sqrt{}\\
+D_\textrm{CosineY}
+$
 
 
 
