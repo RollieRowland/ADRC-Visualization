@@ -40,7 +40,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
-      <LibraryDependencies>wiringPi</LibraryDependencies>
+      <LibraryDependencies>bcm2835;</LibraryDependencies>
     </Link>
     <RemotePostBuildEvent>
       <Command>gpio export 17 out</Command>
@@ -83,7 +83,6 @@
     <ClCompile Include="..\DTRQController\VectorFeedbackController.cpp" />
     <ClCompile Include="..\DTRQController\VectorKalmanFilter.cpp" />
     <ClCompile Include="..\DTRQController\YawPitchRoll.cpp" />
-    <ClCompile Include="bcm2835.c" />
     <ClCompile Include="I2CController.cpp" />
     <ClCompile Include="I2Cdev.cpp" />
     <ClCompile Include="main.cpp" />
@@ -119,7 +118,6 @@
     <ClInclude Include="..\DTRQController\VectorFeedbackController.h" />
     <ClInclude Include="..\DTRQController\VectorKalmanFilter.h" />
     <ClInclude Include="..\DTRQController\YawPitchRoll.h" />
-    <ClInclude Include="bcm2835.h" />
     <ClInclude Include="helper_3dmath.h" />
     <ClInclude Include="I2Cdev.h" />
     <ClInclude Include="MPU6050.h" />
@@ -133,6 +131,9 @@
       <ThreadSafeStatics>No</ThreadSafeStatics>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bcm2835.h"
+#include "I2Cdev.h"
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -29,6 +29,8 @@ private:
 
 	uint8_t StartInt = 0x6;
 
+	uint8_t address;
+
 	void SetPWMFrequency(int frequency);
 	void Reset();
 
@@ -45,7 +47,7 @@ public:
 	const double MAXROTOROUTPUT = 39.2;
 	const double MINROTOROUTPUT = 39.2;
 
-	PWMController(int frequency);//24 -> 1526Hz
+	PWMController(int frequency, uint8_t addr);//24 -> 1526Hz
 
 	void SetOuterBAngle(double angle);
 	void SetOuterCAngle(double angle);

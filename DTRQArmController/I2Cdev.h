@@ -30,7 +30,7 @@ THE SOFTWARE.
 #ifndef _I2CDEV_H_
 #define _I2CDEV_H_
 
-#include "bcm2835.h"
+#include <bcm2835.h>
 #include <math.h> // required for BMP180
 #include <stdlib.h> // required for MPU6060
 #include <string.h> // required for MPU6060

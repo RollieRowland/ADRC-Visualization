@@ -1,6 +1,8 @@
 #include "PWMController.h"
 
-PWMController::PWMController(int frequency) {
+PWMController::PWMController(int frequency, uint8_t addr) {
+	this->address = addr;
+
 	Reset();
 	SetPWMFrequency(frequency);
 
@@ -33,14 +35,7 @@ void PWMController::SetPWM(int device, int frequency) {
 }
 
 void PWMController::WriteByte(uint8_t addr, uint8_t value) {
-	char *val;
-
-	sprintf(val, "%d", value);
-
-	bcm2835_i2c_setSlaveAddress(addr);
-	bcm2835_i2c_begin();
-	bcm2835_i2c_write(val , 1);
-	bcm2835_i2c_end();
+	I2Cdev::writeByte(this->address, addr, value);
 }
 
 

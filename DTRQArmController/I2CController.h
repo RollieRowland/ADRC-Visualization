@@ -1,12 +1,12 @@
 #pragma once
 
-#include "bcm2835.h"
 #include "MPU6050.h"
 #include "MPU9150.h"
 #include <stdio.h>
 #include <iostream>
 #include "../DTRQController/Rotation.h"
 #include "PWMController.h"
+#include "I2Cdev.h"
 
 class I2CController {
 public:
@@ -42,11 +42,10 @@ public:
 	void SetEThrustVector(Vector3D);
 
 private:
-	int address;
-	int baudrate;
+	u_int8_t address;
 	int packetSize;
 
-	MPU6050 *mpuMain;
+	MPU9150 *mpuMain;
 	MPU6050 *mpuB;
 	MPU6050 *mpuC;
 	MPU6050 *mpuD;

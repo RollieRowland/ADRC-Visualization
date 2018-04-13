@@ -77,12 +77,6 @@
       <Filter>Include Files\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="bcm2835.c">
-      <Filter>Hardware Control\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="I2Cdev.cpp">
-      <Filter>Hardware Control\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MPU6050.cpp">
       <Filter>Hardware Control\Source Files</Filter>
     </ClCompile>
@@ -97,6 +91,9 @@
     </ClCompile>
     <ClCompile Include="..\DTRQController\QuaternionKalmanFilter.cpp">
       <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="I2Cdev.cpp">
+      <Filter>Hardware Control\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -198,13 +195,7 @@
     <ClInclude Include="..\DTRQController\YawPitchRoll.h">
       <Filter>Include Files\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bcm2835.h">
-      <Filter>Hardware Control\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MPU6050.h">
-      <Filter>Hardware Control\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="I2Cdev.h">
       <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="I2CController.h">
@@ -221,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="..\DTRQController\QuaternionKalmanFilter.h">
       <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="I2Cdev.h">
+      <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

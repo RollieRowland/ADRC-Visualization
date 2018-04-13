@@ -3,19 +3,29 @@
 I2CController::I2CController(int addr) {
 	this->address = addr;
 
-	mpuMain = new MPU6050(address);
+	std::cout << "Initializing I2C device library." << std::endl;
+
+	I2Cdev::initialize();
+
+	std::cout << "Creating MPU objects." << std::endl;
+
+	mpuMain = new MPU9150(address);
 	mpuB = new MPU6050(address);
 	mpuC = new MPU6050(address);
 	mpuD = new MPU6050(address);
 	mpuE = new MPU6050(address);
 
-	//hPWM = new PWMController(500);
+	std::cout << "Initializing MPUs." << std::endl;
 
 	InitializeMPU(MainMPU, mpuMain);
 	InitializeMPU(ThrusterBMPU, mpuB);
 	InitializeMPU(ThrusterCMPU, mpuC);
 	InitializeMPU(ThrusterDMPU, mpuD);
 	InitializeMPU(ThrusterEMPU, mpuE);
+
+	//hPWM = new PWMController(500);
+
+	std::cout << "MPUs initialized." << std::endl;
 }
 
 I2CController::~I2CController() {
@@ -41,67 +51,38 @@ I2CController::~I2CController() {
 }
 
 void I2CController::SelectDevice(Device mpu) {
+	std::cout << "Selecting " << mpu << std::endl;
+
+	int addr;
+
 	if (mpu == MainMPU) {
-		int addr = 1 << 0;//1 * 2^i
-		char buf[4];
-
-		sprintf(buf, "%d", addr);
-
-		bcm2835_i2c_setSlaveAddress(address);
-		bcm2835_i2c_begin();
-		bcm2835_i2c_write(buf, 4);
-		bcm2835_i2c_end();
+		addr = 1 << 1;//1 * 2^i
 	}
 	else if (mpu == ThrusterBMPU) {
-		int addr = 1 << 1;//1 * 2^i
-		char buf[4];
-
-		sprintf(buf, "%d", addr);
-
-		bcm2835_i2c_setSlaveAddress(address);
-		bcm2835_i2c_begin();
-		bcm2835_i2c_write(buf, 4);
-		bcm2835_i2c_end();
+		addr = 1 << 2;//1 * 2^i
 	}
 	else if (mpu == ThrusterCMPU) {
-		int addr = 1 << 2;//1 * 2^i
-		char buf[4];
-
-		sprintf(buf, "%d", addr);
-
-		bcm2835_i2c_setSlaveAddress(address);
-		bcm2835_i2c_begin();
-		bcm2835_i2c_write(buf, 4);
-		bcm2835_i2c_end();
+		addr = 1 << 3;//1 * 2^i
 	}
 	else if (mpu == ThrusterDMPU) {
-		int addr = 1 << 3;//1 * 2^i
-		char buf[4];
-
-		sprintf(buf, "%d", addr);
-
-		bcm2835_i2c_setSlaveAddress(address);
-		bcm2835_i2c_begin();
-		bcm2835_i2c_write(buf, 4);
-		bcm2835_i2c_end();
+		addr = 1 << 4;//1 * 2^i
 	}
 	else if (mpu == ThrusterEMPU) {
-		int addr = 1 << 4;//1 * 2^i
-		char buf[4];
-
-		sprintf(buf, "%d", addr);
-
-		bcm2835_i2c_setSlaveAddress(address);
-		bcm2835_i2c_begin();
-		bcm2835_i2c_write(buf, 4);
-		bcm2835_i2c_end();
+		addr = 1 << 5;//1 * 2^i
 	}
+
+	I2Cdev::writeByte(address, 0x00, addr);
 }
 
 void I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
 	int dmpStatus;
 
+	std::cout << "Initializing MPU9150." << std::endl;
+
 	SelectDevice(dev);
+
+	std::cout << "Testing I2C connection to MPU9150." << std::endl;
+
 	mpu->testConnection();
 	mpu->initialize();
 
@@ -133,7 +114,12 @@ void I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
 void I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
 	int dmpStatus;
 
+	std::cout << "Initializing MPU6050." << std::endl;
+
 	SelectDevice(dev);
+
+	std::cout << "Testing I2C connection to MPU6050." << std::endl;
+
 	mpu->testConnection();
 	mpu->initialize();
 
@@ -184,6 +170,8 @@ Quaternion I2CController::GetRotation(Device dev, MPU6050 *mpu) {
 		QuaternionFloat q = QuaternionFloat();
 
 		mpu->dmpGetQuaternion(&q, fifoBuffer);
+
+		return Quaternion(q.w, q.x, q.y, q.z);
 	}
 }
 
@@ -209,6 +197,8 @@ Quaternion I2CController::GetRotation(Device dev, MPU9150 *mpu) {
 		QuaternionFloat q = QuaternionFloat();
 
 		mpu->dmpGetQuaternion(&q, fifoBuffer);
+
+		return Quaternion(q.w, q.x, q.y, q.z);
 	}
 }
 
@@ -334,6 +324,9 @@ Vector3D I2CController::GetLinearAcceleration(Device dev, MPU6050 *mpu) {
 
 		return gAccel;
 	}
+	else {
+		return Vector3D(-1000, -1000, -1000);
+	}
 }
 
 Vector3D I2CController::GetLinearAcceleration(Device dev, MPU9150 *mpu) {
@@ -391,6 +384,9 @@ Vector3D I2CController::GetLinearAcceleration(Device dev, MPU9150 *mpu) {
 		gAccel = gAccel / 8192;//Scaling factor from 8192+/- to 
 
 		return gAccel;
+	}
+	else {
+		return Vector3D(-1000, -1000, -1000);
 	}
 }
 
