@@ -2,40 +2,120 @@
 
 PWMController::PWMController(int frequency, uint8_t addr) {
 	this->address = addr;
+	this->frequency = frequency;
 
-	Reset();
+	std::cout << "Initializing PCA9685." << std::endl;
+
+	Restart();
+	Wake();
+
+	SetAllPWM(0);
+
+	WriteByte(MODE2, OUTDRV);
+	WriteByte(MODE1, ALLCALL);
+
+	delay(5);
+
+	uint8_t m1;
+	ReadByte(MODE1, &m1);
+	m1 = m1 & ~SLEEP;//wake up
+	WriteByte(MODE1, m1);
+
+	delay(5);
 	SetPWMFrequency(frequency);
 
 	delay(20);
 
-	InitializeESCs();
+	//std::cout << "Not initializing ESCs." << std::endl;
+
+	//InitializeESCs();
+	std::cout << "Initialized PCA9685." << std::endl;
 }
 
 //No custom on time
 void PWMController::SetPWMFrequency(int frequency) {
-	uint8_t prescaleValue = (ClockFrequency / 4096 / frequency) - 1;
+	std::cout << "   Setting PWM frequency." << std::endl;
+	uint8_t prescaleValue = (int)((ClockFrequency / 4096.0 / (double)frequency) - 1.0);
 
-	WriteByte(Mode1, 0x10);//sleep
-	WriteByte(PreScale, prescaleValue); //multiplier for PWM frequency
-	WriteByte(Mode1, 0x80);//restart
-	WriteByte(Mode2, 0x04);//totem pole
+	std::cout << "   Prescale value of: " << (int)prescaleValue << std::endl;
+
+	uint8_t previousMode;
+	uint8_t currentMode;
+	ReadByte(MODE1, &previousMode);
+	currentMode = (previousMode & 0x7F) | 0x10;//sleep
+
+	WriteByte(MODE1, currentMode);//sleep
+	WriteByte(PRESCALE, prescaleValue);//multiplier for PWM frequency
+	WriteByte(MODE1, previousMode);//restart
+	
+	delay(5);
+
+	WriteByte(MODE1, previousMode | 0x80);//totem pole
+}
+
+void PWMController::Sleep() {
+	uint8_t m1;
+	ReadByte(MODE1, &m1);
+
+	m1 |= (1u << 4);//set 5th bit
+
+	WriteByte(MODE1, m1);
+	delay(10);
+}
+
+void PWMController::Wake() {
+	uint8_t m1;
+	ReadByte(MODE1, &m1);
+
+	m1 |= (0u << 4);//set 5th bit
+
+	WriteByte(MODE1, m1);
+	delay(10);
 }
 
 void PWMController::Reset() {
-	WriteByte(Mode1, 0x80);
+	WriteByte(MODE1, 0x06);
+	delay(10);
+}
+
+void PWMController::Restart() {
+	uint8_t m1;
+	ReadByte(MODE1, &m1);
+
+	if ((m1 >> 7) & 1u) {
+		m1 |= (0u << 4);//set 5th bit
+		delay(10);//stabilize oscillator
+	}
+
+	m1 |= (1u << 7);//set 4th bit
+
+	WriteByte(MODE1, m1);
 	delay(10);
 }
 
 void PWMController::SetPWM(int device, int frequency) {
-	WriteByte(device * 4 + 0x6, 0 & 0xFF);//ON first 8
-	WriteByte(device * 4 + 0x7, 0 >> 8);//ON second 8
+	WriteByte(device * 4 + PWM0_ON_L, 0 & 0xFF);//ON first 8
+	WriteByte(device * 4 + PWM0_ON_H, 0 >> 8);//ON second 8
 
-	WriteByte(device * 4 + 0x8, frequency & 0xFF);//OFF first 8
-	WriteByte(device * 4 + 0x9, frequency >> 8);//Off second 8
+	WriteByte(device * 4 + PWM0_OFF_L, frequency & 0xFF);//OFF first 8
+	WriteByte(device * 4 + PWM0_OFF_H, frequency >> 8);//Off second 8
 }
+
+void PWMController::SetAllPWM(int frequency) {
+	WriteByte(ALL_PWM_ON_L, 0 & 0xFF);//ON first 8
+	WriteByte(ALL_PWM_ON_H, 0 >> 8);//ON second 8
+
+	WriteByte(ALL_PWM_OFF_L, frequency & 0xFF);//OFF first 8
+	WriteByte(ALL_PWM_OFF_H, frequency >> 8);//Off second 8
+}
+
 
 void PWMController::WriteByte(uint8_t addr, uint8_t value) {
 	I2Cdev::writeByte(this->address, addr, value);
+}
+
+void PWMController::ReadByte(uint8_t addr, uint8_t *value) {
+	I2Cdev::readByte(this->address, addr, value);
 }
 
 
@@ -51,9 +131,17 @@ int PWMController::CalculateServoFrequency(double angle) {
 		ratio = 1;
 	}
 
-	int output = (int)(ratio * 4096.0);
+	//servo range
+	double cycleMS = 1000000.0 / this->frequency;
+	double stepLengthMS = cycleMS / 4096;
 
-	return output;
+	double pulseLengthMS = ratio * (MAXPWMMS - MINPWMMS) + MINPWMMS;//1 to 2 millis
+
+	int pulseLengthSteps = (int)(pulseLengthMS / stepLengthMS) - 1;
+
+	int off = pulseLengthSteps % 4096;
+
+	return off;
 }
 
 int PWMController::CalculateRotorFrequency(double force) {
@@ -67,9 +155,17 @@ int PWMController::CalculateRotorFrequency(double force) {
 		ratio = 1;
 	}
 
-	int output = (int)(ratio * 4096.0);
+	//rotor range: ranges from min to max
+	double cycleMS = 1000000.0 / this->frequency;
+	double stepLengthMS = cycleMS / 4096;
 
-	return output;
+	double pulseLengthMS = ratio * (MAXPWMMS - MINPWMMS) + MINPWMMS;//1 to 2 millis
+
+	int pulseLengthSteps = (int)(pulseLengthMS / stepLengthMS) - 1;
+
+	int off = pulseLengthSteps % 4096;
+
+	return off;
 }
 
 void PWMController::InitializeESCs() {
@@ -102,7 +198,7 @@ void PWMController::InitializeESCs() {
 
 //OUTER JOINT ANGLE
 void PWMController::SetOuterBAngle(double angle) {
-	SetPWM(OuterB, CalculateServoFrequency(angle));
+	SetPWM(OuterB, -CalculateServoFrequency(angle));
 }
 
 void PWMController::SetOuterCAngle(double angle) {
@@ -114,7 +210,7 @@ void PWMController::SetOuterDAngle(double angle) {
 }
 
 void PWMController::SetOuterEAngle(double angle) {
-	SetPWM(OuterE, CalculateServoFrequency(angle));
+	SetPWM(OuterE, -CalculateServoFrequency(angle));
 }
 
 

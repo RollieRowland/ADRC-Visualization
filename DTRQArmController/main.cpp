@@ -4,6 +4,8 @@
 #include "../DTRQController/QuaternionKalmanFilter.h"
 #include <chrono>
 #include <signal.h>
+#include <bcm2835.h>
+#include <unistd.h>
 
 VectorFeedbackController pos = VectorFeedbackController{
 	new PID{ 10, 0, 12.5 },
@@ -29,12 +31,12 @@ Rotation targetRotation;
 
 //catches the interupt
 void sighandler(int signal) {
-	std::cout << "Caught signal: " << signal << std::endl;
+	std::cout << "Caught signal interupt: " << signal << std::endl;
 
 	i2cController.~I2CController();
 	quad.~Quadcopter();
 
-	std::cout << "Shutting down quadcopter." << std::endl;
+	std::cout << "Shutting down quadcopter..." << std::endl;
 
 	exit(1);
 }
@@ -42,24 +44,48 @@ void sighandler(int signal) {
 int main() {
 	signal(SIGINT, &sighandler);
 
-	std::cout << "Starting quadcopter." << std::endl;
+	std::cout << "Starting quadcopter..." << std::endl;
 	auto previousTime = std::chrono::system_clock::now();
 
 	Quaternion rotation;
 	Vector3D worldAccel;
 
-	std::cout << "Beginning loop." << std::endl;
+	std::cout << "Intializing servos and ESCs" << std::endl;
+
+
+	std::cout << "Beginning control loop..." << std::endl;
+	/*
+	for (int i = -90; i < 90; i++) {
+		i2cController.SetDThrustVector(Vector3D(i, 0, i));
+		i2cController.SetEThrustVector(Vector3D(i, 0, i));
+
+		bcm2835_delay(50);
+	}
+
+	i2cController.SetDThrustVector(Vector3D(0, 0, 0));
+	i2cController.SetEThrustVector(Vector3D(0, 0, 0));
+
+	sleep(1);
+	*/
+	
 	while (true) {
-		Quaternion q = i2cController.GetMainRotation();
-		Vector3D v = i2cController.GetMainWorldAcceleration();
+		double dT = ((double)((std::chrono::system_clock::now() - previousTime).count()) / pow(10.0, 9.0));
 
-		rotation = quatKF.Filter(q);
-		worldAccel = Vector3D(accelKF.Filter(v));
+		//std::cout << "Getting quaternion rotation from Main MPU." << std::endl;
+		for (int i = 0; i < 10; i++) {
+			Quaternion q = i2cController.GetMainRotation();
+			Vector3D v = i2cController.GetMainWorldAcceleration();
 
-		double dT = ((std::chrono::system_clock::now() - previousTime).count() / pow(1, -9));
+			rotation = quatKF.Filter(q);
+			worldAccel = Vector3D(accelKF.Filter(v));
+		}
 
 		velocity = velocity + worldAccel * dT;
 		position = position + velocity * dT;
+
+		std::cout << rotation.ToString() << " " << worldAccel.ToString() << std::endl;
+
+		position = Vector3D(0, 0, 0);
 
 		quad.SetTarget(targetPosition, targetRotation);
 		quad.SetCurrent(position, Rotation(rotation));
@@ -68,9 +94,12 @@ int main() {
 
 		//SET OUTPUTS
 
-		previousTime = std::chrono::system_clock::now();
-	}
 
+		previousTime = std::chrono::system_clock::now();
+		
+		//bcm2835_delay(50);
+	}
+	
 	//ROTATION
 	//calculate quat from previous servo positions rotation matrix, convert 
 	//   to quaternion and subtract generated quaternion from arm MPUs
@@ -85,6 +114,13 @@ int main() {
 	//write outputs
 	//END LOOP
 	//////////
+
+	std::cout << "Removing objects from memory." << std::endl;
+
+	i2cController.~I2CController();
+	quad.~Quadcopter();
+
+	std::cout << "End of control." << std::endl;
 
 	return 0;
 }

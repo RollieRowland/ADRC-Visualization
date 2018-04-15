@@ -9,11 +9,11 @@ I2CController::I2CController(int addr) {
 
 	std::cout << "Creating MPU objects." << std::endl;
 
-	mpuMain = new MPU9150(address);
-	mpuB = new MPU6050(address);
-	mpuC = new MPU6050(address);
-	mpuD = new MPU6050(address);
-	mpuE = new MPU6050(address);
+	mpuMain = new MPU9150(0x68);
+	mpuB = new MPU6050(0x68);
+	mpuC = new MPU6050(0x68);
+	mpuD = new MPU6050(0x68);
+	mpuE = new MPU6050(0x68);
 
 	std::cout << "Initializing MPUs." << std::endl;
 
@@ -23,12 +23,34 @@ I2CController::I2CController(int addr) {
 	InitializeMPU(ThrusterDMPU, mpuD);
 	InitializeMPU(ThrusterEMPU, mpuE);
 
-	//hPWM = new PWMController(500);
-
 	std::cout << "MPUs initialized." << std::endl;
+
+	SelectDevice(PWMManager);//PWMManager
+
+	hPWM = new PWMController(200, 0x40);
+
+	MQ = new Quaternion();
+	TBQ = new Quaternion();
+	TCQ = new Quaternion();
+	TDQ = new Quaternion();
+	TEQ = new Quaternion();
+
+	MV = new Vector3D();
+	TBV = new Vector3D();
+	TCV = new Vector3D();
+	TDV = new Vector3D();
+	TEV = new Vector3D();
 }
 
 I2CController::~I2CController() {
+	hPWM->Restart();
+
+	delay(10);
+
+	hPWM->Sleep();
+
+	delay(10);
+
 	delete mpuMain;
 	delete mpuB;
 	delete mpuC;
@@ -50,28 +72,33 @@ I2CController::~I2CController() {
 	delete hPWM;
 }
 
-void I2CController::SelectDevice(Device mpu) {
-	std::cout << "Selecting " << mpu << std::endl;
+void I2CController::SelectDevice(Device dev) {
+	//std::cout << "Selecting " << mpu << std::endl;
 
 	int addr;
 
-	if (mpu == MainMPU) {
-		addr = 1 << 1;//1 * 2^i
-	}
-	else if (mpu == ThrusterBMPU) {
-		addr = 1 << 2;//1 * 2^i
-	}
-	else if (mpu == ThrusterCMPU) {
-		addr = 1 << 3;//1 * 2^i
-	}
-	else if (mpu == ThrusterDMPU) {
+	if (dev == MainMPU) {
 		addr = 1 << 4;//1 * 2^i
 	}
-	else if (mpu == ThrusterEMPU) {
+	else if (dev == ThrusterBMPU) {
+		addr = 1 << 3;//1 * 2^i
+	}
+	else if (dev == ThrusterCMPU) {
+		addr = 1 << 2;//1 * 2^i
+	}
+	else if (dev == ThrusterDMPU) {
+		addr = 1 << 1;//1 * 2^i
+	}
+	else if (dev == ThrusterEMPU) {
+		addr = 1 << 0;//1 * 2^i
+	}
+	else if (dev == PWMManager) {
 		addr = 1 << 5;//1 * 2^i
 	}
 
 	I2Cdev::writeByte(address, 0x00, addr);
+
+	//std::cout << "Selected " << mpu << std::endl;
 }
 
 void I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
@@ -81,12 +108,24 @@ void I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
 
 	SelectDevice(dev);
 
-	std::cout << "Testing I2C connection to MPU9150." << std::endl;
+	std::cout << "   Testing I2C connection to MPU9150." << std::endl;
 
-	mpu->testConnection();
+	std::stringstream sstream;
+	sstream << std::hex << (int)mpu->getDeviceID();
+	std::string result = sstream.str();
+
+	std::cout << "   Device ID: " << std::hex << result << " Expected: " << 0x39 << std::endl;
+
+	if (mpu->testConnection()) {
+		std::cout << "      MPU9150 connection test successful." << std::endl;
+	}
+	else {
+		std::cout << "      MPU9150 connection test failed." << std::endl;
+	}
+
 	mpu->initialize();
 
-	std::cout << "Initializing DMP of " << dev << std::endl;
+	std::cout << "   Initializing DMP of " << dev << std::endl;
 
 	dmpStatus = mpu->dmpInitialize();
 
@@ -96,18 +135,14 @@ void I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
 	mpu->setZAccelOffset(1788);
 
 	if (dmpStatus == 0) {
-		std::cout << "Enabling DMP" << std::endl;
+		std::cout << "      Enabling DMP of MPU9150" << std::endl;
 
 		mpu->setDMPEnabled(true);
-
-		//interupt setting
-
-		//dmpReady
 
 		packetSize = mpu->dmpGetFIFOPacketSize();
 	}
 	else {
-		std::cout << "DMP Initialization Failed on " << dev << std::endl;
+		std::cout << "      DMP Initialization Failed on " << dev << std::endl;
 	}
 }
 
@@ -118,12 +153,24 @@ void I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
 
 	SelectDevice(dev);
 
-	std::cout << "Testing I2C connection to MPU6050." << std::endl;
+	std::cout << "   Testing I2C connection to MPU6050." << std::endl;
 
-	mpu->testConnection();
+	std::stringstream sstream;
+	sstream << std::hex << (int)mpu->getDeviceID();
+	std::string result = sstream.str();
+
+	std::cout << "   Device ID: " << std::hex << result << " Expected: " << 0x34 << std::endl;
+
+	if (mpu->testConnection()) {
+		std::cout << "      MPU6050 connection test successful." << std::endl;
+	}
+	else {
+		std::cout << "      MPU6050 connection test failed." << std::endl;
+	}
+
 	mpu->initialize();
 
-	std::cout << "Initializing DMP of " << dev << std::endl;
+	std::cout << "   Initializing DMP of " << dev << std::endl;
 	
 	dmpStatus = mpu->dmpInitialize(address);
 
@@ -133,35 +180,41 @@ void I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
 	mpu->setZAccelOffset(1788);
 
 	if (dmpStatus == 0) {
-		std::cout << "Enabling DMP" << std::endl;
+		std::cout << "      Enabling DMP of MPU6050" << std::endl;
 
 		mpu->setDMPEnabled(true);
-
-		//interupt setting
-
-		//dmpReady
 
 		packetSize = mpu->dmpGetFIFOPacketSize();
 	}
 	else {
-		std::cout << "DMP Initialization Failed on " << dev << std::endl;
+		std::cout << "      DMP Initialization Failed on " << dev << std::endl;
 	}
 }
 
 Quaternion I2CController::GetRotation(Device dev, MPU6050 *mpu) {
 	SelectDevice(dev);
 
+	//std::cout << "Getting mpu6050 status." << std::endl;
 	int mpuIntStatus = mpu->getIntStatus();
+
+	//std::cout << "Getting mpu6050 fifo count." << std::endl;
 	int fifoCount = mpu->getFIFOCount();
 	uint8_t fifoBuffer[64]; // FIFO storage buffer
 
+	//std::cout << "FIFO count: " << fifoCount << std::endl;
+
 	if (mpuIntStatus & 0x10 || fifoCount == 1024) {
+		std::cout << "Resetting mpu6050 fifo." << std::endl;
 		mpu->resetFIFO();
+
+		std::cout << "MPU6050 FIFO reset." << std::endl;
 
 		return Quaternion(-1, -1, -1, -1);
 	}
 	else if (mpuIntStatus & 0x02) {
-		while (fifoCount < packetSize) fifoCount = mpu->getFIFOCount();
+		while (fifoCount < packetSize) {
+			fifoCount = mpu->getFIFOCount();
+		}
 
 		mpu->getFIFOBytes(fifoBuffer, packetSize);
 
@@ -172,23 +225,36 @@ Quaternion I2CController::GetRotation(Device dev, MPU6050 *mpu) {
 		mpu->dmpGetQuaternion(&q, fifoBuffer);
 
 		return Quaternion(q.w, q.x, q.y, q.z);
+	}
+	else {
+		return Quaternion(-1, -1, -1, -1);
 	}
 }
 
 Quaternion I2CController::GetRotation(Device dev, MPU9150 *mpu) {
 	SelectDevice(dev);
 
+	//std::cout << "Getting mpu9150 status." << std::endl;
 	int mpuIntStatus = mpu->getIntStatus();
+
+	//std::cout << "Getting mpu9150 fifo count." << std::endl;
 	int fifoCount = mpu->getFIFOCount();
 	uint8_t fifoBuffer[64]; // FIFO storage buffer
 
+	//std::cout << "FIFO count: " << fifoCount << std::endl;
+
 	if (mpuIntStatus & 0x10 || fifoCount == 1024) {
+		std::cout << "Resetting mpu6050 fifo." << std::endl;
 		mpu->resetFIFO();
+
+		std::cout << "MPU6050 FIFO reset." << std::endl;
 
 		return Quaternion(-1, -1, -1, -1);
 	}
 	else if (mpuIntStatus & 0x02) {
-		while (fifoCount < packetSize) fifoCount = mpu->getFIFOCount();
+		while (fifoCount < packetSize) {
+			fifoCount = mpu->getFIFOCount();
+		}
 
 		mpu->getFIFOBytes(fifoBuffer, packetSize);
 
@@ -199,6 +265,9 @@ Quaternion I2CController::GetRotation(Device dev, MPU9150 *mpu) {
 		mpu->dmpGetQuaternion(&q, fifoBuffer);
 
 		return Quaternion(q.w, q.x, q.y, q.z);
+	}
+	else {
+		return Quaternion(-1, -1, -1, -1);
 	}
 }
 
@@ -273,7 +342,7 @@ Vector3D I2CController::GetLinearAcceleration(Device dev, MPU6050 *mpu) {
 
 	int mpuIntStatus = mpu->getIntStatus();
 	int fifoCount = mpu->getFIFOCount();
-	uint8_t fifoBuffer[64]; // FIFO storage buffer
+	uint8_t fifoBuffer[64]; //FIFO storage buffer
 
 	if (mpuIntStatus & 0x10 || fifoCount == 1024) {
 		mpu->resetFIFO();
@@ -313,7 +382,7 @@ Vector3D I2CController::GetLinearAcceleration(Device dev, MPU6050 *mpu) {
 		mpu->dmpGetGravity(&g, &q);
 		mpu->dmpGetLinearAccel(&lA, &a, &g);
 
-		Vector3D gAccel = Vector3D(lA.x, lA.y, lA.z);
+		Vector3D gAccel = Vector3D(lA.x, lA.z, lA.y);
 
 		//ax = raw / sensitivity SET TO 4 CURRENTLY
 		//2g = sensitivity of 16384
@@ -374,7 +443,7 @@ Vector3D I2CController::GetLinearAcceleration(Device dev, MPU9150 *mpu) {
 		mpu->dmpGetGravity(&g, &q);
 		mpu->dmpGetLinearAccel(&lA, &a, &g);
 
-		Vector3D gAccel = Vector3D(lA.x, lA.y, lA.z);
+		Vector3D gAccel = Vector3D(lA.x, lA.z, lA.y);
 
 		//ax = raw / sensitivity SET TO 4 CURRENTLY
 		//2g = sensitivity of 16384

@@ -72,7 +72,7 @@ void MPU9150::initialize() {
  * @return True if connection is valid, false otherwise
  */
 bool MPU9150::testConnection() {
-    return getDeviceID() == 0x34;
+    return getDeviceID() == 0x39;
 }
 
 // AUX_VDDIO register (InvenSense demo code calls this RA_*G_OFFS_TC)
@@ -3572,9 +3572,9 @@ uint8_t MPU9150::dmpGetMag(int16_t *data, const uint8_t* packet) {
 
 uint8_t MPU9150::dmpGetLinearAccel(VectorInt16 *v, VectorInt16 *vRaw, VectorFloat *gravity) {
 	// get rid of the gravity component (+1g = +4096 in standard DMP FIFO packet)
-	v->x = vRaw->x - gravity->x * 4096;
-	v->y = vRaw->y - gravity->y * 4096;
-	v->z = vRaw->z - gravity->z * 4096;
+	v->x = vRaw->x - gravity->x * 8192;
+	v->y = vRaw->y - gravity->y * 8192;
+	v->z = vRaw->z - gravity->z * 8192;
 	return 0;
 }
 

@@ -7,6 +7,7 @@
 #include "../DTRQController/Rotation.h"
 #include "PWMController.h"
 #include "I2Cdev.h"
+#include <sstream>
 
 class I2CController {
 public:

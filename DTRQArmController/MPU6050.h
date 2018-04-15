@@ -419,12 +419,14 @@ THE SOFTWARE.
 #define MPU6050_DMP_MEMORY_BANK_SIZE    256
 #define MPU6050_DMP_MEMORY_CHUNK_SIZE   16
 
+#include <iostream>
+
 //#define DEBUG
 #ifdef DEBUG
-#define DEBUG_PRINT(x) Serial.print(x)
-#define DEBUG_PRINTF(x, y) Serial.print(x, y)
-#define DEBUG_PRINTLN(x) Serial.println(x)
-#define DEBUG_PRINTLNF(x, y) Serial.println(x, y)
+#define DEBUG_PRINT(x) std::cout << x
+#define DEBUG_PRINTF(x, y) std::cout << x << " " << y
+#define DEBUG_PRINTLN(x) std::cout << x << std::endl
+#define DEBUG_PRINTLNF(x, y) std::cout << x << " " << y << std::endl
 #else
 #define DEBUG_PRINT(x)
 #define DEBUG_PRINTF(x, y)
