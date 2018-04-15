@@ -179,7 +179,9 @@ Quaternion Rotation::EulerAnglesToQuaternion(EulerAngles eulerAngles) {
 }
 
 Quaternion Rotation::YawPitchRollToQuaternion(YawPitchRoll ypr) {
-	throw "YPR not implemented.";
+	std::cout << "YPR to Quaternion not implemented." << std::endl;
+
+	return Quaternion();
 }
 
 Quaternion Rotation::HierarchicalMatrixToQuaternion(HMatrix hMatrix) {

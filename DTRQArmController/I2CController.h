@@ -8,6 +8,7 @@
 #include "PWMController.h"
 #include "I2Cdev.h"
 #include <sstream>
+#include <unistd.h>
 
 class I2CController {
 public:
@@ -24,6 +25,9 @@ public:
 	//open connection, write, end connection
 	I2CController(int addr);
 	~I2CController();
+
+	void InitializeMPUs();
+	void InitializePCA();
 
 	Quaternion GetMainRotation();
 	Quaternion GetTBRotation();
@@ -46,7 +50,7 @@ private:
 	u_int8_t address;
 	int packetSize;
 
-	MPU9150 *mpuMain;
+	MPU6050 *mpuMain;
 	MPU6050 *mpuB;
 	MPU6050 *mpuC;
 	MPU6050 *mpuD;
