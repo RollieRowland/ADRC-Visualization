@@ -94,8 +94,8 @@ int main() {
 		//Vector3D v = i2cController.GetTBWorldAcceleration();
 
 		rotation = quatKF.Filter(i2cController->GetTCRotation());
-		rotation = quatKF.Filter(i2cController->GetTDRotation());
-		rotation = quatKF.Filter(i2cController->GetTERotation());
+		//rotation = quatKF.Filter(i2cController->GetTDRotation());
+		//rotation = quatKF.Filter(i2cController->GetTERotation());
 		//worldAccel = Vector3D(accelKF.Filter(v));
 
 		velocity = velocity + worldAccel * dT;

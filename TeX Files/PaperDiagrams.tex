@@ -709,6 +709,23 @@ Q_\textrm{Y} = \begin{cases}
    -Q_\textrm{Y}, & \text{if $P_\textrm{AxisPermutation} = P_\textrm{Odd}$}\\
    Q_\textrm{Y}, & \text{otherwise}.\\
 \end{cases}\\
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
 $
 
 
@@ -732,8 +749,50 @@ V_\textrm{ZAxis} = Vector(D_\textrm{XZ} - D_\textrm{WY}, D_\textrm{YZ} - D_\text
 \newline
 RM_\textrm{RotationMatrix} = RotationMatrix(V_\textrm{XAxis}, V_\textrm{YAxis}, V_\textrm{ZAxis})\\
 \newline
-D_\textrm{SineY} = \sqrt{}\\
-D_\textrm{CosineY}
+D_\textrm{SineY} = \sqrt{(D_\textrm{XY}^2) + (D_\textrm{XZ}^2)}\\
+D_\textrm{CosineY} = \sqrt{(D_\textrm{XX}^2) + (D_\textrm{YX}^2)}\\
+\newline
+D_\textrm{EAX} = \begin{cases}
+   atan2(D_\textrm{XY}, D_\textrm{XZ}), & \text{if Initial Axis is repeated and}  D_\textrm{SineY} > 32 \times D_\textrm{Epsilon}\\
+   atan2(-D_\textrm{YZ}, D_\textrm{YY}), & \text{if Initial Axis is repeated and}  D_\textrm{SineY} \le 32 \times D_\textrm{Epsilon}\\
+   atan2(D_\textrm{ZY}, D_\textrm{ZZ}), & \text{if Initial Axis is not repeated and}  D_\textrm{SineY} > 32 \times D_\textrm{Epsilon}\\
+   atan2(-D_\textrm{YZ}, D_\textrm{YY}), & \text{if Initial Axis is not repeated and}  D_\textrm{SineY} \le 32 \times D_\textrm{Epsilon}\\
+\end{cases}\\
+\newline
+D_\textrm{EAY} = \begin{cases}
+   atan2(D_\textrm{SineY}, D_\textrm{XX}), & \text{if Initial Axis is repeated}\\
+   atan2(-D_\textrm{ZX}, D_\textrm{CosineY}), & \text{if Initial Axis is not repeated}\\
+\end{cases}\\
+\newline
+D_\textrm{EAZ} = \begin{cases}
+   atan2(D_\textrm{YX}, -D_\textrm{ZX}), & \text{if Initial Axis is repeated and}  D_\textrm{SineY} > 32 \times D_\textrm{Epsilon}\\
+   0, & \text{if Initial Axis is repeated and}  D_\textrm{SineY} \le 32 \times D_\textrm{Epsilon}\\
+   atan2(D_\textrm{YX}, D_\textrm{XX}), & \text{if Initial Axis is not repeated and}  D_\textrm{SineY} > 32 \times D_\textrm{Epsilon}\\
+   0, & \text{if Initial Axis is not repeated and}  D_\textrm{SineY} \le 32 \times D_\textrm{Epsilon}\\
+\end{cases}\\
+\newline
+D_\textrm{EAX} = \begin{cases}
+    -D_\textrm{EAX}, & \text{if Axis Permutation is Odd}\\
+\end{cases}
+\newline
+D_\textrm{EAY} = \begin{cases}
+    -D_\textrm{EAY}, & \text{if Axis Permutation is Odd}\\
+\end{cases}
+\newline
+D_\textrm{EAZ} = \begin{cases}
+    -D_\textrm{EAZ}, & \text{if Axis Permutation is Odd}\\
+\end{cases}
+\newline
+\newline
+D_\textrm{TempX} = D_\textrm{EAX}\\
+D_\textrm{EAX} = \begin{cases}
+    D_\textrm{EAZ}, & \text{if Frame Taken is Rotating}\\
+\end{cases}
+\newline
+D_\textrm{EAZ} = \begin{cases}
+    D_\textrm{TempX}, & \text{if Frame Taken is Rotating}\\
+\end{cases}
+\newline
 $
 
 
