@@ -24,10 +24,6 @@ Rotation::Rotation(EulerAngles eulerAngles) {
 	QuaternionRotation = EulerAnglesToQuaternion(eulerAngles);
 }
 
-Rotation::Rotation(HMatrix hMatrix) {
-	QuaternionRotation = HierarchicalMatrixToQuaternion(hMatrix);
-}
-
 Rotation::Rotation(Vector3D initial, Vector3D target) {
 	QuaternionRotation = QuaternionFromDirectionVectors(initial, target);
 }
@@ -184,45 +180,41 @@ Quaternion Rotation::YawPitchRollToQuaternion(YawPitchRoll ypr) {
 	return Quaternion();
 }
 
-Quaternion Rotation::HierarchicalMatrixToQuaternion(HMatrix hMatrix) {
-	return EulerAnglesToQuaternion(HierarchicalMatrixToEulerAngles(hMatrix, EulerConstants::EulerOrderXYZS));
-}
-
-EulerAngles Rotation::HierarchicalMatrixToEulerAngles(HMatrix hM, EulerOrder order) {
+EulerAngles Rotation::RotationMatrixToEulerAngles(RotationMatrix rM, EulerOrder order) {
 	EulerAngles eulerAngles = EulerAngles(Vector3D(0, 0, 0), order);
 	Vector3D p = order.Permutation;
 
 	if (order.InitialAxisRepetition == EulerOrder::AxisRepetition::Yes)
 	{
-		double sy = sqrt(pow(hM(p.X, p.Y), 2.0) + pow(hM(p.X, p.Z), 2.0));
+		double sy = sqrt(pow(rM.XAxis.Y, 2.0) + pow(rM.XAxis.Z, 2.0));
 
 		if (sy > 32.0 * std::numeric_limits<double>::epsilon())//16 * float.Epsilon
 		{
-			eulerAngles.Angles.X = atan2(hM(p.X, p.Y), hM(p.X, p.Z));
-			eulerAngles.Angles.Y = atan2(sy, hM(p.X, p.X));
-			eulerAngles.Angles.Z = atan2(hM(p.Y, p.X), -hM(p.Z, p.X));
+			eulerAngles.Angles.X = atan2(rM.XAxis.Y, rM.XAxis.Z);
+			eulerAngles.Angles.Y = atan2(sy, rM.XAxis.X);
+			eulerAngles.Angles.Z = atan2(rM.YAxis.X, -rM.ZAxis.X);
 		}
 		else
 		{
-			eulerAngles.Angles.X = atan2(-hM(p.Y, p.Z), hM(p.Y, p.Y));
-			eulerAngles.Angles.Y = atan2(sy, hM(p.X, p.X));
+			eulerAngles.Angles.X = atan2(-rM.YAxis.Z, rM.YAxis.Y);
+			eulerAngles.Angles.Y = atan2(sy, rM.XAxis.X);
 			eulerAngles.Angles.Z = 0;
 		}
 	}
 	else
 	{
-		double cy = sqrt(pow(hM(p.X, p.X), 2.0) + pow(hM(p.Y, p.X), 2.0));
+		double cy = sqrt(pow(rM.XAxis.X, 2.0) + pow(rM.YAxis.X, 2.0));
 
 		if (cy > 32.0 * std::numeric_limits<double>::epsilon())
 		{
-			eulerAngles.Angles.X = atan2(hM(p.Z, p.Y), hM(p.Z, p.Z));
-			eulerAngles.Angles.Y = atan2(-hM(p.Z, p.X), cy);
-			eulerAngles.Angles.Z = atan2(hM(p.Y, p.X), hM(p.X, p.X));
+			eulerAngles.Angles.X = atan2( rM.ZAxis.Y, rM.ZAxis.Z);
+			eulerAngles.Angles.Y = atan2(-rM.ZAxis.X, cy);
+			eulerAngles.Angles.Z = atan2( rM.YAxis.X, rM.XAxis.X);
 		}
 		else
 		{
-			eulerAngles.Angles.X = atan2(-hM(p.Y, p.Z), hM(p.Y, p.Y));
-			eulerAngles.Angles.Y = atan2(-hM(p.Z, p.X), cy);
+			eulerAngles.Angles.X = atan2(-rM.YAxis.Z, rM.YAxis.Y);
+			eulerAngles.Angles.Y = atan2(-rM.ZAxis.X, cy);
 			eulerAngles.Angles.Z = 0;
 		}
 	}
@@ -248,8 +240,8 @@ EulerAngles Rotation::HierarchicalMatrixToEulerAngles(HMatrix hM, EulerOrder ord
 	return eulerAngles;
 }
 
-HMatrix Rotation::EulerAnglesToHierarchicalMatrix(EulerAngles eulerAngles) {
-	HMatrix hM = HMatrix();
+RotationMatrix Rotation::EulerAnglesToRotationMatrix(EulerAngles eulerAngles) {
+	RotationMatrix rM = RotationMatrix(Vector3D(0, 0, 0));
 	double sx, sy, sz, cx, cy, cz, cc, cs, sc, ss; 
 	Vector3D p = eulerAngles.Order.Permutation;
 
@@ -285,18 +277,18 @@ HMatrix Rotation::EulerAnglesToHierarchicalMatrix(EulerAngles eulerAngles) {
 
 	if (eulerAngles.Order.InitialAxisRepetition == EulerOrder::AxisRepetition::Yes)
 	{
-		hM(p.X, p.X) = cy;       hM(p.X, p.Y) = sy * sx;       hM(p.X, p.Z) = sy * cx;
-		hM(p.Y, p.X) = sy * sz;  hM(p.Y, p.Y) = -cy * ss + cc; hM(p.Y, p.Z) = -cy * cs - sc;
-		hM(p.Z, p.X) = -sy * cz; hM(p.Z, p.Y) = cy * sc + cs;  hM(p.Z, p.Z) = cy * cc - ss;
+		rM.XAxis.X = cy;       rM.XAxis.Y = sy * sx;       rM.XAxis.Z = sy * cx;
+		rM.YAxis.X = sy * sz;  rM.YAxis.Y = -cy * ss + cc; rM.YAxis.Z = -cy * cs - sc;
+		rM.ZAxis.X = -sy * cz; rM.ZAxis.Y = cy * sc + cs;  rM.ZAxis.Z = cy * cc - ss;
 	}
 	else
 	{
-		hM(p.X, p.X) = cy * cz;  hM(p.X, p.Y) = sy * sc - cs;  hM(p.X, p.Z) = sy * cc + ss;
-		hM(p.Y, p.X) = cy * sz;  hM(p.Y, p.Y) = sy * ss + cc;  hM(p.Y, p.Z) = sy * cs - sc;
-		hM(p.Z, p.X) = -sy;      hM(p.Z, p.Y) = cy * sx;       hM(p.Z, p.Z) = cy * cx;
+		rM.XAxis.X = cy * cz;  rM.XAxis.Y = sy * sc - cs;  rM.XAxis.Z = sy * cc + ss;
+		rM.YAxis.X = cy * sz;  rM.YAxis.Y = sy * ss + cc;  rM.YAxis.Z = sy * cs - sc;
+		rM.ZAxis.X = -sy;      rM.ZAxis.Y = cy * sx;       rM.ZAxis.Z = cy * cx;
 	}
 
-	return hM;
+	return rM;
 }
 
 Quaternion Rotation::QuaternionFromDirectionVectors(Vector3D initial, Vector3D target) {
@@ -409,10 +401,11 @@ RotationMatrix Rotation::GetRotationMatrix() {
 }
 
 EulerAngles Rotation::GetEulerAngles(EulerOrder order) {
-	Quaternion q = QuaternionRotation;
+	Quaternion q = Quaternion(QuaternionRotation);
+
 	double norm = q.Normal();
 	double scale = norm > 0.0 ? 2.0 / norm : 0.0;
-	HMatrix hM = HMatrix();
+	Vector3D X, Y, Z;
 
 	Vector3D s = Vector3D(q.X * scale, q.Y * scale, q.Z * scale);
 	Vector3D w = Vector3D(q.W * s.X, q.W * s.Y, q.W * s.Z);
@@ -421,20 +414,19 @@ EulerAngles Rotation::GetEulerAngles(EulerOrder order) {
 	Vector3D z = Vector3D(0.0, 0.0, q.Z * s.Z);
 
 	//0X, 1Y, 2Z, 3W
-	hM(0, 0) = 1.0 - (y.Y + z.Z);   hM(0, 1) = x.Y - w.Z;           hM(0, 2) = x.Z + w.Y;           hM(0, 3) = 0.0;
-	hM(1, 0) = x.Y + w.Z;           hM(1, 1) = 1.0 - (x.X + z.Z);   hM(1, 2) = y.Z - w.X;           hM(1, 3) = 0.0;
-	hM(2, 0) = x.Z - w.Y;           hM(2, 1) = y.Z + w.X;           hM(2, 2) = 1.0 - (x.X + y.Y);   hM(2, 3) = 0.0;
-	hM(3, 0) = 0.0;                 hM(3, 1) = 0.0;                 hM(3, 2) = 0.0;                 hM(3, 3) = 1.0;
+	X.X = 1.0 - (y.Y + z.Z);   Y.X = x.Y - w.Z;           Z.X = x.Z + w.Y;
+	Y.X = x.Y + w.Z;           Y.Y = 1.0 - (x.X + z.Z);   Z.Y = y.Z - w.X;
+	Z.X = x.Z - w.Y;           Y.Z = y.Z + w.X;           Z.Z = 1.0 - (x.X + y.Y);
 
-	return HierarchicalMatrixToEulerAngles(hM, order);
-}
-
-HMatrix Rotation::GetHierarchicalMatrix() {
-	return EulerAnglesToHierarchicalMatrix(GetEulerAngles(EulerConstants::EulerOrderXYZS));
+	return RotationMatrixToEulerAngles(RotationMatrix(X, Y, Z), order);
 }
 
 YawPitchRoll Rotation::GetYawPitchRoll() {
 	Quaternion q = QuaternionRotation;
+
+	//EulerAngles ea = Rotation(q).GetEulerAngles(EulerConstants::EulerOrderZXZR);
+
+	//ea.Angles;
 
 	//intrinsic tait-bryan rotation of order XYZ
 	double yaw =  atan2( 2.0 * (q.Y * q.Z + q.W * q.X), pow(q.W, 2) - pow(q.X, 2) - pow(q.Y, 2) + pow(q.Z, 2));

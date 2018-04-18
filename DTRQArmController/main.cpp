@@ -54,16 +54,22 @@ int main() {
 	i2cController = new I2CController(0x70);
 
 	i2cController->InitializePCA();
-	delay(50);
+	bcm2835_delay(50);
 
 	std::cout << "Starting MPU calibration procedure." << std::endl;
+	i2cController->SetBThrustVector(Vector3D(90, 0, 0));
+	i2cController->SetCThrustVector(Vector3D(-90, 0, 0));
 	i2cController->SetDThrustVector(Vector3D(-90, 0, 0));
 	i2cController->SetEThrustVector(Vector3D(90, 0, 0));
 	sleep(5);
 
 	i2cController->InitializeMPUs();
 	bcm2835_delay(250);
-	
+
+	i2cController->CalibrateMPUs();
+
+	i2cController->SetBThrustVector(Vector3D(0, 0, 0));
+	i2cController->SetCThrustVector(Vector3D(0, 0, 0));
 	i2cController->SetDThrustVector(Vector3D(0, 0, 0));
 	i2cController->SetEThrustVector(Vector3D(0, 0, 0));
 	sleep(5);
@@ -90,10 +96,13 @@ int main() {
 	while (true) {
 		double dT = ((double)((std::chrono::system_clock::now() - previousTime).count()) / pow(10.0, 9.0));
 
-		//Quaternion q = i2cController->GetTCRotation();
+		Quaternion q = i2cController->GetTERotation();
 		//Vector3D v = i2cController.GetTBWorldAcceleration();
 
-		rotation = quatKF.Filter(i2cController->GetTCRotation());
+		//q = q * Rotation(EulerAngles(Vector3D(-90, 180, 0), EulerConstants::EulerOrderXYZR)).GetQuaternion();
+		//q = q * Rotation(EulerAngles(Vector3D(0, 0, 180), EulerConstants::EulerOrderXYZS)).GetQuaternion();
+
+		rotation = quatKF.Filter(q);
 		//rotation = quatKF.Filter(i2cController->GetTDRotation());
 		//rotation = quatKF.Filter(i2cController->GetTERotation());
 		//worldAccel = Vector3D(accelKF.Filter(v));
@@ -110,10 +119,10 @@ int main() {
 
 		quad.CalculateCombinedThrustVector();//Secondary Solver
 
-		YawPitchRoll ypr = Rotation(Quaternion(rotation)).GetYawPitchRoll();
-		//EulerAngles ea = Rotation(Quaternion(rotation)).GetEulerAngles(EulerConstants::EulerOrderXYZR);
+		//YawPitchRoll ypr = Rotation(Quaternion(rotation)).GetYawPitchRoll();
+		EulerAngles ypr = Rotation(Quaternion(rotation)).GetEulerAngles(EulerConstants::EulerOrderZXZR);
 
-		std::cout << ypr.ToString() << " " << quad.TB->CurrentRotation.ToString() << std::endl;
+		std::cout << ypr.Angles.ToString() << " " << quad.TB->CurrentRotation.ToString() << std::endl;
 		
 		//SET OUTPUTS
 

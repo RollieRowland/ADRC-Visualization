@@ -4,11 +4,15 @@
 #include "MPU9150.h"
 #include <stdio.h>
 #include <iostream>
-#include "../DTRQController/Rotation.h"
 #include "PWMController.h"
 #include "I2Cdev.h"
 #include <sstream>
 #include <unistd.h>
+#include <chrono>
+
+#include "../DTRQController/Rotation.h"
+#include "../DTRQController/VectorKalmanFilter.h"
+
 
 class I2CController {
 public:
@@ -28,6 +32,7 @@ public:
 
 	void InitializeMPUs();
 	void InitializePCA();
+	void CalibrateMPUs();
 
 	Quaternion GetMainRotation();
 	Quaternion GetTBRotation();
@@ -70,9 +75,37 @@ private:
 
 	PWMController *hPWM;
 
+	Vector3D *MAO;
+	Vector3D *TBAO;
+	Vector3D *TCAO;
+	Vector3D *TDAO;
+	Vector3D *TEAO;
+
+	Vector3D *MGO;
+	Vector3D *TBGO;
+	Vector3D *TCGO;
+	Vector3D *TDGO;
+	Vector3D *TEGO;
+
+	VectorKalmanFilter *MAKF;
+	VectorKalmanFilter *TBAKF;
+	VectorKalmanFilter *TCAKF;
+	VectorKalmanFilter *TDAKF;
+	VectorKalmanFilter *TEAKF;
+
+	VectorKalmanFilter *MGKF;
+	VectorKalmanFilter *TBGKF;
+	VectorKalmanFilter *TCGKF;
+	VectorKalmanFilter *TDGKF;
+	VectorKalmanFilter *TEGKF;
+
 	void SelectDevice(Device mpu);
 	void InitializeMPU(Device dev, MPU6050 *mpu);
 	void InitializeMPU(Device dev, MPU9150 *mpu);
+	void SetDefaultMPUOffsets();
+
+	void CalibrateMPU(Device dev, MPU6050 *mpu, Vector3D *ao, Vector3D *go, VectorKalmanFilter *akf, VectorKalmanFilter *gkf);
+	void CalibrateMPU(Device dev, MPU9150 *mpu, Vector3D *ao, Vector3D *go, VectorKalmanFilter *akf, VectorKalmanFilter *gkf);
 
 	Quaternion GetRotation(Device dev, MPU6050 *mpu);
 	Quaternion GetRotation(Device dev, MPU9150 *mpu);

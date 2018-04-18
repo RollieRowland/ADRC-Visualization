@@ -7,17 +7,41 @@ I2CController::I2CController(int addr) {
 
 	I2Cdev::initialize();
 
-	MQ = new Quaternion();
+	MQ  = new Quaternion();
 	TBQ = new Quaternion();
 	TCQ = new Quaternion();
 	TDQ = new Quaternion();
 	TEQ = new Quaternion();
 
-	MV = new Vector3D();
+	MV  = new Vector3D();
 	TBV = new Vector3D();
 	TCV = new Vector3D();
 	TDV = new Vector3D();
 	TEV = new Vector3D();
+
+	MAO  = new Vector3D();
+	TBAO = new Vector3D();
+	TCAO = new Vector3D();
+	TDAO = new Vector3D();
+	TEAO = new Vector3D();
+
+	MGO  = new Vector3D();
+	TBGO = new Vector3D();
+	TCGO = new Vector3D();
+	TDGO = new Vector3D();
+	TEGO = new Vector3D();
+
+	MAKF  = new VectorKalmanFilter(0.05, 250);
+	TBAKF = new VectorKalmanFilter(0.05, 250);
+	TCAKF = new VectorKalmanFilter(0.05, 250);
+	TDAKF = new VectorKalmanFilter(0.05, 250);
+	TEAKF = new VectorKalmanFilter(0.05, 250);
+
+	MGKF  = new VectorKalmanFilter(0.05, 250);
+	TBGKF = new VectorKalmanFilter(0.05, 250);
+	TCGKF = new VectorKalmanFilter(0.05, 250);
+	TDGKF = new VectorKalmanFilter(0.05, 250);
+	TEGKF = new VectorKalmanFilter(0.05, 250);
 }
 
 I2CController::~I2CController() {
@@ -57,14 +81,14 @@ void I2CController::InitializeMPUs() {
 	std::cout << "Creating MPU objects." << std::endl;
 
 	mpuMain = new MPU6050(0x68);
-	mpuB = new MPU6050(0x68);
-	mpuC = new MPU6050(0x68);
-	mpuD = new MPU6050(0x68);
-	mpuE = new MPU6050(0x68);
+	mpuB    = new MPU6050(0x68);
+	mpuC    = new MPU6050(0x68);
+	mpuD    = new MPU6050(0x68);
+	mpuE    = new MPU6050(0x68);
 
 	std::cout << "Initializing MPUs." << std::endl;
 
-	InitializeMPU(MainMPU, mpuMain);
+	InitializeMPU(MainMPU,   mpuMain);
 	InitializeMPU(ThrusterBMPU, mpuB);
 	InitializeMPU(ThrusterCMPU, mpuC);
 	InitializeMPU(ThrusterDMPU, mpuD);
@@ -107,6 +131,114 @@ void I2CController::SelectDevice(Device dev) {
 	I2Cdev::writeByte(address, 0x00, addr);
 
 	//std::cout << "Selected " << mpu << std::endl;
+}
+
+void I2CController::SetDefaultMPUOffsets() {
+	std::cout << "Setting default calibration offsets." << std::endl;
+
+	SelectDevice(MainMPU);
+	mpuMain->setXAccelOffset(0); mpuMain->setYAccelOffset(0); mpuMain->setZAccelOffset(0);
+	mpuMain->setXGyroOffset(0);  mpuMain->setYGyroOffset(0);  mpuMain->setZGyroOffset(0);
+
+	SelectDevice(ThrusterBMPU);
+	mpuB->setXAccelOffset(0); mpuB->setYAccelOffset(0); mpuB->setZAccelOffset(0);
+	mpuB->setXGyroOffset(0);  mpuB->setYGyroOffset(0);  mpuB->setZGyroOffset(0);
+
+	SelectDevice(ThrusterCMPU);
+	mpuC->setXAccelOffset(0); mpuC->setYAccelOffset(0); mpuC->setZAccelOffset(0);
+	mpuC->setXGyroOffset(0);  mpuC->setYGyroOffset(0);  mpuC->setZGyroOffset(0);
+
+	SelectDevice(ThrusterDMPU);
+	mpuD->setXAccelOffset(0); mpuD->setYAccelOffset(0); mpuD->setZAccelOffset(0);
+	mpuD->setXGyroOffset(0);  mpuD->setYGyroOffset(0);  mpuD->setZGyroOffset(0);
+
+	SelectDevice(ThrusterEMPU);
+	mpuE->setXAccelOffset(0); mpuE->setYAccelOffset(0); mpuE->setZAccelOffset(0);
+	mpuE->setXGyroOffset(0);  mpuE->setYGyroOffset(0);  mpuE->setZGyroOffset(0);
+}
+
+void I2CController::CalibrateMPUs() {
+	auto startTime = std::chrono::system_clock::now();
+	double runTime = 0;
+
+	std::cout << "Calibrating MPU offsets." << std::endl;
+
+	while (runTime < 30) {
+		runTime = ((double)((std::chrono::system_clock::now() - startTime).count()) / pow(10.0, 9.0));
+
+		CalibrateMPU(MainMPU,   mpuMain, MAO,  MGO,  MAKF,  MGKF );
+		CalibrateMPU(ThrusterBMPU, mpuB, TBAO, TBGO, TBAKF, TBGKF);
+		CalibrateMPU(ThrusterCMPU, mpuC, TCAO, TCGO, TCAKF, TCGKF);
+		CalibrateMPU(ThrusterDMPU, mpuD, TDAO, TDGO, TDAKF, TDGKF);
+		CalibrateMPU(ThrusterEMPU, mpuE, TEAO, TEGO, TEAKF, TEGKF);
+
+		bcm2835_delay(50);
+	}
+
+	std::cout << "MPU offsets calibrated." << std::endl;
+}
+
+void I2CController::CalibrateMPU(Device dev, MPU6050 *mpu, Vector3D *ao, Vector3D *go, VectorKalmanFilter *akf, VectorKalmanFilter *gkf) {
+	SelectDevice(dev);
+
+	int16_t ax, ay, az, gx, gy, gz;
+
+	mpu->getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+
+	ao = new Vector3D(mpu->getXAccelOffset(), mpu->getYAccelOffset(), mpu->getZAccelOffset());
+	go = new Vector3D(mpu->getXGyroOffset(),  mpu->getYGyroOffset(),  mpu->getZGyroOffset());
+
+	//linear, wastes time
+	if (ax > 0)     ao->X = ao->X - 1; else if (ax < 0)     ao->X = ao->X + 1;
+	if (ay > 0)     ao->Y = ao->Y - 1; else if (ay < 0)     ao->Y = ao->Y + 1;
+	if (az > 8192) ao->Z = ao->Z - 1; else if (az < 8192) ao->Z = ao->Z + 1;
+
+	if (gx > 0) go->X = go->X - 1; else if (gx < 0) go->X = go->X + 1;
+	if (gy > 0) go->Y = go->Y - 1; else if (gy < 0) go->Y = go->Y + 1;
+	if (gz > 0) go->Z = go->Z - 1; else if (gz < 0) go->Z = go->Z + 1;
+	
+	//filter offset between value and zero, add this to the offset
+	//Vector3D aOff = akf->Filter(Vector3D(ax, ay, az));//subtract gravity
+	//Vector3D gOff = gkf->Filter(Vector3D(gx, gy, gz));
+
+	//ao = new Vector3D(ao->Subtract(aOff));
+	//go = new Vector3D(go->Subtract(gOff));
+
+	mpu->setXAccelOffset(ao->X);
+	mpu->setYAccelOffset(ao->Y);
+	mpu->setZAccelOffset(ao->Z);
+	mpu->setXGyroOffset( go->X);
+	mpu->setYGyroOffset( go->Y);
+	mpu->setZGyroOffset( go->Z);
+
+	std::cout << "Accel:" << Vector3D(ax, ay, az).ToString() << " Gyro:" << Vector3D(gx, gy, gz).ToString() << std::endl;
+	//std::cout << "Accel:" << Vector3D(ao->X, ao->Y, ao->Z).ToString() << " Gyro:" << Vector3D(go->X, go->Y, go->Z).ToString() << std::endl;
+	//std::cout << "Accel:" << aOff.ToString() << " Gyro:" << gOff.ToString() << std::endl;
+}
+
+void I2CController::CalibrateMPU(Device dev, MPU9150 *mpu, Vector3D *ao, Vector3D *go, VectorKalmanFilter *akf, VectorKalmanFilter *gkf) {
+	SelectDevice(dev);
+
+	int16_t ax, ay, az, gx, gy, gz;
+
+	mpu->getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+
+	//filter offset between value and zero, add this to the offset
+	Vector3D aOff = akf->Filter(Vector3D(ax, ay, az - 16384));//subtract gravity
+	Vector3D gOff = gkf->Filter(Vector3D(gx, gy, gz));
+
+	ao = new Vector3D(ao->Subtract(aOff));
+	go = new Vector3D(go->Subtract(gOff));
+
+	mpu->setXAccelOffset(ao->X);
+	mpu->setYAccelOffset(ao->Y);
+	mpu->setZAccelOffset(ao->Z);
+	mpu->setXGyroOffset(go->X);
+	mpu->setYGyroOffset(go->Y);
+	mpu->setZGyroOffset(go->Z);
+
+	std::cout << "Accel:" << Vector3D(ax, ay, az - 16384).ToString()
+		<< " Gyro:" << Vector3D(gx, gy, gz).ToString() << std::endl;
 }
 
 void I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
@@ -240,6 +372,12 @@ Quaternion I2CController::GetRotation(Device dev, MPU6050 *mpu) {
 
 		mpu->dmpGetQuaternion(&q, fifoBuffer);
 
+		/*
+		+1 x w if (1,2,3), (3,1,2), or (2,3,1)
+		-1 x w if (1,3,2), (3,2,1), or (2,1,3)
+		0 if i=j || j=k || k=i
+		-> antisymmetric tensor(Levi-Civita symbol)
+		*/
 		//flip chirality and negate
 		return Quaternion(q.w, q.y, q.z, q.x);
 	}

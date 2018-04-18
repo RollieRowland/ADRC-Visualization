@@ -131,7 +131,6 @@
     <ClCompile Include="EulerConstants.cpp" />
     <ClCompile Include="EulerOrder.cpp" />
     <ClCompile Include="ExtendedStateObserver.cpp" />
-    <ClCompile Include="HMatrix.cpp" />
     <ClCompile Include="KalmanFilter.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mathematics.cpp" />
@@ -163,7 +162,6 @@
     <ClInclude Include="FeedbackController.h" />
     <ClInclude Include="QuaternionKalmanFilter.h" />
     <ClInclude Include="YawPitchRoll.h" />
-    <ClInclude Include="HMatrix.h" />
     <ClInclude Include="KalmanFilter.h" />
     <ClInclude Include="Mathematics.h" />
     <ClInclude Include="Motor.h" />

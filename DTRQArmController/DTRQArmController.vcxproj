@@ -65,7 +65,6 @@
     <ClCompile Include="..\DTRQController\EulerConstants.cpp" />
     <ClCompile Include="..\DTRQController\EulerOrder.cpp" />
     <ClCompile Include="..\DTRQController\ExtendedStateObserver.cpp" />
-    <ClCompile Include="..\DTRQController\HMatrix.cpp" />
     <ClCompile Include="..\DTRQController\KalmanFilter.cpp" />
     <ClCompile Include="..\DTRQController\Mathematics.cpp" />
     <ClCompile Include="..\DTRQController\Motor.cpp" />
@@ -100,7 +99,6 @@
     <ClInclude Include="..\DTRQController\EulerOrder.h" />
     <ClInclude Include="..\DTRQController\ExtendedStateObserver.h" />
     <ClInclude Include="..\DTRQController\FeedbackController.h" />
-    <ClInclude Include="..\DTRQController\HMatrix.h" />
     <ClInclude Include="..\DTRQController\KalmanFilter.h" />
     <ClInclude Include="..\DTRQController\Mathematics.h" />
     <ClInclude Include="..\DTRQController\Motor.h" />

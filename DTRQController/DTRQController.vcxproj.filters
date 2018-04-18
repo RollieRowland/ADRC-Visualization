@@ -63,9 +63,6 @@
     <ClCompile Include="EulerOrder.cpp">
       <Filter>Source Files\Mathematics</Filter>
     </ClCompile>
-    <ClCompile Include="HMatrix.cpp">
-      <Filter>Source Files\Mathematics</Filter>
-    </ClCompile>
     <ClCompile Include="EulerConstants.cpp">
       <Filter>Source Files\Mathematics</Filter>
     </ClCompile>
@@ -144,9 +141,6 @@
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
     <ClInclude Include="EulerConstants.h">
-      <Filter>Header Files\Mathematics</Filter>
-    </ClInclude>
-    <ClInclude Include="HMatrix.h">
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
     <ClInclude Include="AxisAngle.h">

@@ -25,9 +25,6 @@
     <ClCompile Include="..\DTRQController\ExtendedStateObserver.cpp">
       <Filter>Include Files\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\DTRQController\HMatrix.cpp">
-      <Filter>Include Files\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\DTRQController\KalmanFilter.cpp">
       <Filter>Include Files\Source Files</Filter>
     </ClCompile>
@@ -142,9 +139,6 @@
       <Filter>Include Files\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\DTRQController\ExtendedStateObserver.h">
-      <Filter>Include Files\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\DTRQController\HMatrix.h">
       <Filter>Include Files\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\DTRQController\KalmanFilter.h">
