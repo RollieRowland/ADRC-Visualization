@@ -18,6 +18,14 @@ Vector3D::Vector3D(double X, double Y, double Z) {
 	this->Z = Z;
 }
 
+Vector3D Vector3D::Absolute() {
+	return Vector3D{
+		std::abs(this->X),
+		std::abs(this->Y),
+		std::abs(this->Z)
+	};
+}
+
 Vector3D Vector3D::Normal() {
 	return Multiply(this->Magnitude() == 0 ? std::numeric_limits<double>::infinity() : 1 / this->Magnitude());
 }

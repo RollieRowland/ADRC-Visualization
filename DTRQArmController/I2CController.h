@@ -33,6 +33,7 @@ public:
 	void InitializeMPUs();
 	void InitializePCA();
 	void CalibrateMPUs();
+	void CalibrateMPUDMPs();
 
 	Quaternion GetMainRotation();
 	Quaternion GetTBRotation();

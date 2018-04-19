@@ -11,6 +11,7 @@ public:
 	Vector3D();
 	Vector3D(const Vector3D& vector);
 	Vector3D(double x, double y, double z);
+	Vector3D Absolute();
 	Vector3D Normal();
 	Vector3D Add(Vector3D vector);
 	Vector3D Subtract(Vector3D vector);

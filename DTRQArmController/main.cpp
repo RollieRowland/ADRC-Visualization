@@ -22,13 +22,13 @@ VectorFeedbackController rot = VectorFeedbackController{
 
 I2CController *i2cController;
 Quadcopter quad = Quadcopter(false, 0.3, 55, 0.05, &pos, &rot);
-QuaternionKalmanFilter quatKF = QuaternionKalmanFilter(0.1, 20);
-VectorKalmanFilter accelKF = VectorKalmanFilter(0.2, 40);
-Vector3D velocity;
-Vector3D position;
+QuaternionKalmanFilter quatKF = QuaternionKalmanFilter(0.1, 50);
+VectorKalmanFilter accelKF = VectorKalmanFilter(0.1, 50);
+Vector3D velocity = Vector3D(0, 0, 0);
+Vector3D position = Vector3D(0, 0, 0);
 
-Vector3D targetPosition;
-Rotation targetRotation;
+Vector3D targetPosition = Vector3D(0, 0, 0);
+Rotation targetRotation = Rotation(Quaternion(1, 0, 0, 0));
 
 //catches the interupt
 void sighandler(int signal) {
@@ -72,7 +72,7 @@ int main() {
 	bcm2835_delay(4000);
 
 	i2cController->InitializeMPUs();
-	bcm2835_delay(250);
+	bcm2835_delay(1000);
 
 	i2cController->CalibrateMPUs();
 
@@ -80,62 +80,47 @@ int main() {
 	i2cController->SetCThrustVector(Vector3D(0, 0, 0));
 	i2cController->SetDThrustVector(Vector3D(0, 0, 0));
 	i2cController->SetEThrustVector(Vector3D(0, 0, 0));
+	bcm2835_delay(1000);
 
-	std::cout << "Waiting for hardware..." << std::endl;
-	bcm2835_delay(5000);
+	std::cout << "Waiting for MPU DMP initialization..." << std::endl;
+
+	//i2cController->CalibrateMPUDMPs();
+	//bcm2835_delay(250);
 
 	std::cout << "Hardware initialization complete." << std::endl;
-
-	/*
-	std::cout << "Intializing servos and ESCs" << std::endl;
-	for (int i = -90; i < 90; i++) {
-		i2cController.SetDThrustVector(Vector3D(i, 0, i));
-		i2cController.SetEThrustVector(Vector3D(i, 0, i));
-
-		bcm2835_delay(50);
-	}
-
-	i2cController.SetDThrustVector(Vector3D(0, 0, 0));
-	i2cController.SetEThrustVector(Vector3D(0, 0, 0));
-
-	sleep(1);
-	*/
-
 
 	std::cout << "Beginning control loop..." << std::endl;
 	while (true) {
 		double dT = ((double)((std::chrono::system_clock::now() - previousTime).count()) / pow(10.0, 9.0));
 
 		Quaternion q = i2cController->GetMainRotation();
-		//Vector3D v = i2cController.GetTBWorldAcceleration();
+		Vector3D  vm = i2cController->GetMainWorldAcceleration();
+		Vector3D  vb = i2cController->GetTBWorldAcceleration();
+		Vector3D  vc = i2cController->GetTCWorldAcceleration();
+		Vector3D  vd = i2cController->GetTDWorldAcceleration();
+		Vector3D  ve = i2cController->GetTEWorldAcceleration();
 
-		//q = q * Rotation(EulerAngles(Vector3D(-90, 180, 0), EulerConstants::EulerOrderXYZR)).GetQuaternion();
-		//q = q * Rotation(EulerAngles(Vector3D(0, 0, 180), EulerConstants::EulerOrderXYZS)).GetQuaternion();
+		rotation   = quatKF.Filter(q);
+		worldAccel = accelKF.Filter((vm + vb + vc + vd + ve) / 5);
 
-		rotation = quatKF.Filter(q);
-		//rotation = q;
-		//worldAccel = Vector3D(accelKF.Filter(v));
-
-		velocity = velocity + worldAccel * dT;
-		position = position + velocity * dT;
+		velocity = velocity.Add(worldAccel.Multiply(dT).Multiply(9.81));//g-force to m/s^2
+		position = position.Add(velocity.Multiply(dT));
 
 		//std::cout << rotation.ToString() << " " << worldAccel.ToString() << std::endl;
 
-		position = Vector3D(0, 0, 0);
+		//position = Vector3D(0, 0, 0);
 
 		quad.SetTarget(targetPosition, targetRotation);
 		quad.SetCurrent(position, Rotation(rotation));
 
 		quad.CalculateCombinedThrustVector();//Secondary Solver
 
-		//YawPitchRoll ypr = Rotation(Quaternion(rotation)).GetYawPitchRoll();
 		EulerAngles eaypr = Rotation(Quaternion(rotation)).GetEulerAngles(EulerConstants::EulerOrderYXZS);
-
-		std::cout << eaypr.Angles.ToString() << " " << quad.TB->CurrentRotation.ToString() << std::endl;
 		
-		//SET OUTPUTS
-
-
+		//std::cout << eaypr.Angles.ToString() << " ";
+		std::cout  << position.ToString() << " " << worldAccel.ToString() << std::endl;
+		
+		//set outputs
 		i2cController->SetBThrustVector(Vector3D( quad.TB->CurrentRotation.X, 0, -quad.TB->CurrentRotation.Z));
 		i2cController->SetCThrustVector(Vector3D( quad.TC->CurrentRotation.X, 0, -quad.TC->CurrentRotation.Z));
 		i2cController->SetDThrustVector(Vector3D(-quad.TD->CurrentRotation.X, 0, -quad.TD->CurrentRotation.Z));

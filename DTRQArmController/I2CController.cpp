@@ -31,11 +31,11 @@ I2CController::I2CController(int addr) {
 	TDGO = new Vector3D();
 	TEGO = new Vector3D();
 
-	MAKF  = new VectorKalmanFilter(0.2, 50);
-	TBAKF = new VectorKalmanFilter(0.2, 50);
-	TCAKF = new VectorKalmanFilter(0.2, 50);
-	TDAKF = new VectorKalmanFilter(0.2, 50);
-	TEAKF = new VectorKalmanFilter(0.2, 50);
+	MAKF  = new VectorKalmanFilter(0.001, 250);
+	TBAKF = new VectorKalmanFilter(0.001, 250);
+	TCAKF = new VectorKalmanFilter(0.001, 250);
+	TDAKF = new VectorKalmanFilter(0.001, 250);
+	TEAKF = new VectorKalmanFilter(0.001, 250);
 
 	MGKF  = new VectorKalmanFilter(0.2, 50);
 	TBGKF = new VectorKalmanFilter(0.2, 50);
@@ -180,7 +180,7 @@ void I2CController::CalibrateMPUs() {
 			secondPrint++;
 		}
 
-		bcm2835_delay(50);
+		bcm2835_delay(200);
 	}
 
 	std::cout << "MPU offsets calibrated." << std::endl;
@@ -196,10 +196,12 @@ void I2CController::CalibrateMPU(Device dev, MPU6050 *mpu, Vector3D *ao, Vector3
 	ao = new Vector3D(mpu->getXAccelOffset(), mpu->getYAccelOffset(), mpu->getZAccelOffset());
 	go = new Vector3D(mpu->getXGyroOffset(),  mpu->getYGyroOffset(),  mpu->getZGyroOffset() );
 
+	Vector3D mod = akf->Filter(Vector3D(ax, ay, az - 8192)).Absolute().Divide(10);//subtract gravity
+
 	//linear, wastes time
-	if (ax > 0)     ao->X = ao->X - 1; else if (ax < 0)     ao->X = ao->X + 1;
-	if (ay > 0)     ao->Y = ao->Y - 1; else if (ay < 0)     ao->Y = ao->Y + 1;
-	if (az > 8192)  ao->Z = ao->Z - 1; else if (az < 8192)  ao->Z = ao->Z + 1;
+	if (ax > 0)     ao->X = ao->X - 1 * mod.X; else if (ax < 0)     ao->X = ao->X + 1 * mod.X;
+	if (ay > 0)     ao->Y = ao->Y - 1 * mod.Y; else if (ay < 0)     ao->Y = ao->Y + 1 * mod.Y;
+	if (az > 8192)  ao->Z = ao->Z - 1 * mod.Z; else if (az < 8192)  ao->Z = ao->Z + 1 * mod.Z;
 
 	/*
 	if (gx > 0)     go->X = go->X - 1; else if (gx < 0)     go->X = go->X + 1;
@@ -214,13 +216,14 @@ void I2CController::CalibrateMPU(Device dev, MPU6050 *mpu, Vector3D *ao, Vector3
 	//ao = new Vector3D(ao->Subtract(aOff));
 	go = new Vector3D(go->Subtract(gOff));
 
-	mpu->setXAccelOffset(ao->X);
-	mpu->setYAccelOffset(ao->Y);
-	mpu->setZAccelOffset(ao->Z);
+	//mpu->setXAccelOffset(ao->X);
+	//mpu->setYAccelOffset(ao->Y);
+	//mpu->setZAccelOffset(ao->Z);
 	mpu->setXGyroOffset( go->X);
 	mpu->setYGyroOffset( go->Y);
 	mpu->setZGyroOffset( go->Z);
 
+	//std::cout << "Accel:" << Vector3D(ax, ay, az).ToString() << " Mod:" << mod.ToString() << std::endl;
 	//std::cout << "Accel:" << Vector3D(ax, ay, az).ToString() << " Gyro:" << Vector3D(gx, gy, gz).ToString() << std::endl;
 	//std::cout << "Accel:" << Vector3D(ao->X, ao->Y, ao->Z).ToString() << " Gyro:" << Vector3D(go->X, go->Y, go->Z).ToString() << std::endl;
 	//std::cout << "Accel:" << aOff.ToString() << " Gyro:" << gOff.ToString() << std::endl;
@@ -249,6 +252,46 @@ void I2CController::CalibrateMPU(Device dev, MPU9150 *mpu, Vector3D *ao, Vector3
 
 	std::cout << "Accel:" << Vector3D(ax, ay, az - 16384).ToString()
 		<< " Gyro:" << Vector3D(gx, gy, gz).ToString() << std::endl;
+}
+
+void I2CController::CalibrateMPUDMPs() {
+	auto startTime = std::chrono::system_clock::now();
+	double runTime = 0;
+
+	std::cout << "Calibrating DMP Modules." << std::endl;
+
+	int secondPrint = 0;
+	int calTime = 20;
+
+	while (runTime < calTime) {
+		runTime = ((double)((std::chrono::system_clock::now() - startTime).count()) / pow(10.0, 9.0));
+
+		GetMainRotation();
+		GetMainWorldAcceleration();
+		GetTBRotation();
+		GetTBWorldAcceleration();
+		GetTCRotation();
+		GetTCWorldAcceleration();
+		GetTDRotation();
+		GetTDWorldAcceleration();
+		GetTERotation();
+		GetTEWorldAcceleration();
+
+		if (runTime > secondPrint) {
+			std::cout << "   DMP calibration step " << secondPrint << " of " << calTime << std::endl;
+			secondPrint++;
+		}
+
+		bcm2835_delay(50);
+	}
+
+	MV  = new Vector3D();
+	TBV = new Vector3D();
+	TCV = new Vector3D();
+	TDV = new Vector3D();
+	TEV = new Vector3D();
+
+	std::cout << "MPU DMPs calibrated." << std::endl;
 }
 
 void I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
@@ -282,12 +325,12 @@ void I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
 	std::cout << "   Initializing DMP of " << std::dec << dev << std::endl;
 
 	dmpStatus = mpu->dmpInitialize(address);
-
+	
 	mpu->setXGyroOffset(220);
 	mpu->setYGyroOffset(76);
 	mpu->setZGyroOffset(-85);
 	mpu->setZAccelOffset(1788);
-
+	
 	if (dmpStatus == 0) {
 		std::cout << "      Enabling DMP of MPU6050" << std::endl;
 
@@ -331,12 +374,12 @@ void I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
 	std::cout << "   Initializing DMP of " << std::dec << dev << std::endl;
 
 	dmpStatus = mpu->dmpInitialize();
-
+	/*
 	mpu->setXGyroOffset(220);
 	mpu->setYGyroOffset(76);
 	mpu->setZGyroOffset(-85);
 	mpu->setZAccelOffset(1788);
-
+	*/
 	if (dmpStatus == 0) {
 		std::cout << "      Enabling DMP of MPU9150" << std::endl;
 
