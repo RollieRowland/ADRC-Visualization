@@ -56,12 +56,20 @@ int main() {
 	i2cController->InitializePCA();
 	bcm2835_delay(50);
 
-	std::cout << "Starting MPU calibration procedure." << std::endl;
-	i2cController->SetBThrustVector(Vector3D(90, 0, 0));
-	i2cController->SetCThrustVector(Vector3D(-90, 0, 0));
+	std::cout << "Starting MPU calibration procedure..." << std::endl;
+	std::cout << "Setting thruster rotations to default." << std::endl;
+	i2cController->SetBThrustVector(Vector3D(0, 0, 0));
+	i2cController->SetCThrustVector(Vector3D(0, 0, 0));
+	i2cController->SetDThrustVector(Vector3D(0, 0, 0));
+	i2cController->SetEThrustVector(Vector3D(0, 0, 0));
+	bcm2835_delay(3000);
+
+	std::cout << "Setting thruster rotations to calibration mode." << std::endl;
+	i2cController->SetBThrustVector(Vector3D(-90, 0, 0));
+	i2cController->SetCThrustVector(Vector3D(90, 0, 0));
 	i2cController->SetDThrustVector(Vector3D(-90, 0, 0));
 	i2cController->SetEThrustVector(Vector3D(90, 0, 0));
-	sleep(5);
+	bcm2835_delay(4000);
 
 	i2cController->InitializeMPUs();
 	bcm2835_delay(250);
@@ -72,7 +80,9 @@ int main() {
 	i2cController->SetCThrustVector(Vector3D(0, 0, 0));
 	i2cController->SetDThrustVector(Vector3D(0, 0, 0));
 	i2cController->SetEThrustVector(Vector3D(0, 0, 0));
-	sleep(5);
+
+	std::cout << "Waiting for hardware..." << std::endl;
+	bcm2835_delay(5000);
 
 	std::cout << "Hardware initialization complete." << std::endl;
 
@@ -96,15 +106,14 @@ int main() {
 	while (true) {
 		double dT = ((double)((std::chrono::system_clock::now() - previousTime).count()) / pow(10.0, 9.0));
 
-		Quaternion q = i2cController->GetTERotation();
+		Quaternion q = i2cController->GetMainRotation();
 		//Vector3D v = i2cController.GetTBWorldAcceleration();
 
 		//q = q * Rotation(EulerAngles(Vector3D(-90, 180, 0), EulerConstants::EulerOrderXYZR)).GetQuaternion();
 		//q = q * Rotation(EulerAngles(Vector3D(0, 0, 180), EulerConstants::EulerOrderXYZS)).GetQuaternion();
 
 		rotation = quatKF.Filter(q);
-		//rotation = quatKF.Filter(i2cController->GetTDRotation());
-		//rotation = quatKF.Filter(i2cController->GetTERotation());
+		//rotation = q;
 		//worldAccel = Vector3D(accelKF.Filter(v));
 
 		velocity = velocity + worldAccel * dT;
@@ -120,19 +129,21 @@ int main() {
 		quad.CalculateCombinedThrustVector();//Secondary Solver
 
 		//YawPitchRoll ypr = Rotation(Quaternion(rotation)).GetYawPitchRoll();
-		EulerAngles ypr = Rotation(Quaternion(rotation)).GetEulerAngles(EulerConstants::EulerOrderZXZR);
+		EulerAngles eaypr = Rotation(Quaternion(rotation)).GetEulerAngles(EulerConstants::EulerOrderYXZS);
 
-		std::cout << ypr.Angles.ToString() << " " << quad.TB->CurrentRotation.ToString() << std::endl;
+		std::cout << eaypr.Angles.ToString() << " " << quad.TB->CurrentRotation.ToString() << std::endl;
 		
 		//SET OUTPUTS
 
 
-		i2cController->SetDThrustVector(Vector3D(-quad.TB->CurrentRotation.X, 0, -quad.TB->CurrentRotation.Z));
-
+		i2cController->SetBThrustVector(Vector3D( quad.TB->CurrentRotation.X, 0, -quad.TB->CurrentRotation.Z));
+		i2cController->SetCThrustVector(Vector3D( quad.TC->CurrentRotation.X, 0, -quad.TC->CurrentRotation.Z));
+		i2cController->SetDThrustVector(Vector3D(-quad.TD->CurrentRotation.X, 0, -quad.TD->CurrentRotation.Z));
+		i2cController->SetEThrustVector(Vector3D(-quad.TE->CurrentRotation.X, 0, -quad.TE->CurrentRotation.Z));
 
 		previousTime = std::chrono::system_clock::now();
 		
-		bcm2835_delay(5);
+		bcm2835_delay(1);
 	}
 	
 	//ROTATION
