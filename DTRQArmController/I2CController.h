@@ -33,7 +33,7 @@ public:
 	void InitializeMPUs();
 	void InitializePCA();
 	void CalibrateMPUs();
-	void CalibrateMPUDMPs();
+	void ClearMPUFIFOs();
 
 	Quaternion GetMainRotation();
 	Quaternion GetTBRotation();
@@ -54,7 +54,11 @@ public:
 
 private:
 	u_int8_t address;
-	int packetSize;
+	uint16_t packetSizeM;
+	uint16_t packetSizeTB;
+	uint16_t packetSizeTC;
+	uint16_t packetSizeTD;
+	uint16_t packetSizeTE;
 
 	MPU6050 *mpuMain;
 	MPU6050 *mpuB;
@@ -101,17 +105,17 @@ private:
 	VectorKalmanFilter *TEGKF;
 
 	void SelectDevice(Device mpu);
-	void InitializeMPU(Device dev, MPU6050 *mpu);
-	void InitializeMPU(Device dev, MPU9150 *mpu);
+	uint16_t InitializeMPU(Device dev, MPU6050 *mpu);
+	uint16_t InitializeMPU(Device dev, MPU9150 *mpu);
 	void SetDefaultMPUOffsets();
 
 	void CalibrateMPU(Device dev, MPU6050 *mpu, Vector3D *ao, Vector3D *go, VectorKalmanFilter *akf, VectorKalmanFilter *gkf);
 	void CalibrateMPU(Device dev, MPU9150 *mpu, Vector3D *ao, Vector3D *go, VectorKalmanFilter *akf, VectorKalmanFilter *gkf);
 
-	Quaternion GetRotation(Device dev, MPU6050 *mpu);
-	Quaternion GetRotation(Device dev, MPU9150 *mpu);
+	Quaternion GetRotation(Device dev, MPU6050 *mpu, uint16_t packetSize);
+	Quaternion GetRotation(Device dev, MPU9150 *mpu, uint16_t packetSize);
 
-	Vector3D GetLinearAcceleration(Device dev, MPU6050 *mpu);
-	Vector3D GetLinearAcceleration(Device dev, MPU9150 *mpu);
+	Vector3D GetLinearAcceleration(Device dev, MPU6050 *mpu, uint16_t packetSize);
+	Vector3D GetLinearAcceleration(Device dev, MPU9150 *mpu, uint16_t packetSize);
 
 };

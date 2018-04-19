@@ -62,14 +62,14 @@ int main() {
 	i2cController->SetCThrustVector(Vector3D(0, 0, 0));
 	i2cController->SetDThrustVector(Vector3D(0, 0, 0));
 	i2cController->SetEThrustVector(Vector3D(0, 0, 0));
-	bcm2835_delay(3000);
+	bcm2835_delay(1000);
 
 	std::cout << "Setting thruster rotations to calibration mode." << std::endl;
 	i2cController->SetBThrustVector(Vector3D(-90, 0, 0));
 	i2cController->SetCThrustVector(Vector3D(90, 0, 0));
 	i2cController->SetDThrustVector(Vector3D(-90, 0, 0));
 	i2cController->SetEThrustVector(Vector3D(90, 0, 0));
-	bcm2835_delay(4000);
+	bcm2835_delay(1000);
 
 	i2cController->InitializeMPUs();
 	bcm2835_delay(1000);
@@ -82,29 +82,22 @@ int main() {
 	i2cController->SetEThrustVector(Vector3D(0, 0, 0));
 	bcm2835_delay(1000);
 
-	std::cout << "Waiting for MPU DMP initialization..." << std::endl;
-
-	//i2cController->CalibrateMPUDMPs();
-	//bcm2835_delay(250);
-
 	std::cout << "Hardware initialization complete." << std::endl;
+
+	i2cController->ClearMPUFIFOs();
 
 	std::cout << "Beginning control loop..." << std::endl;
 	while (true) {
 		double dT = ((double)((std::chrono::system_clock::now() - previousTime).count()) / pow(10.0, 9.0));
 
-		Quaternion q = i2cController->GetMainRotation();
+		Quaternion q = i2cController->GetTCRotation();
 		Vector3D  vm = i2cController->GetMainWorldAcceleration();
-		Vector3D  vb = i2cController->GetTBWorldAcceleration();
-		Vector3D  vc = i2cController->GetTCWorldAcceleration();
-		Vector3D  vd = i2cController->GetTDWorldAcceleration();
-		Vector3D  ve = i2cController->GetTEWorldAcceleration();
 
 		rotation   = quatKF.Filter(q);
-		worldAccel = accelKF.Filter((vm + vb + vc + vd + ve) / 5);
+		worldAccel = accelKF.Filter(vm);
 
-		velocity = velocity.Add(worldAccel.Multiply(dT).Multiply(9.81));//g-force to m/s^2
-		position = position.Add(velocity.Multiply(dT));
+		velocity = velocity + worldAccel.Multiply(dT).Multiply(9.81);//g-force to m/s^2
+		position = position + velocity.Multiply(dT);
 
 		//std::cout << rotation.ToString() << " " << worldAccel.ToString() << std::endl;
 
@@ -117,14 +110,14 @@ int main() {
 
 		EulerAngles eaypr = Rotation(Quaternion(rotation)).GetEulerAngles(EulerConstants::EulerOrderYXZS);
 		
-		//std::cout << eaypr.Angles.ToString() << " ";
-		std::cout  << position.ToString() << " " << worldAccel.ToString() << std::endl;
+		std::cout << eaypr.Angles.ToString() << std::endl;
+		//std::cout  << position.ToString() << " " << velocity.ToString() << " " << worldAccel.ToString() << std::endl;
 		
 		//set outputs
 		i2cController->SetBThrustVector(Vector3D( quad.TB->CurrentRotation.X, 0, -quad.TB->CurrentRotation.Z));
 		i2cController->SetCThrustVector(Vector3D( quad.TC->CurrentRotation.X, 0, -quad.TC->CurrentRotation.Z));
 		i2cController->SetDThrustVector(Vector3D(-quad.TD->CurrentRotation.X, 0, -quad.TD->CurrentRotation.Z));
-		i2cController->SetEThrustVector(Vector3D(-quad.TE->CurrentRotation.X, 0, -quad.TE->CurrentRotation.Z));
+		//i2cController->SetEThrustVector(Vector3D(-quad.TE->CurrentRotation.X, 0, -quad.TE->CurrentRotation.Z));
 
 		previousTime = std::chrono::system_clock::now();
 		

@@ -50,11 +50,11 @@ I2CController::~I2CController() {
 	SelectDevice(PWMManager);//PWMManager
 	hPWM->Restart();
 
-	delay(10);
+	bcm2835_delay(10);
 
 	hPWM->Sleep();
 
-	delay(10);
+	bcm2835_delay(10);
 
 	delete mpuMain;
 	delete mpuB;
@@ -88,11 +88,11 @@ void I2CController::InitializeMPUs() {
 
 	std::cout << "Initializing MPUs." << std::endl;
 
-	InitializeMPU(MainMPU,   mpuMain);
-	InitializeMPU(ThrusterBMPU, mpuB);
-	InitializeMPU(ThrusterCMPU, mpuC);
-	InitializeMPU(ThrusterDMPU, mpuD);
-	InitializeMPU(ThrusterEMPU, mpuE);
+	packetSizeM = InitializeMPU(MainMPU,   mpuMain);
+	packetSizeTB = InitializeMPU(ThrusterBMPU, mpuB);
+	packetSizeTC = InitializeMPU(ThrusterCMPU, mpuC);
+	packetSizeTD = InitializeMPU(ThrusterDMPU, mpuD);
+	packetSizeTE = InitializeMPU(ThrusterEMPU, mpuE);
 
 	std::cout << "MPUs initialized." << std::endl;
 }
@@ -101,7 +101,6 @@ void I2CController::InitializePCA() {
 	SelectDevice(PWMManager);//PWMManager
 
 	hPWM = new PWMController(200, 0x40);
-
 }
 
 void I2CController::SelectDevice(Device dev) {
@@ -129,8 +128,6 @@ void I2CController::SelectDevice(Device dev) {
 	}
 
 	I2Cdev::writeByte(address, 0x00, addr);
-
-	//std::cout << "Selected " << mpu << std::endl;
 }
 
 void I2CController::SetDefaultMPUOffsets() {
@@ -155,6 +152,23 @@ void I2CController::SetDefaultMPUOffsets() {
 	SelectDevice(ThrusterEMPU);
 	mpuE->setXAccelOffset(0); mpuE->setYAccelOffset(0); mpuE->setZAccelOffset(0);
 	mpuE->setXGyroOffset(0);  mpuE->setYGyroOffset(0);  mpuE->setZGyroOffset(0);
+}
+
+void I2CController::ClearMPUFIFOs() {
+	SelectDevice(MainMPU);
+	mpuMain->resetFIFO();
+
+	SelectDevice(ThrusterBMPU);
+	mpuB->resetFIFO();
+
+	SelectDevice(ThrusterCMPU);
+	mpuC->resetFIFO();
+
+	SelectDevice(ThrusterDMPU);
+	mpuD->resetFIFO();
+
+	SelectDevice(ThrusterEMPU);
+	mpuE->resetFIFO();
 }
 
 void I2CController::CalibrateMPUs() {
@@ -196,34 +210,36 @@ void I2CController::CalibrateMPU(Device dev, MPU6050 *mpu, Vector3D *ao, Vector3
 	ao = new Vector3D(mpu->getXAccelOffset(), mpu->getYAccelOffset(), mpu->getZAccelOffset());
 	go = new Vector3D(mpu->getXGyroOffset(),  mpu->getYGyroOffset(),  mpu->getZGyroOffset() );
 
-	Vector3D mod = akf->Filter(Vector3D(ax, ay, az - 8192)).Absolute().Divide(10);//subtract gravity
+	Vector3D accMod = akf->Filter(Vector3D(ax, ay, az - 8192)).Absolute().Divide(150);//subtract gravity
+	Vector3D gyrMod = akf->Filter(Vector3D(gx, gy, gz)).Absolute().Divide(1);//subtract gravity
 
 	//linear, wastes time
-	if (ax > 0)     ao->X = ao->X - 1 * mod.X; else if (ax < 0)     ao->X = ao->X + 1 * mod.X;
-	if (ay > 0)     ao->Y = ao->Y - 1 * mod.Y; else if (ay < 0)     ao->Y = ao->Y + 1 * mod.Y;
-	if (az > 8192)  ao->Z = ao->Z - 1 * mod.Z; else if (az < 8192)  ao->Z = ao->Z + 1 * mod.Z;
+	if (ax > 0)     ao->X = ao->X - 1 * accMod.X; else if (ax < 0)     ao->X = ao->X + 1 * accMod.X;
+	if (ay > 0)     ao->Y = ao->Y - 1 * accMod.Y; else if (ay < 0)     ao->Y = ao->Y + 1 * accMod.Y;
+	if (az > 8192)  ao->Z = ao->Z - 1 * accMod.Z; else if (az < 8192)  ao->Z = ao->Z + 1 * accMod.Z;
 
-	/*
-	if (gx > 0)     go->X = go->X - 1; else if (gx < 0)     go->X = go->X + 1;
-	if (gy > 0)     go->Y = go->Y - 1; else if (gy < 0)     go->Y = go->Y + 1;
-	if (gz > 0)     go->Z = go->Z - 1; else if (gz < 0)     go->Z = go->Z + 1;
-	*/
+	
+	if (gx > 0)     go->X = go->X - 1 * gyrMod.X; else if (gx < 0)     go->X = go->X + 1 * gyrMod.X;
+	if (gy > 0)     go->Y = go->Y - 1 * gyrMod.Y; else if (gy < 0)     go->Y = go->Y + 1 * gyrMod.Y;
+	if (gz > 0)     go->Z = go->Z - 1 * gyrMod.Z; else if (gz < 0)     go->Z = go->Z + 1 * gyrMod.Z;
+	
 	
 	//filter offset between value and zero, add this to the offset
 	//Vector3D aOff = akf->Filter(Vector3D(ax, ay, az));//subtract gravity
-	Vector3D gOff = gkf->Filter(Vector3D(gx, gy, gz));
+	//Vector3D gOff = gkf->Filter(Vector3D(gx, gy, gz));
 
 	//ao = new Vector3D(ao->Subtract(aOff));
-	go = new Vector3D(go->Subtract(gOff));
+	//go = new Vector3D(go->Subtract(gOff));
 
-	//mpu->setXAccelOffset(ao->X);
-	//mpu->setYAccelOffset(ao->Y);
-	//mpu->setZAccelOffset(ao->Z);
+	mpu->setXAccelOffset(ao->X);
+	mpu->setYAccelOffset(ao->Y);
+	mpu->setZAccelOffset(ao->Z);
 	mpu->setXGyroOffset( go->X);
 	mpu->setYGyroOffset( go->Y);
 	mpu->setZGyroOffset( go->Z);
 
-	//std::cout << "Accel:" << Vector3D(ax, ay, az).ToString() << " Mod:" << mod.ToString() << std::endl;
+	//std::cout << "Gyro:" << Vector3D(gx, gy, gz).ToString() << " Mod:" << gyrMod.ToString() << std::endl;
+	//std::cout << "Accel:" << Vector3D(ax, ay, az).ToString() << " Mod:" << accMod.ToString() << std::endl;
 	//std::cout << "Accel:" << Vector3D(ax, ay, az).ToString() << " Gyro:" << Vector3D(gx, gy, gz).ToString() << std::endl;
 	//std::cout << "Accel:" << Vector3D(ao->X, ao->Y, ao->Z).ToString() << " Gyro:" << Vector3D(go->X, go->Y, go->Z).ToString() << std::endl;
 	//std::cout << "Accel:" << aOff.ToString() << " Gyro:" << gOff.ToString() << std::endl;
@@ -254,47 +270,7 @@ void I2CController::CalibrateMPU(Device dev, MPU9150 *mpu, Vector3D *ao, Vector3
 		<< " Gyro:" << Vector3D(gx, gy, gz).ToString() << std::endl;
 }
 
-void I2CController::CalibrateMPUDMPs() {
-	auto startTime = std::chrono::system_clock::now();
-	double runTime = 0;
-
-	std::cout << "Calibrating DMP Modules." << std::endl;
-
-	int secondPrint = 0;
-	int calTime = 20;
-
-	while (runTime < calTime) {
-		runTime = ((double)((std::chrono::system_clock::now() - startTime).count()) / pow(10.0, 9.0));
-
-		GetMainRotation();
-		GetMainWorldAcceleration();
-		GetTBRotation();
-		GetTBWorldAcceleration();
-		GetTCRotation();
-		GetTCWorldAcceleration();
-		GetTDRotation();
-		GetTDWorldAcceleration();
-		GetTERotation();
-		GetTEWorldAcceleration();
-
-		if (runTime > secondPrint) {
-			std::cout << "   DMP calibration step " << secondPrint << " of " << calTime << std::endl;
-			secondPrint++;
-		}
-
-		bcm2835_delay(50);
-	}
-
-	MV  = new Vector3D();
-	TBV = new Vector3D();
-	TCV = new Vector3D();
-	TDV = new Vector3D();
-	TEV = new Vector3D();
-
-	std::cout << "MPU DMPs calibrated." << std::endl;
-}
-
-void I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
+uint16_t I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
 	int dmpStatus;
 
 	std::cout << "Initializing MPU6050 device: " << dev << std::endl;
@@ -303,7 +279,7 @@ void I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
 	std::cout << "   Resetting MPU6050 before initialization." << std::endl;
 	mpu->reset();
 
-	delay(100);
+	bcm2835_delay(50);
 
 	std::cout << "   Testing I2C connection to MPU6050." << std::endl;
 
@@ -326,24 +302,24 @@ void I2CController::InitializeMPU(Device dev, MPU6050 *mpu) {
 
 	dmpStatus = mpu->dmpInitialize(address);
 	
-	mpu->setXGyroOffset(220);
-	mpu->setYGyroOffset(76);
-	mpu->setZGyroOffset(-85);
-	mpu->setZAccelOffset(1788);
-	
 	if (dmpStatus == 0) {
 		std::cout << "      Enabling DMP of MPU6050" << std::endl;
 
 		mpu->setDMPEnabled(true);
 
-		packetSize = mpu->dmpGetFIFOPacketSize();
+		uint16_t val = mpu->dmpGetFIFOPacketSize();
+		std::cout << "      DMP Packet Size:" << val << std::endl;
+
+		return val;
 	}
 	else {
 		std::cout << "      DMP Initialization Failed on " << dev << std::endl;
+
+		return 0;
 	}
 }
 
-void I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
+uint16_t I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
 	int dmpStatus;
 
 	std::cout << "Initializing MPU9150 device: " << dev << std::endl;
@@ -352,7 +328,7 @@ void I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
 	std::cout << "   Resetting MPU9150 before initialization." << std::endl;
 	mpu->reset();
 
-	delay(100);
+	bcm2835_delay(50);
 
 	std::cout << "   Testing I2C connection to MPU9150." << std::endl;
 
@@ -374,25 +350,22 @@ void I2CController::InitializeMPU(Device dev, MPU9150 *mpu) {
 	std::cout << "   Initializing DMP of " << std::dec << dev << std::endl;
 
 	dmpStatus = mpu->dmpInitialize();
-	/*
-	mpu->setXGyroOffset(220);
-	mpu->setYGyroOffset(76);
-	mpu->setZGyroOffset(-85);
-	mpu->setZAccelOffset(1788);
-	*/
+
 	if (dmpStatus == 0) {
 		std::cout << "      Enabling DMP of MPU9150" << std::endl;
 
 		mpu->setDMPEnabled(true);
 
-		packetSize = mpu->dmpGetFIFOPacketSize();
+		return mpu->dmpGetFIFOPacketSize();
 	}
 	else {
 		std::cout << "      DMP Initialization Failed on " << dev << std::endl;
+
+		return 0;
 	}
 }
 
-Quaternion I2CController::GetRotation(Device dev, MPU6050 *mpu) {
+Quaternion I2CController::GetRotation(Device dev, MPU6050 *mpu, uint16_t packetSize) {
 	SelectDevice(dev);
 
 	//std::cout << "Getting mpu6050 status." << std::endl;
@@ -402,13 +375,12 @@ Quaternion I2CController::GetRotation(Device dev, MPU6050 *mpu) {
 	int fifoCount = mpu->getFIFOCount();
 	uint8_t fifoBuffer[64]; // FIFO storage buffer
 
-	//std::cout << "FIFO count: " << fifoCount << std::endl;
+	//std::cout << "FIFO count: " << fifoCount << " Packet:" << packetSize << std::endl;
 
 	if (mpuIntStatus & 0x10 || fifoCount == 1024) {
-		std::cout << "Resetting mpu6050 fifo." << std::endl;
 		mpu->resetFIFO();
 
-		std::cout << "MPU6050 FIFO reset." << std::endl;
+		std::cout << "MPU6050 FIFO reset on device:" << dev << std::endl;
 
 		return Quaternion(-1, -1, -1, -1);
 	}
@@ -439,7 +411,7 @@ Quaternion I2CController::GetRotation(Device dev, MPU6050 *mpu) {
 	}
 }
 
-Quaternion I2CController::GetRotation(Device dev, MPU9150 *mpu) {
+Quaternion I2CController::GetRotation(Device dev, MPU9150 *mpu, uint16_t packetSize) {
 	SelectDevice(dev);
 
 	//std::cout << "Getting mpu9150 status." << std::endl;
@@ -452,10 +424,9 @@ Quaternion I2CController::GetRotation(Device dev, MPU9150 *mpu) {
 	//std::cout << "FIFO count: " << fifoCount << std::endl;
 
 	if (mpuIntStatus & 0x10 || fifoCount == 1024) {
-		std::cout << "Resetting MPU9150 fifo." << std::endl;
 		mpu->resetFIFO();
 
-		std::cout << "MPU9150 FIFO reset." << std::endl;
+		std::cout << "MPU9150 FIFO reset on device:" << dev << std::endl;
 
 		return Quaternion(-1, -1, -1, -1);
 	}
@@ -487,7 +458,7 @@ Quaternion I2CController::GetRotation(Device dev, MPU9150 *mpu) {
 }
 
 Quaternion I2CController::GetMainRotation() {
-	Quaternion q = GetRotation(MainMPU, mpuMain);
+	Quaternion q = GetRotation(MainMPU, mpuMain, packetSizeM);
 
 	if (q.W == -1 && q.X == -1 && q.Y == -1 && q.Z == -1) {
 		//std::cout << "Main R fetch failed, using previous values." << std::endl;
@@ -501,7 +472,7 @@ Quaternion I2CController::GetMainRotation() {
 }
 
 Quaternion I2CController::GetTBRotation() {
-	Quaternion q = GetRotation(ThrusterBMPU, mpuB);
+	Quaternion q = GetRotation(ThrusterBMPU, mpuB, packetSizeTB);
 
 	if (q.W == -1 && q.X == -1 && q.Y == -1 && q.Z == -1) {
 		//std::cout << "TB R fetch failed, using previous values." << std::endl;
@@ -515,7 +486,7 @@ Quaternion I2CController::GetTBRotation() {
 }
 
 Quaternion I2CController::GetTCRotation() {
-	Quaternion q = GetRotation(ThrusterCMPU, mpuC);
+	Quaternion q = GetRotation(ThrusterCMPU, mpuC, packetSizeTC);
 
 	if (q.W == -1 && q.X == -1 && q.Y == -1 && q.Z == -1) {
 		//std::cout << "TC R fetch failed, using previous values." << std::endl;
@@ -529,7 +500,7 @@ Quaternion I2CController::GetTCRotation() {
 }
 
 Quaternion I2CController::GetTDRotation() {
-	Quaternion q = GetRotation(ThrusterDMPU, mpuD);
+	Quaternion q = GetRotation(ThrusterDMPU, mpuD, packetSizeTD);
 
 	if (q.W == -1 && q.X == -1 && q.Y == -1 && q.Z == -1) {
 		//std::cout << "TD R fetch failed, using previous values." << std::endl;
@@ -543,7 +514,7 @@ Quaternion I2CController::GetTDRotation() {
 }
 
 Quaternion I2CController::GetTERotation() {
-	Quaternion q = GetRotation(ThrusterEMPU, mpuE);
+	Quaternion q = GetRotation(ThrusterEMPU, mpuE, packetSizeTE);
 
 	if (q.W == -1 && q.X == -1 && q.Y == -1 && q.Z == -1) {
 		//std::cout << "TE R fetch failed, using previous values." << std::endl;
@@ -556,8 +527,7 @@ Quaternion I2CController::GetTERotation() {
 	}
 }
 
-
-Vector3D I2CController::GetLinearAcceleration(Device dev, MPU6050 *mpu) {
+Vector3D I2CController::GetLinearAcceleration(Device dev, MPU6050 *mpu, uint16_t packetSize) {
 	SelectDevice(dev);
 
 	int mpuIntStatus = mpu->getIntStatus();
@@ -565,10 +535,9 @@ Vector3D I2CController::GetLinearAcceleration(Device dev, MPU6050 *mpu) {
 	uint8_t fifoBuffer[64]; //FIFO storage buffer
 
 	if (mpuIntStatus & 0x10 || fifoCount == 1024) {
-		std::cout << "Resetting MPU6050 fifo." << std::endl;
 		mpu->resetFIFO();
 
-		std::cout << "MPU6050 FIFO reset." << std::endl;
+		std::cout << "MPU6050 FIFO reset on device:" << dev << std::endl;
 
 		return Vector3D(-1000, -1000, -1000);
 	}
@@ -623,7 +592,7 @@ Vector3D I2CController::GetLinearAcceleration(Device dev, MPU6050 *mpu) {
 	}
 }
 
-Vector3D I2CController::GetLinearAcceleration(Device dev, MPU9150 *mpu) {
+Vector3D I2CController::GetLinearAcceleration(Device dev, MPU9150 *mpu, uint16_t packetSize) {
 	SelectDevice(dev);
 
 	int mpuIntStatus = mpu->getIntStatus();
@@ -631,10 +600,9 @@ Vector3D I2CController::GetLinearAcceleration(Device dev, MPU9150 *mpu) {
 	uint8_t fifoBuffer[64]; // FIFO storage buffer
 
 	if (mpuIntStatus & 0x10 || fifoCount == 1024) {
-		std::cout << "Resetting MPU9150 fifo." << std::endl;
 		mpu->resetFIFO();
 
-		std::cout << "MPU9150 FIFO reset." << std::endl;
+		std::cout << "MPU9150 FIFO reset on device:" << dev << std::endl;
 
 		return Vector3D(-1000, -1000, -1000);
 	}
@@ -690,7 +658,7 @@ Vector3D I2CController::GetLinearAcceleration(Device dev, MPU9150 *mpu) {
 }
 
 Vector3D I2CController::GetMainWorldAcceleration() {
-	Vector3D v = GetLinearAcceleration(MainMPU, mpuMain);
+	Vector3D v = GetLinearAcceleration(MainMPU, mpuMain, packetSizeM);
 
 	if (v.X == -1000 && v.Y == -1000 && v.Z == -1000) {
 		//std::cout << "Main WA fetch failed, using previous values." << std::endl;
@@ -706,7 +674,7 @@ Vector3D I2CController::GetMainWorldAcceleration() {
 }
 
 Vector3D I2CController::GetTBWorldAcceleration() {
-	Vector3D v = GetLinearAcceleration(ThrusterBMPU, mpuB);
+	Vector3D v = GetLinearAcceleration(ThrusterBMPU, mpuB, packetSizeTB);
 
 	if (v.X == -1000 && v.Y == -1000 && v.Z == -1000) {
 		//std::cout << "TB WA fetch failed, using previous values." << std::endl;
@@ -722,7 +690,7 @@ Vector3D I2CController::GetTBWorldAcceleration() {
 }
 
 Vector3D I2CController::GetTCWorldAcceleration() {
-	Vector3D v = GetLinearAcceleration(ThrusterCMPU, mpuC);
+	Vector3D v = GetLinearAcceleration(ThrusterCMPU, mpuC, packetSizeTC);
 
 	if (v.X == -1000 && v.Y == -1000 && v.Z == -1000) {
 		//std::cout << "TC WA fetch failed, using previous values." << std::endl;
@@ -738,7 +706,7 @@ Vector3D I2CController::GetTCWorldAcceleration() {
 }
 
 Vector3D I2CController::GetTDWorldAcceleration() {
-	Vector3D v = GetLinearAcceleration(ThrusterDMPU, mpuD);
+	Vector3D v = GetLinearAcceleration(ThrusterDMPU, mpuD, packetSizeTD);
 
 	if (v.X == -1000 && v.Y == -1000 && v.Z == -1000) {
 		//std::cout << "TD WA fetch failed, using previous values." << std::endl;
@@ -754,7 +722,7 @@ Vector3D I2CController::GetTDWorldAcceleration() {
 }
 
 Vector3D I2CController::GetTEWorldAcceleration() {
-	Vector3D v = GetLinearAcceleration(ThrusterEMPU, mpuE);
+	Vector3D v = GetLinearAcceleration(ThrusterEMPU, mpuE, packetSizeTE);
 
 	if (v.X == -1000 && v.Y == -1000 && v.Z == -1000) {
 		//std::cout << "TE WA fetch failed, using previous values." << std::endl;
