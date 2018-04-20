@@ -63,7 +63,7 @@ MPU6050::MPU6050(uint8_t address) {
 void MPU6050::initialize() {
     setClockSource(MPU6050_CLOCK_PLL_XGYRO);
     setFullScaleGyroRange(MPU6050_GYRO_FS_250);
-    setFullScaleAccelRange(MPU6050_ACCEL_FS_4);
+    setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
     setSleepEnabled(false); // thanks to Jack Elston for pointing this one out!
 }
 
@@ -3497,9 +3497,9 @@ uint8_t MPU6050::dmpGetGyro(VectorInt16 *v, const uint8_t* packet) {
 
 uint8_t MPU6050::dmpGetLinearAccel(VectorInt16 *v, VectorInt16 *vRaw, VectorFloat *gravity) {
 	// get rid of the gravity component (+1g = +8192 in standard DMP FIFO packet, sensitivity is 2g)
-	v->x = vRaw->x - gravity->x * 8192;
-	v->y = vRaw->y - gravity->y * 8192;
-	v->z = vRaw->z - gravity->z * 8192;
+	v->x = vRaw->x - gravity->x * 16384;
+	v->y = vRaw->y - gravity->y * 16384;
+	v->z = vRaw->z - gravity->z * 16384;
 
 	return 0;
 }

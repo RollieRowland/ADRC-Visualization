@@ -26,7 +26,7 @@ double Mathematics::RadiansToDegrees(double radians) {
 std::string Mathematics::DoubleToCleanString(double value) {
 	std::stringstream stream;
 
-	stream << std::fixed << std::setprecision(2) << std::setw(10) << value;
+	stream << std::fixed << std::setprecision(3) << std::setw(10) << value;
 
 	return stream.str();
 }

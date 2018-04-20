@@ -132,6 +132,7 @@
     <ClCompile Include="EulerOrder.cpp" />
     <ClCompile Include="ExtendedStateObserver.cpp" />
     <ClCompile Include="KalmanFilter.cpp" />
+    <ClCompile Include="LeastSquares.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mathematics.cpp" />
     <ClCompile Include="Motor.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="VectorFeedbackController.cpp" />
     <ClCompile Include="VectorKalmanFilter.cpp" />
+    <ClCompile Include="VectorLeastSquares.cpp" />
     <ClCompile Include="YawPitchRoll.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -160,7 +162,9 @@
     <ClInclude Include="EulerOrder.h" />
     <ClInclude Include="ExtendedStateObserver.h" />
     <ClInclude Include="FeedbackController.h" />
+    <ClInclude Include="LeastSquares.h" />
     <ClInclude Include="QuaternionKalmanFilter.h" />
+    <ClInclude Include="VectorLeastSquares.h" />
     <ClInclude Include="YawPitchRoll.h" />
     <ClInclude Include="KalmanFilter.h" />
     <ClInclude Include="Mathematics.h" />

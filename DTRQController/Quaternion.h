@@ -127,7 +127,7 @@ public:
 		this->Y = quaternion.Y;
 		this->Z = quaternion.Z;
 		
-		return *this;
+		return quaternion;
 	}
 
 	Quaternion operator  +(Quaternion quaternion) {

@@ -182,7 +182,7 @@ Quaternion Rotation::YawPitchRollToQuaternion(YawPitchRoll ypr) {
 
 EulerAngles Rotation::RotationMatrixToEulerAngles(RotationMatrix rM, EulerOrder order) {
 	EulerAngles eulerAngles = EulerAngles(Vector3D(0, 0, 0), order);
-	Vector3D p = order.Permutation;
+	//Vector3D p = order.Permutation;
 
 	if (order.InitialAxisRepetition == EulerOrder::AxisRepetition::Yes)
 	{
@@ -243,7 +243,7 @@ EulerAngles Rotation::RotationMatrixToEulerAngles(RotationMatrix rM, EulerOrder 
 RotationMatrix Rotation::EulerAnglesToRotationMatrix(EulerAngles eulerAngles) {
 	RotationMatrix rM = RotationMatrix(Vector3D(0, 0, 0));
 	double sx, sy, sz, cx, cy, cz, cc, cs, sc, ss; 
-	Vector3D p = eulerAngles.Order.Permutation;
+	//Vector3D p = eulerAngles.Order.Permutation;
 
 	eulerAngles.Angles.X = Mathematics::DegreesToRadians(eulerAngles.Angles.X);
 	eulerAngles.Angles.Y = Mathematics::DegreesToRadians(eulerAngles.Angles.Y);

@@ -66,6 +66,7 @@
     <ClCompile Include="..\DTRQController\EulerOrder.cpp" />
     <ClCompile Include="..\DTRQController\ExtendedStateObserver.cpp" />
     <ClCompile Include="..\DTRQController\KalmanFilter.cpp" />
+    <ClCompile Include="..\DTRQController\LeastSquares.cpp" />
     <ClCompile Include="..\DTRQController\Mathematics.cpp" />
     <ClCompile Include="..\DTRQController\Motor.cpp" />
     <ClCompile Include="..\DTRQController\NonlinearCombiner.cpp" />
@@ -81,6 +82,7 @@
     <ClCompile Include="..\DTRQController\Vector.cpp" />
     <ClCompile Include="..\DTRQController\VectorFeedbackController.cpp" />
     <ClCompile Include="..\DTRQController\VectorKalmanFilter.cpp" />
+    <ClCompile Include="..\DTRQController\VectorLeastSquares.cpp" />
     <ClCompile Include="..\DTRQController\YawPitchRoll.cpp" />
     <ClCompile Include="I2CController.cpp" />
     <ClCompile Include="I2Cdev.cpp" />
@@ -100,6 +102,7 @@
     <ClInclude Include="..\DTRQController\ExtendedStateObserver.h" />
     <ClInclude Include="..\DTRQController\FeedbackController.h" />
     <ClInclude Include="..\DTRQController\KalmanFilter.h" />
+    <ClInclude Include="..\DTRQController\LeastSquares.h" />
     <ClInclude Include="..\DTRQController\Mathematics.h" />
     <ClInclude Include="..\DTRQController\Motor.h" />
     <ClInclude Include="..\DTRQController\NonlinearCombiner.h" />
@@ -115,6 +118,7 @@
     <ClInclude Include="..\DTRQController\Vector.h" />
     <ClInclude Include="..\DTRQController\VectorFeedbackController.h" />
     <ClInclude Include="..\DTRQController\VectorKalmanFilter.h" />
+    <ClInclude Include="..\DTRQController\VectorLeastSquares.h" />
     <ClInclude Include="..\DTRQController\YawPitchRoll.h" />
     <ClInclude Include="helper_3dmath.h" />
     <ClInclude Include="I2Cdev.h" />

@@ -31,8 +31,8 @@ private:
 	const int INVRT = 0x10;
 	const int OUTDRV = 0x04;
 
-	const double MINPWMMS = 750;//1ms
-	const double MAXPWMMS = 2500;//2ms
+	const double MINPWMMS = 750;//1ms - 1500
+	const double MAXPWMMS = 2500;//2ms - 1900
 
 	double ClockFrequency = 25000000.0;
 
@@ -43,8 +43,8 @@ private:
 
 	uint8_t OuterB = 4;
 	uint8_t OuterC = 5;
-	uint8_t OuterD = 6;
-	uint8_t OuterE = 7;
+	uint8_t OuterD = 12;
+	uint8_t OuterE = 13;
 
 	uint8_t InnerB = 8;
 	uint8_t InnerC = 9;

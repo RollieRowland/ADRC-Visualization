@@ -1,8 +1,8 @@
 #include "KalmanFilter.h"
 
 KalmanFilter::KalmanFilter() {
-	this->gain = 0.5;
-	this->memory = 100;
+	this->gain = 0.25;
+	this->memory = 25;
 }
 
 KalmanFilter::KalmanFilter(double gain, int memory) {
@@ -23,7 +23,7 @@ double KalmanFilter::Filter(double value) {
 	}
 
 	for (std::vector <double>::iterator i = values.begin(); i != values.end(); ++i) {
-		sum += value;
+		sum += *i;
 		count++;
 	}
 

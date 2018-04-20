@@ -9,6 +9,35 @@ namespace DTRQControllerTest
 {
 	TEST_CLASS(QuaternionTest) {
 	public:
+		void Print(std::string str) {
+			Logger::WriteMessage((str + "\n").c_str());
+		}
+
+		TEST_METHOD(SphericalInterpolationTest) {
+			Quaternion q1 = Quaternion(1, 0, 0, 0);
+			Quaternion q2 = Quaternion(0, 1, 0, 0);
+
+			TestSlerp(q1, q2, 0.0, Quaternion(1, 0, 0, 0));
+			TestSlerp(q1, q2, 0.2, Quaternion(0.951056516295154, 0.309016994374947, 0, 0));
+			TestSlerp(q1, q2, 0.4, Quaternion(0.809016994374947, 0.587785252292473, 0, 0));
+			TestSlerp(q1, q2, 0.6, Quaternion(0.587785252292473, 0.809016994374947, 0, 0));
+			TestSlerp(q1, q2, 0.8, Quaternion(0.309016994374947, 0.951056516295154, 0, 0));
+			TestSlerp(q1, q2, 1.0, Quaternion(0, 1, 0, 0));
+		}
+
+		void TestSlerp(Quaternion q1, Quaternion q2, double ratio, Quaternion expected) {
+			Quaternion q3 = Quaternion::SphericalInterpolation(q1, q2, ratio);
+
+			Print(q3.ToString() + " " + expected.ToString());
+
+			Assert::AreEqual(expected.W, q3.W, 0.001, L"W Slerp failed.");
+			Assert::AreEqual(expected.X, q3.X, 0.001, L"X Slerp failed.");
+			Assert::AreEqual(expected.Y, q3.Y, 0.001, L"Y Slerp failed.");
+			Assert::AreEqual(expected.Z, q3.Z, 0.001, L"Z Slerp failed.");
+		}
+
+
+
 		TEST_METHOD(TestXRotation90XX) {
 			Quaternion quaternion = Quaternion(sqrt(0.5), sqrt(0.5), 0, 0);
 			Vector3D vector = Vector3D(1, 0, 0);

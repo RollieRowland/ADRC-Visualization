@@ -117,6 +117,12 @@
     <ClCompile Include="QuaternionKalmanFilter.cpp">
       <Filter>Source Files\Mathematics</Filter>
     </ClCompile>
+    <ClCompile Include="LeastSquares.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorLeastSquares.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Thruster.h">
@@ -195,6 +201,12 @@
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
     <ClInclude Include="QuaternionKalmanFilter.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="LeastSquares.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorLeastSquares.h">
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
   </ItemGroup>

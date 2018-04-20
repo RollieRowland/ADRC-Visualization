@@ -64,8 +64,10 @@ void Quadcopter::CalculateCombinedThrustVector() {
 	positionOutput = positionOutput.Constrain(Vector3D(-30, -100, -30), Vector3D(30, 100, 30));
 	rotationOutput = rotationOutput.Constrain(-30, 30);
 
-	//positionOutput = Vector3D(0, 0, 0);
-	//rotationOutput = rotationOutput * Vector3D(1, 1, 0);
+	/////////////////////////////////////////////////////////////////////////////////////////////
+	//REMOVE LATER
+	positionOutput = Vector3D(0, 0, 0);
+	rotationOutput = Vector3D(0, 0, 0);
 
 	//Thruster output relative to environment origin
 	Vector3D thrusterOutputB = Vector3D(0, -rotationOutput.X + rotationOutput.Z - rotationOutput.Y, 0);

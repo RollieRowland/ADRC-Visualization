@@ -198,7 +198,7 @@ void PWMController::InitializeESCs() {
 
 //OUTER JOINT ANGLE
 void PWMController::SetOuterBAngle(double angle) {
-	SetPWM(OuterB, -CalculateServoFrequency(angle));
+	SetPWM(OuterB, CalculateServoFrequency(angle));
 }
 
 void PWMController::SetOuterCAngle(double angle) {
@@ -210,7 +210,7 @@ void PWMController::SetOuterDAngle(double angle) {
 }
 
 void PWMController::SetOuterEAngle(double angle) {
-	SetPWM(OuterE, -CalculateServoFrequency(angle));
+	SetPWM(OuterE, CalculateServoFrequency(angle));
 }
 
 

@@ -92,6 +92,12 @@
     <ClCompile Include="I2Cdev.cpp">
       <Filter>Hardware Control\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\DTRQController\LeastSquares.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\VectorLeastSquares.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include Files">
@@ -209,6 +215,12 @@
     </ClInclude>
     <ClInclude Include="I2Cdev.h">
       <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\LeastSquares.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\VectorLeastSquares.h">
+      <Filter>Include Files\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

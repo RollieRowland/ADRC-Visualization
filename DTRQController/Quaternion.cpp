@@ -66,9 +66,9 @@ Quaternion Quaternion::SphericalInterpolation(Quaternion q1, Quaternion q2, doub
 		dot = -dot;
 	}
 
-	if (dot > 0.9995)//Linearly interpolates if results are close
+	if (dot > 0.999)//Linearly interpolates if results are close
 	{
-		return (q1 + ratio * (q1 - q2)).UnitQuaternion();
+		return (q1.Add( (q2.Subtract(q1)).Multiply(ratio) )).UnitQuaternion();
 	}
 	else
 	{
@@ -77,9 +77,11 @@ Quaternion Quaternion::SphericalInterpolation(Quaternion q1, Quaternion q2, doub
 		double theta0 = acos(dot);
 		double theta = theta0 * ratio;
 
-		Quaternion q3 = (q2 - q1 * dot).UnitQuaternion();//UQ for orthonomal 
+		//Quaternion q3 = (q2.Subtract(q1.Multiply(dot))).UnitQuaternion();//UQ for orthonomal 
+		double f1 = cos(theta) - dot * sin(theta) / sin(theta0);
+		double f2 = sin(theta) / sin(theta0);
 
-		return q1 * cos(theta) + q3 * sin(theta);
+		return q1.Multiply(f1).Add(q2.Multiply(f2)).UnitQuaternion();
 	}
 }
 
@@ -252,10 +254,10 @@ Quaternion Quaternion::UnitQuaternion() {
 
 	double n = current.Normal();
 
-	current.W /= n;
-	current.X /= n;
-	current.Y /= n;
-	current.Z /= n;
+	current.W = current.W / n;
+	current.X = current.X / n;
+	current.Y = current.Y / n;
+	current.Z = current.Z / n;
 
 	return current;
 }
