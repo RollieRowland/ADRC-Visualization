@@ -22,8 +22,8 @@ VectorFeedbackController rot = VectorFeedbackController{
 
 I2CController *i2cController;
 Quadcopter quad = Quadcopter(false, 0.3, 55, 0.05, &pos, &rot);
-QuaternionKalmanFilter quatKF = QuaternionKalmanFilter(0.75, 20);
-VectorKalmanFilter accelKF = VectorKalmanFilter(0.1, 50);
+QuaternionKalmanFilter quatKF = QuaternionKalmanFilter(0.75, 10);
+VectorKalmanFilter accelKF = VectorKalmanFilter(0.75, 10);
 Vector3D velocity = Vector3D(0, 0, 0);
 Vector3D position = Vector3D(0, 0, 0);
 
@@ -74,7 +74,7 @@ int main() {
 	i2cController->InitializeMPUs();
 	bcm2835_delay(1000);
 	
-	std::cout << "Temperature: " << i2cController->GetTemperature(i2cController->MainMPU) << std::endl;
+	//std::cout << "Temperature: " << i2cController->GetTemperature(i2cController->MainMPU) << std::endl;
 
 	i2cController->CalibrateMPUs();
 
@@ -149,22 +149,22 @@ int main() {
 
 		Quaternion qm, qf, qb;
 		//qm = i2cController->GetMainRotation();
-		qf = i2cController->GetMainFRotation().Multiply(forwgOffset);//correct initial offset
-		qb = i2cController->GetMainBRotation().Multiply(backgOffset);
+		qf = i2cController->GetMainFRotation();// .Multiply(forwgOffset);//correct initial offset
+		qb = i2cController->GetMainBRotation();// .Multiply(backgOffset);
 
 		//quatKF.Filter(qm);
 		quatKF.Filter(qb);
-		rotation = quatKF.Filter(qf);
+		rotation = quatKF.Filter(qf).UnitQuaternion();
 
-		worldAccel = accelKF.Filter(af);
+		worldAccel = af;//(af.Add(ab)).Divide(2);
 		//worldAccel = accelKF.Filter(ab);
 
-		//std::cout << rotation.ToString() << std::endl;
+		std::cout << rotation.ToString() << std::endl;
 
-		velocity = velocity + worldAccel.Multiply(dT).Multiply(9.81);//g-force to m/s^2
-		position = position + velocity.Multiply(dT);
+		velocity = velocity.Add(worldAccel.Multiply(9.81).Multiply(dT));//g-force to m/s^2
+		position = position.Add(velocity.Multiply(dT));
 
-		std::cout << position.ToString() << " " << worldAccel.ToString() << std::endl;
+		//std::cout << velocity.ToString() << " " << worldAccel.ToString() << std::endl;
 
 		quad.SetTarget(position, rotation);
 		quad.SetCurrent(position, rotation);

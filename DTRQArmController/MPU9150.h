@@ -40,6 +40,7 @@ THE SOFTWARE.
 #include "I2Cdev.h"
 #include "helper_3dmath.h"
 #include <inttypes.h>
+#include "MPU.h"
 
 #define __PGMSPACE_H_ 1
 
@@ -451,7 +452,7 @@ typedef uint32_t prog_uint32_t;
 
 // note: DMP code memory blocks defined at end of header file
 
-class MPU9150 {
+class MPU9150 : virtual public MPU {
     public:
         MPU9150();
         MPU9150(uint8_t address);

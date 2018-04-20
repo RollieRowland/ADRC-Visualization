@@ -39,6 +39,7 @@ THE SOFTWARE.
 
 #include "I2Cdev.h"
 #include "helper_3dmath.h"
+#include "MPU.h"
 
 
 #define MPU6050_ADDRESS_AD0_LOW     0x68 // address pin low (GND), default for InvenSense evaluation board
@@ -477,7 +478,7 @@ typedef uint32_t prog_uint32_t;
 
 // note: DMP code memory blocks defined at end of header file
 
-class MPU6050 {
+class MPU6050 : virtual public MPU {
     public:
         MPU6050();
         MPU6050(uint8_t address);
@@ -1065,7 +1066,7 @@ class MPU6050 {
 		uint8_t *dmpPacketBuffer;
 		uint16_t dmpPacketSize;
 
-		uint8_t dmpInitialize(int addr);
+		uint8_t dmpInitialize();
 		bool dmpPacketAvailable();
 
 

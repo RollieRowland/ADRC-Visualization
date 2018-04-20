@@ -98,6 +98,9 @@
     <ClCompile Include="..\DTRQController\VectorLeastSquares.cpp">
       <Filter>Include Files\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MPUController.cpp">
+      <Filter>Hardware Control\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include Files">
@@ -221,6 +224,12 @@
     </ClInclude>
     <ClInclude Include="..\DTRQController\VectorLeastSquares.h">
       <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MPUController.h">
+      <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MPU.h">
+      <Filter>Hardware Control\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

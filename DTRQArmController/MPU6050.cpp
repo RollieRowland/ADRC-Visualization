@@ -3185,7 +3185,7 @@ void MPU6050::setDMPConfig2(uint8_t config) {
 
 //DMP CODE ************************************
 
-uint8_t MPU6050::dmpInitialize(int addr) {// line 828 of mpu6050
+uint8_t MPU6050::dmpInitialize() {// line 828 of mpu6050
 										  // reset device
 	DEBUG_PRINTLN(F("\n\nResetting MPU6050..."));
 	reset();
@@ -3235,7 +3235,7 @@ uint8_t MPU6050::dmpInitialize(int addr) {// line 828 of mpu6050
 	DEBUG_PRINTLN(F("Disabling I2C Master mode..."));
 	setI2CMasterModeEnabled(false);
 	DEBUG_PRINTLN(F("Setting slave 0 address to 0x68 (self)..."));
-	setSlaveAddress(0, addr);
+	setSlaveAddress(0, devAddr);
 	DEBUG_PRINTLN(F("Resetting I2C Master control..."));
 	resetI2CMaster();
 	delay(20);

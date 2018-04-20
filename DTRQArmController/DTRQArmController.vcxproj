@@ -89,6 +89,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MPU6050.cpp" />
     <ClCompile Include="MPU9150.cpp" />
+    <ClCompile Include="MPUController.cpp" />
     <ClCompile Include="PWMController.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -122,9 +123,11 @@
     <ClInclude Include="..\DTRQController\YawPitchRoll.h" />
     <ClInclude Include="helper_3dmath.h" />
     <ClInclude Include="I2Cdev.h" />
+    <ClInclude Include="MPU.h" />
     <ClInclude Include="MPU6050.h" />
     <ClInclude Include="I2CController.h" />
     <ClInclude Include="MPU9150.h" />
+    <ClInclude Include="MPUController.h" />
     <ClInclude Include="PWMController.h" />
   </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
