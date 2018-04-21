@@ -25,6 +25,10 @@ public:
 	Quaternion GetRotation();
 	VectorInt16 GetGyro();
 	VectorInt16 GetAccel();
+	uint8_t GetLowPass();
+	void SetLowPass(uint8_t);
+	uint8_t GetHighPass();
+	void SetHighPass(uint8_t);
 
 	Quaternion GetPreviousRotation();
 	Vector3D GetPreviousAcceleration();

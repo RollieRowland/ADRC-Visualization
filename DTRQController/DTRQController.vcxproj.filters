@@ -123,6 +123,15 @@
     <ClCompile Include="VectorLeastSquares.cpp">
       <Filter>Source Files\Mathematics</Filter>
     </ClCompile>
+    <ClCompile Include="FastFourierTransform.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
+    <ClCompile Include="HighPassFilter.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorHighPassFilter.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Thruster.h">
@@ -207,6 +216,15 @@
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
     <ClInclude Include="VectorLeastSquares.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="FastFourierTransform.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="HighPassFilter.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorHighPassFilter.h">
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
   </ItemGroup>

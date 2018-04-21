@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AxisAngleTest.cpp" />
+    <ClCompile Include="FourierTransform.cpp" />
     <ClCompile Include="HMatrixTest.cpp" />
     <ClCompile Include="QuaternionTest.cpp" />
     <ClCompile Include="stdafx.cpp">

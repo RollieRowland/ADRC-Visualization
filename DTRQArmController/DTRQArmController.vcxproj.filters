@@ -101,6 +101,15 @@
     <ClCompile Include="MPUController.cpp">
       <Filter>Hardware Control\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\DTRQController\FastFourierTransform.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\HighPassFilter.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DTRQController\VectorHighPassFilter.cpp">
+      <Filter>Include Files\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Include Files">
@@ -230,6 +239,15 @@
     </ClInclude>
     <ClInclude Include="MPU.h">
       <Filter>Hardware Control\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\FastFourierTransform.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\HighPassFilter.h">
+      <Filter>Include Files\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DTRQController\VectorHighPassFilter.h">
+      <Filter>Include Files\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

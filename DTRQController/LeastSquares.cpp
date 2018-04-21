@@ -23,7 +23,7 @@ double LeastSquares::Calculate(double x, double y, double target) {
 	else {
 		double sx = 0, sx2 = 0, sxy = 0, sy = 0, sy2 = 0;
 
-		for (int i = 0; i < X.size(); i++) {
+		for (unsigned int i = 0; i < X.size(); i++) {
 			sx  += X.at(i);
 			sx2 += pow(X.at(i), 2.0);
 			sxy += X.at(i) * Y.at(i);

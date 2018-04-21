@@ -1,12 +1,14 @@
 #include "I2CController.h"
 #include "../DTRQController/Rotation.h"
 #include "../DTRQController/Quadcopter.h"
+#include "../DTRQController/VectorHighPassFilter.h"
 #include "../DTRQController/VectorKalmanFilter.h"
 #include "../DTRQController/QuaternionKalmanFilter.h"
 #include <chrono>
 #include <signal.h>
 #include <bcm2835.h>
 #include <unistd.h>
+
 
 VectorFeedbackController pos = VectorFeedbackController{
 	new PID{ 10, 0, 12.5 },
@@ -23,7 +25,7 @@ VectorFeedbackController rot = VectorFeedbackController{
 I2CController *i2cController;
 Quadcopter quad = Quadcopter(false, 0.3, 55, 0.05, &pos, &rot);
 QuaternionKalmanFilter quatKF = QuaternionKalmanFilter(0.75, 10);
-VectorKalmanFilter accelKF = VectorKalmanFilter(0.75, 10);
+VectorKalmanFilter accelKF = VectorKalmanFilter(0.5, 50);
 Vector3D velocity = Vector3D(0, 0, 0);
 Vector3D position = Vector3D(0, 0, 0);
 
@@ -74,7 +76,7 @@ int main() {
 	i2cController->InitializeMPUs();
 	bcm2835_delay(1000);
 	
-	//std::cout << "Temperature: " << i2cController->GetTemperature(i2cController->MainMPU) << std::endl;
+	std::cout << "Temperature: " << i2cController->GetAvgTemperature() << std::endl;
 
 	i2cController->CalibrateMPUs();
 
@@ -110,15 +112,19 @@ int main() {
 
 	previousTime = std::chrono::system_clock::now();
 
+	VectorHighPassFilter acceMHP = VectorHighPassFilter(50, 200);
+	VectorHighPassFilter acceFHP = VectorHighPassFilter(50, 200);
+	VectorHighPassFilter acceBHP = VectorHighPassFilter(50, 200);
+
 	while (calTime < 3) {
 		calTime = ((double)((std::chrono::system_clock::now() - previousTime).count()) / pow(10.0, 9.0));
 		Quaternion gm = i2cController->GetMainRotation();
 		Quaternion gf = i2cController->GetMainFRotation();
 		Quaternion gb = i2cController->GetMainBRotation();
 
-		Vector3D  am = i2cController->GetMainFWorldAcceleration();
+		Vector3D  am = i2cController->GetMainWorldAcceleration();
 		Vector3D  af = i2cController->GetMainFWorldAcceleration();
-		Vector3D  ab = i2cController->GetMainFWorldAcceleration();
+		Vector3D  ab = i2cController->GetMainBWorldAcceleration();
 
 		gm = Quaternion(1, 0, 0, 0).Multiply(gm.Conjugate());
 		gf = Quaternion(1, 0, 0, 0).Multiply(gf.Conjugate());
@@ -128,9 +134,9 @@ int main() {
 		forwgOffset = gfkf.Filter(gf);
 		backgOffset = gbkf.Filter(gb);
 
-		mainaOffset = amkf.Filter(am.Multiply(-1));
-		forwaOffset = afkf.Filter(af.Multiply(-1));
-		backaOffset = abkf.Filter(ab.Multiply(-1));
+		mainaOffset = acceMHP.Filter(amkf.Filter(am.Multiply(-1)));
+		forwaOffset = acceFHP.Filter(afkf.Filter(af.Multiply(-1)));
+		backaOffset = acceBHP.Filter(abkf.Filter(ab.Multiply(-1)));
 	}
 
 	std::cout << "Main offset: " << maingOffset.ToString() << std::endl;
@@ -142,6 +148,7 @@ int main() {
 	std::cout << "Beginning control loop..." << std::endl;
 	while (true) {
 		double dT = ((double)((std::chrono::system_clock::now() - previousTime).count()) / pow(10.0, 9.0));
+		previousTime = std::chrono::system_clock::now();
 
 		Vector3D am, af, ab;
 		af = i2cController->GetMainFWorldAcceleration().Add(forwaOffset);
@@ -156,15 +163,18 @@ int main() {
 		quatKF.Filter(qb);
 		rotation = quatKF.Filter(qf).UnitQuaternion();
 
-		worldAccel = af;//(af.Add(ab)).Divide(2);
-		//worldAccel = accelKF.Filter(ab);
+		// -1000 / af
 
-		std::cout << rotation.ToString() << std::endl;
+		//worldAccel = af;//(af.Add(ab)).Divide(2);
+		acceFHP.Filter(accelKF.Filter(af));
+		worldAccel = acceFHP.Filter(accelKF.Filter(ab));
+
+		//std::cout << rotation.ToString() << std::endl;
 
 		velocity = velocity.Add(worldAccel.Multiply(9.81).Multiply(dT));//g-force to m/s^2
 		position = position.Add(velocity.Multiply(dT));
 
-		//std::cout << velocity.ToString() << " " << worldAccel.ToString() << std::endl;
+		std::cout << position.ToString() << " " << velocity.ToString() << " " << worldAccel.ToString() << std::endl;
 
 		quad.SetTarget(position, rotation);
 		quad.SetCurrent(position, rotation);
@@ -181,8 +191,6 @@ int main() {
 		i2cController->SetCThrustVector(Vector3D(-quad.TC->CurrentRotation.X, 0,  quad.TC->CurrentRotation.Z));
 		i2cController->SetDThrustVector(Vector3D( quad.TD->CurrentRotation.X, 0,  quad.TD->CurrentRotation.Z));
 		i2cController->SetEThrustVector(Vector3D( quad.TE->CurrentRotation.X, 0, -quad.TE->CurrentRotation.Z));
-
-		previousTime = std::chrono::system_clock::now();
 		
 		bcm2835_delay(1);
 	}

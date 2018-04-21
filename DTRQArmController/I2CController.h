@@ -54,6 +54,8 @@ public:
 	Vector3D GetTDWorldAcceleration();
 	Vector3D GetTEWorldAcceleration();
 
+	double GetAvgTemperature();
+
 	void SetBThrustVector(Vector3D);
 	void SetCThrustVector(Vector3D);
 	void SetDThrustVector(Vector3D);

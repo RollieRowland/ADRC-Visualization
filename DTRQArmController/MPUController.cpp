@@ -8,10 +8,10 @@ MPUController::MPUController(MPU *mpu) {
 	accelerationOffset = new Vector3D();
 	gyroscopeOffset = new Vector3D();
 
-	acceKF = new VectorKalmanFilter(0.9, 4);
-	gyroKF = new VectorKalmanFilter(0.9, 4);
-	acceOKF = new VectorKalmanFilter(0.9, 4);
-	gyroOKF = new VectorKalmanFilter(0.9, 4);
+	acceKF = new VectorKalmanFilter(0.1, 100);
+	gyroKF = new VectorKalmanFilter(0.1, 100);
+	acceOKF = new VectorKalmanFilter(0.1, 100);
+	gyroOKF = new VectorKalmanFilter(0.1, 100);
 	acceLS = new VectorLeastSquares(500);
 	gyroLS = new VectorLeastSquares(20);
 }
@@ -82,6 +82,28 @@ double MPUController::GetTemperature() {
 	uint16_t t = mpu->getTemperature();
 
 	return ((double)t) / 340.0 + 36.53;
+}
+
+uint8_t MPUController::GetLowPass() {
+	return mpu->getDLPFMode();
+}
+
+void MPUController::SetLowPass(uint8_t mode) {
+	uint8_t temp = mpu->getDLPFMode();
+	mpu->setDLPFMode(mode);
+
+	std::cout << "   Low Pass Filtering set from " << (int)temp << " to " << (int)mode << std::endl;
+}
+
+uint8_t MPUController::GetHighPass() {
+	return mpu->getDHPFMode();
+}
+
+void MPUController::SetHighPass(uint8_t mode) {
+	uint8_t temp = mpu->getDHPFMode();
+	mpu->setDHPFMode(mode);
+
+	std::cout << "   High Pass Filtering set from " << (int)temp << " to " << (int)mode << std::endl;
 }
 
 int MPUController::CalibrateMPU(bool first) {

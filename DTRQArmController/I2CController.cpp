@@ -44,18 +44,32 @@ void I2CController::InitializeMPUs() {
 
 	SelectDevice(MainMPU);
 	mpuM->Initialize();
+	mpuM->SetHighPass(MPU6050_DHPF_5);
+	mpuM->SetLowPass(MPU6050_DLPF_BW_188);
 	SelectDevice(MainFMPU);
 	mpuF->Initialize();
+	mpuF->SetHighPass(MPU6050_DHPF_5);
+	mpuF->SetLowPass(MPU6050_DLPF_BW_188);
 	SelectDevice(MainBMPU);
 	mpuB->Initialize();
+	mpuB->SetHighPass(MPU6050_DHPF_5);
+	mpuB->SetLowPass(MPU6050_DLPF_BW_188);
 	SelectDevice(ThrusterBMPU);
 	mpuTB->Initialize();
+	mpuTB->SetHighPass(MPU6050_DHPF_5);
+	mpuTB->SetLowPass(MPU6050_DLPF_BW_188);
 	SelectDevice(ThrusterCMPU);
 	mpuTC->Initialize();
+	mpuTC->SetHighPass(MPU6050_DHPF_5);
+	mpuTC->SetLowPass(MPU6050_DLPF_BW_188);
 	SelectDevice(ThrusterDMPU);
 	mpuTD->Initialize();
+	mpuTD->SetHighPass(MPU6050_DHPF_5);
+	mpuTD->SetLowPass(MPU6050_DLPF_BW_188);
 	SelectDevice(ThrusterEMPU);
 	mpuTE->Initialize();
+	mpuTE->SetHighPass(MPU6050_DHPF_5);
+	mpuTE->SetLowPass(MPU6050_DLPF_BW_188);
 
 	std::cout << "MPUs initialized." << std::endl;
 }
@@ -143,6 +157,34 @@ void I2CController::ClearMPUFIFOs() {
 
 	SelectDevice(ThrusterEMPU);
 	mpuTE->ClearMPUFIFO();
+}
+
+double I2CController::GetAvgTemperature() {
+	double temp;
+
+	SelectDevice(MainMPU);
+	temp += mpuM->GetTemperature();
+
+	SelectDevice(MainFMPU);
+	temp += mpuF->GetTemperature();
+
+	SelectDevice(MainBMPU);
+	temp += mpuB->GetTemperature();
+
+	SelectDevice(ThrusterBMPU);
+	temp += mpuTB->GetTemperature();
+
+	SelectDevice(ThrusterCMPU);
+	temp += mpuTC->GetTemperature();
+
+	SelectDevice(ThrusterDMPU);
+	temp += mpuTD->GetTemperature();
+
+	SelectDevice(ThrusterEMPU);
+	temp += mpuTE->GetTemperature();
+
+	return temp / 7.0;
+
 }
 
 void I2CController::CalibrateMPUs() {
