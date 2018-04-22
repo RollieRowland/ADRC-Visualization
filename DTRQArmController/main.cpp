@@ -166,15 +166,15 @@ int main() {
 		// -1000 / af
 
 		//worldAccel = af;//(af.Add(ab)).Divide(2);
-		acceFHP.Filter(accelKF.Filter(af));
-		worldAccel = acceFHP.Filter(accelKF.Filter(ab));
+		//acceFHP.Filter(accelKF.Filter(af));
+		worldAccel = acceFHP.Filter(ab);//accelkf
 
 		//std::cout << rotation.ToString() << std::endl;
 
 		velocity = velocity.Add(worldAccel.Multiply(9.81).Multiply(dT));//g-force to m/s^2
 		position = position.Add(velocity.Multiply(dT));
 
-		std::cout << position.ToString() << " " << velocity.ToString() << " " << worldAccel.ToString() << std::endl;
+		std::cout << worldAccel.ToString() << std::endl;
 
 		quad.SetTarget(position, rotation);
 		quad.SetCurrent(position, rotation);

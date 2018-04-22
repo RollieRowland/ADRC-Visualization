@@ -14,5 +14,6 @@ public:
 	HighPassFilter(double frequency, int memory);
 
 	double Filter(double value);
+	double* GetSamples();
 
 };

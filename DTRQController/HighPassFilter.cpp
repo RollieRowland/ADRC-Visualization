@@ -12,49 +12,69 @@ HighPassFilter::HighPassFilter(double frequency, int memory) {
 
 double HighPassFilter::Filter(double value) {
 	samples.push_back(value);
+	int length = samples.size();
 
-	if ((int)samples.size() < memory) {
+	if (length < memory) {
 		return value;
 	}
 
-	if ((signed int)samples.size() > memory) {
+	if (length > memory) {
 		samples.erase(samples.begin());
+		length = samples.size();
 	}
-
-	std::vector<std::complex<double>> complex;
+	
+	std::complex<double>* complex = new std::complex<double>[length];
 
 	std::cout << "Setting Real" << std::endl;
 
-	FastFourierTransform::SetRealValues(&complex, samples);
+	double* tempSamples = new double[length];
+
+	FastFourierTransform::SetRealValues(complex, tempSamples, length);
 
 	std::cout << "Performing Fourier" << std::endl;
 
 	//COMPLEX SPACE
-	FastFourierTransform::FFT(&complex);
+	FastFourierTransform::FFT(complex, length);
 
 	std::cout << "Getting imaginary" << std::endl;
 
-	std::vector<double> imaginary = FastFourierTransform::GetImagValues(complex);
+	double* imaginary = FastFourierTransform::GetImagValues(complex, length);
 
-	double ns = (double)imaginary.size() / 2.0;
+	double ns = (double)samples.size() / 2.0;
 	double cutoff = frequency / ns;
 
-	std::cout << "Cutoff:" << cutoff << " NS:" << ns << " F:" << frequency << " " << complex.size() << " " << imaginary.size() << " " << samples.size() << std::endl;
+	std::cout << "Cutoff:" << cutoff << " NS:" << ns << " F:" << frequency << " " << samples.size() << std::endl;
 
 	if (frequency > ns) {
 		return value;
 	}
 
-	for (int i = 0; i < (int)((double)imaginary.size() * cutoff); i++) {
-		imaginary.at(i) = 0;
+	for (int i = 0; i < (int)(length * cutoff); i++) {
+		imaginary[i] = 0;
 	}
 
+	FastFourierTransform::SetImagValues(complex, imaginary, length);
 
-	FastFourierTransform::SetImagValues(&complex, imaginary);
+	FastFourierTransform::IFFT(complex, length);
 
-	FastFourierTransform::IFFT(&complex);
+	double* real = FastFourierTransform::GetRealValues(complex, length);
 
-	std::vector<double> real = FastFourierTransform::GetRealValues(complex);
+	double temp = real[(int)(length / 2)];
 
-	return real.at((int)(real.size() / 2));
+	delete[] imaginary;
+	delete[] real;
+	delete[] complex;
+	delete[] tempSamples;
+
+	return temp;
+}
+
+double* HighPassFilter::GetSamples() {
+	double* out = new double[samples.size()];
+
+	for (int i = 0; i < samples.size(); i++) {
+		out[i] = samples.at(i);
+	}
+
+	return out;
 }

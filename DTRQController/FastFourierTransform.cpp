@@ -1,134 +1,97 @@
 #include "FastFourierTransform.h"
 
 //Cooley-Tukey method
-void FastFourierTransform::FFT(std::vector<std::complex<double>> *real) {
-	Rearrange(real);
-	Perform(real, false);
+void FastFourierTransform::FFT(std::complex<double> *real, int length) {
+	Perform(real, length, false);
 }
 
-void FastFourierTransform::IFFT(std::vector<std::complex<double>> *imag) {
-	Rearrange(imag);
-	Perform(imag, true);
-	Scale(imag);
+void FastFourierTransform::IFFT(std::complex<double> *imag, int length) {
+	Perform(imag, length, true);
+	Scale(imag, length);
 }
 
-void FastFourierTransform::Perform(std::vector<std::complex<double>> *data, bool inverse) {
-	const double pi = inverse ? 3.14159265358979323846 : -3.14159265358979323846;
-	unsigned int length = data->size() - 1;
+void FastFourierTransform::Perform(std::complex<double> *data, int length, bool inverse) {
+	double flip = 1.0;
+	if (inverse) {
+		flip = -1.0;
+	}
 
-	//iterate through multiples
-	for (unsigned int step = 1; step < length; step <<= 1) {
-		const unsigned int jump = step << 1;//next entry of transform factor
-		const double delta = pi / double(step);//increment angle
-		const double sine = sin(delta * 0.5);//delta sine auxiliary
-		const std::complex<double> multiplier(-2.0 * sine * sine, sin(delta));//multiple factor
+	if (length < 2) {
+		// bottom of recursion.
+		// Do nothing here, because already X[0] = x[0]
+	}
+	else {
+		Rearrange(data, length);// all evens to lower half, all odds to upper half
+		Perform(data, length / 2, inverse);// recurse even items
+		Perform(data + length / 2, length / 2, inverse);// recurse odd  items
+		
+		// combine results of two half recursions
+		for (int k = 0; k < length / 2; k++) {
+			std::complex<double> e = data[k];// even
+			std::complex<double> o = data[k + length / 2];// odd
+			std::complex<double> w = exp(std::complex<double>(0, -2.0 * Mathematics::PI * flip * k / length));// w is the "twiddle-factor"
 
-		std::complex<double> factor(1.0, 0.0);//start transform factor
-
-		//iterate through groups of transform factors
-		for (unsigned int group = 0; group < step; ++group) {
-			//group iteration
-			for (unsigned int pair = group; pair < length; pair += jump)
-			{
-				const unsigned int match = pair + step;//match position
-				std::cout << "match" << match << " " << pair << " " << step << std::endl;
-				const std::complex<double> product(factor * data->at(match));//two-point transform second term
-				std::cout << "  product " << product.real() << " " << product.imag() << std::endl;
-
-				data->at(match) = data->at(pair) - product;//transform for fi + pi
-
-				data->at(pair) += product;//transform for fi
-			}
-
-			//successive transform factor via trigonometric recurrence
-			factor = multiplier * factor + factor;
+			data[k] = e + w * o;
+			data[k + length / 2] = e - w * o;
 		}
 	}
 }
 
-void FastFourierTransform::Rearrange(std::vector<std::complex<double>> *data) {
-	unsigned int target = 0;//swap position
-	unsigned int length = data->size() - 1;
+void FastFourierTransform::Rearrange(std::complex<double> *a, int length) {
+	std::complex<double>* b = new std::complex<double>[length / 2];  // get temp heap storage
 
-	//check all positions of signal
-	for (unsigned int position = 0; position < length; ++position){
-		if (target > position){//swaps if not swapped
-			std::complex<double> temp(data->at(target));
+	for (int i = 0; i < length / 2; i++) {
+		// copy all odd elements to heap storage
+		b[i] = a[i * 2 + 1];
+	}    
+	for (int i = 0; i < length / 2; i++) {
+		// copy all even elements to lower-half of a[]
+		a[i] = a[i * 2];
+	}    
+	for (int i = 0; i < length / 2; i++) {
+		// copy all odd (from heap) to upper-half of a[]
+		a[i + length / 2] = b[i];
+	}    
 
-			data->at(target) = data->at(position);
-			data->at(position) = temp;
-		}
+	delete[] b;
+}
 
-		unsigned int mask = length;//bit mask
+void FastFourierTransform::Scale(std::complex<double> *imag, int length) {
+	const double scale = 1.0 / (double)length;
 
-		//while bit is set
-		while (target & (mask >>= 1)) {
-			target &= ~mask;//drop
-		}
-
-		target |= mask;//set current bit, value is 0
+	for (int position = 0; position < length; ++position) {
+		imag[position] *= scale;
 	}
 }
 
-void FastFourierTransform::Scale(std::vector<std::complex<double>> *imag) {
-	const double scale = 1.0 / (double)imag->size();
+double* FastFourierTransform::GetRealValues(std::complex<double>* complex, int length) {
+	double* real = new double[length];
 
-	for (unsigned int position = 0; position < imag->size(); ++position) {
-		imag->at(position) *= scale;
-	}
-}
-
-
-std::vector<double> FastFourierTransform::GetRealValues(std::vector<std::complex<double>> complex) {
-	std::vector<double> real;
-
-	for (unsigned int i = 0; i < complex.size(); i++) {
-		real.push_back(complex.at(i).real());
+	for (int i = 0; i < length; i++) {
+		real[i] = complex[i].real();
 	}
 
 	return real;
 }
 
-std::vector<double> FastFourierTransform::GetImagValues(std::vector<std::complex<double>> complex) {
-	std::vector<double> imag;
+double* FastFourierTransform::GetImagValues(std::complex<double>* complex, int length) {
+	double* imag = new double[length];
 
-	for (unsigned int i = 0; i < complex.size(); i++) {
-		imag.push_back(complex.at(i).imag());
+	for (int i = 0; i < length; i++) {
+		imag[i] = complex[i].imag();
 	}
 
 	return imag;
 }
 
-void FastFourierTransform::SetRealValues(std::vector<std::complex<double>> *complex, std::vector<double> real) {
-	bool empty = false;
-
-	if (complex->size() < 1u) {
-		empty = true;
-	}
-
-	for (unsigned int i = 0; i < real.size(); i++) {
-		if (empty) {
-			complex->push_back(std::complex<double>(real.at(i), 0.0));
-		}
-		else {
-			complex->at(i) = std::complex<double>(real.at(i), complex->at(i).imag());
-		}
+void FastFourierTransform::SetRealValues(std::complex<double>* complex, double* real, int length) {
+	for (int i = 0; i < length; i++) {
+		complex[i] = std::complex<double>(real[i], complex[i].imag());
 	}
 }
 
-void FastFourierTransform::SetImagValues(std::vector<std::complex<double>> *complex, std::vector<double> imag) {
-	bool empty = false;
-
-	if (complex->size() < 1u) {
-		empty = true;
-	}
-
-	for (unsigned int i = 0; i < imag.size(); i++) {
-		if (empty) {
-			complex->push_back(std::complex<double>(0, imag.at(i)));
-		}
-		else {
-			complex->at(i) = std::complex<double>(complex->at(i).real(), imag.at(i));
-		}
+void FastFourierTransform::SetImagValues(std::complex<double>* complex, double* imag, int length) {
+	for (int i = 0; i < length; i++) {
+		complex[i] = std::complex<double>(complex[i].real(), imag[i]);
 	}
 }
