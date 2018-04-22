@@ -5,9 +5,12 @@ void FastFourierTransform::FFT(std::complex<double> *real, int length) {
 	Perform(real, length, false);
 }
 
-void FastFourierTransform::IFFT(std::complex<double> *imag, int length) {
+void FastFourierTransform::IFFT(std::complex<double> *imag, int length, bool scale) {
 	Perform(imag, length, true);
-	Scale(imag, length);
+
+	if (scale) {
+		Scale(imag, length);
+	}
 }
 
 void FastFourierTransform::Perform(std::complex<double> *data, int length, bool inverse) {

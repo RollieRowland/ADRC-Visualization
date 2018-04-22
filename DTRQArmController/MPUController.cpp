@@ -12,7 +12,7 @@ MPUController::MPUController(MPU *mpu) {
 	gyroKF = new VectorKalmanFilter(0.1, 100);
 	acceOKF = new VectorKalmanFilter(0.1, 100);
 	gyroOKF = new VectorKalmanFilter(0.1, 100);
-	acceLS = new VectorLeastSquares(500);
+	acceLS = new VectorLeastSquares(20);
 	gyroLS = new VectorLeastSquares(20);
 }
 

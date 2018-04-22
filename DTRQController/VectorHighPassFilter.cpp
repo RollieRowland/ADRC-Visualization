@@ -6,16 +6,16 @@ VectorHighPassFilter::VectorHighPassFilter() {
 	Z = HighPassFilter();
 }
 
-VectorHighPassFilter::VectorHighPassFilter(double frequency, int memory) {
-	X = HighPassFilter(frequency, memory);
-	Y = HighPassFilter(frequency, memory);
-	Z = HighPassFilter(frequency, memory);
+VectorHighPassFilter::VectorHighPassFilter(double samplingFrequency, double cutoffFrequency, int memory) {
+	X = HighPassFilter(samplingFrequency, cutoffFrequency, memory);
+	Y = HighPassFilter(samplingFrequency, cutoffFrequency, memory);
+	Z = HighPassFilter(samplingFrequency, cutoffFrequency, memory);
 }
 
-VectorHighPassFilter::VectorHighPassFilter(Vector3D frequency, Vector3D memory) {
-	X = HighPassFilter(frequency.X, (int)memory.X);
-	Y = HighPassFilter(frequency.Y, (int)memory.Y);
-	Z = HighPassFilter(frequency.Z, (int)memory.Z);
+VectorHighPassFilter::VectorHighPassFilter(Vector3D samplingFrequency, Vector3D cutoffFrequency, Vector3D memory) {
+	X = HighPassFilter(samplingFrequency.X, cutoffFrequency.X, (int)memory.X);
+	Y = HighPassFilter(samplingFrequency.Y, cutoffFrequency.Y, (int)memory.Y);
+	Z = HighPassFilter(samplingFrequency.Z, cutoffFrequency.Z, (int)memory.Z);
 }
 
 Vector3D VectorHighPassFilter::Filter(Vector3D input) {

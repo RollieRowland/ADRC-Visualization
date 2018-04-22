@@ -9,7 +9,7 @@
 class FastFourierTransform {
 public:
 	static void FFT(std::complex<double> *real, int length);
-	static void IFFT(std::complex<double> *imag, int length);
+	static void IFFT(std::complex<double> *imag, int length, bool scale);
 	static void Perform(std::complex<double> *data, int length, bool inverse);
 	static void Rearrange(std::complex<double> *data, int length);
 	static void Scale(std::complex<double> *imag, int length);

@@ -66,7 +66,7 @@
     <ClCompile Include="..\DTRQController\EulerOrder.cpp" />
     <ClCompile Include="..\DTRQController\ExtendedStateObserver.cpp" />
     <ClCompile Include="..\DTRQController\FastFourierTransform.cpp" />
-    <ClCompile Include="..\DTRQController\HighPassFilter.cpp" />
+    <ClCompile Include="..\DTRQController\FiniteImpulseResponse.cpp" />
     <ClCompile Include="..\DTRQController\KalmanFilter.cpp" />
     <ClCompile Include="..\DTRQController\LeastSquares.cpp" />
     <ClCompile Include="..\DTRQController\Mathematics.cpp" />
@@ -83,7 +83,7 @@
     <ClCompile Include="..\DTRQController\TriangleWaveFader.cpp" />
     <ClCompile Include="..\DTRQController\Vector.cpp" />
     <ClCompile Include="..\DTRQController\VectorFeedbackController.cpp" />
-    <ClCompile Include="..\DTRQController\VectorHighPassFilter.cpp" />
+    <ClCompile Include="..\DTRQController\VectorFIRFilter.cpp" />
     <ClCompile Include="..\DTRQController\VectorKalmanFilter.cpp" />
     <ClCompile Include="..\DTRQController\VectorLeastSquares.cpp" />
     <ClCompile Include="..\DTRQController\YawPitchRoll.cpp" />
@@ -106,7 +106,7 @@
     <ClInclude Include="..\DTRQController\ExtendedStateObserver.h" />
     <ClInclude Include="..\DTRQController\FastFourierTransform.h" />
     <ClInclude Include="..\DTRQController\FeedbackController.h" />
-    <ClInclude Include="..\DTRQController\HighPassFilter.h" />
+    <ClInclude Include="..\DTRQController\FiniteImpulseResponse.h" />
     <ClInclude Include="..\DTRQController\KalmanFilter.h" />
     <ClInclude Include="..\DTRQController\LeastSquares.h" />
     <ClInclude Include="..\DTRQController\Mathematics.h" />
@@ -123,7 +123,7 @@
     <ClInclude Include="..\DTRQController\TriangleWaveFader.h" />
     <ClInclude Include="..\DTRQController\Vector.h" />
     <ClInclude Include="..\DTRQController\VectorFeedbackController.h" />
-    <ClInclude Include="..\DTRQController\VectorHighPassFilter.h" />
+    <ClInclude Include="..\DTRQController\VectorFIRFilter.h" />
     <ClInclude Include="..\DTRQController\VectorKalmanFilter.h" />
     <ClInclude Include="..\DTRQController\VectorLeastSquares.h" />
     <ClInclude Include="..\DTRQController\YawPitchRoll.h" />

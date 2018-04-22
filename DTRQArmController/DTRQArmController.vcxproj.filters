@@ -104,10 +104,10 @@
     <ClCompile Include="..\DTRQController\FastFourierTransform.cpp">
       <Filter>Include Files\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\DTRQController\HighPassFilter.cpp">
+    <ClCompile Include="..\DTRQController\FiniteImpulseResponse.cpp">
       <Filter>Include Files\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\DTRQController\VectorHighPassFilter.cpp">
+    <ClCompile Include="..\DTRQController\VectorFIRFilter.cpp">
       <Filter>Include Files\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -243,10 +243,10 @@
     <ClInclude Include="..\DTRQController\FastFourierTransform.h">
       <Filter>Include Files\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\DTRQController\HighPassFilter.h">
+    <ClInclude Include="..\DTRQController\FiniteImpulseResponse.h">
       <Filter>Include Files\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\DTRQController\VectorHighPassFilter.h">
+    <ClInclude Include="..\DTRQController\VectorFIRFilter.h">
       <Filter>Include Files\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -41,5 +41,8 @@
     <ClCompile Include="FourierTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FIRTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

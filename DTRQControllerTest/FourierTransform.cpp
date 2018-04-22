@@ -16,10 +16,10 @@ namespace DTRQControllerTest
 		TEST_METHOD(TestHighPassFilter) {
 			int samples = 10000;
 			double samplingFrequency = 44100;
-			double hp = 500;
-			double generateFrequency = 40000;
+			double hpFrequency = 500;
+			double generateFrequency = 500;
 
-			HighPassFilter hpf = HighPassFilter(hp, samples - 1);
+			HighPassFilter hpf = HighPassFilter(samplingFrequency, hpFrequency, samples);
 
 			double* sineWave = new double[samples];
 			double* filteredWave = new double[samples];
@@ -81,7 +81,7 @@ namespace DTRQControllerTest
 			}
 
 			FastFourierTransform::FFT(re, 32);
-			FastFourierTransform::IFFT(re, 32);
+			FastFourierTransform::IFFT(re, 32, true);
 
 			for (int i = 0; i < 32; i++) {
 				std::string a = Mathematics::DoubleToCleanString(real[i]);
@@ -137,7 +137,7 @@ namespace DTRQControllerTest
 
 			Print("");
 
-			FastFourierTransform::IFFT(re, 8);
+			FastFourierTransform::IFFT(re, 8, true);
 
 			for (int i = 0; i < 8; i++) {
 				std::string a = Mathematics::DoubleToCleanString(real[i]);

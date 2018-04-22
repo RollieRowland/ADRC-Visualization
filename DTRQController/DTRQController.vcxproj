@@ -132,6 +132,7 @@
     <ClCompile Include="EulerOrder.cpp" />
     <ClCompile Include="ExtendedStateObserver.cpp" />
     <ClCompile Include="FastFourierTransform.cpp" />
+    <ClCompile Include="FiniteImpulseResponse.cpp" />
     <ClCompile Include="HighPassFilter.cpp" />
     <ClCompile Include="KalmanFilter.cpp" />
     <ClCompile Include="LeastSquares.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="TriangleWaveFader.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="VectorFeedbackController.cpp" />
+    <ClCompile Include="VectorFIRFilter.cpp" />
     <ClCompile Include="VectorHighPassFilter.cpp" />
     <ClCompile Include="VectorKalmanFilter.cpp" />
     <ClCompile Include="VectorLeastSquares.cpp" />
@@ -166,9 +168,11 @@
     <ClInclude Include="ExtendedStateObserver.h" />
     <ClInclude Include="FastFourierTransform.h" />
     <ClInclude Include="FeedbackController.h" />
+    <ClInclude Include="FiniteImpulseResponse.h" />
     <ClInclude Include="HighPassFilter.h" />
     <ClInclude Include="LeastSquares.h" />
     <ClInclude Include="QuaternionKalmanFilter.h" />
+    <ClInclude Include="VectorFIRFilter.h" />
     <ClInclude Include="VectorHighPassFilter.h" />
     <ClInclude Include="VectorLeastSquares.h" />
     <ClInclude Include="YawPitchRoll.h" />

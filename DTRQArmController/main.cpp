@@ -1,7 +1,7 @@
 #include "I2CController.h"
 #include "../DTRQController/Rotation.h"
 #include "../DTRQController/Quadcopter.h"
-#include "../DTRQController/VectorHighPassFilter.h"
+#include "../DTRQController/VectorFIRFilter.h"
 #include "../DTRQController/VectorKalmanFilter.h"
 #include "../DTRQController/QuaternionKalmanFilter.h"
 #include <chrono>
@@ -112,9 +112,9 @@ int main() {
 
 	previousTime = std::chrono::system_clock::now();
 
-	VectorHighPassFilter acceMHP = VectorHighPassFilter(50, 200);
-	VectorHighPassFilter acceFHP = VectorHighPassFilter(50, 200);
-	VectorHighPassFilter acceBHP = VectorHighPassFilter(50, 200);
+	VectorFIRFilter acceMHP = VectorFIRFilter(FiniteImpulseResponse::High, 100, 1000, 15, 0);
+	VectorFIRFilter acceFHP = VectorFIRFilter(FiniteImpulseResponse::High, 100, 1000, 15, 0);
+	VectorFIRFilter acceBHP = VectorFIRFilter(FiniteImpulseResponse::High, 100, 1000, 15, 0);
 
 	while (calTime < 3) {
 		calTime = ((double)((std::chrono::system_clock::now() - previousTime).count()) / pow(10.0, 9.0));
@@ -134,9 +134,9 @@ int main() {
 		forwgOffset = gfkf.Filter(gf);
 		backgOffset = gbkf.Filter(gb);
 
-		mainaOffset = acceMHP.Filter(amkf.Filter(am.Multiply(-1)));
-		forwaOffset = acceFHP.Filter(afkf.Filter(af.Multiply(-1)));
-		backaOffset = acceBHP.Filter(abkf.Filter(ab.Multiply(-1)));
+		mainaOffset = amkf.Filter(am.Multiply(-1));
+		forwaOffset = afkf.Filter(af.Multiply(-1));
+		backaOffset = abkf.Filter(ab.Multiply(-1));
 	}
 
 	std::cout << "Main offset: " << maingOffset.ToString() << std::endl;
@@ -156,8 +156,8 @@ int main() {
 
 		Quaternion qm, qf, qb;
 		//qm = i2cController->GetMainRotation();
-		qf = i2cController->GetMainFRotation();// .Multiply(forwgOffset);//correct initial offset
-		qb = i2cController->GetMainBRotation();// .Multiply(backgOffset);
+		qf = i2cController->GetMainFRotation().UnitQuaternion();// .Multiply(forwgOffset);//correct initial offset
+		qb = i2cController->GetMainBRotation().UnitQuaternion();// .Multiply(backgOffset);
 
 		//quatKF.Filter(qm);
 		quatKF.Filter(qb);
@@ -167,14 +167,14 @@ int main() {
 
 		//worldAccel = af;//(af.Add(ab)).Divide(2);
 		//acceFHP.Filter(accelKF.Filter(af));
-		worldAccel = acceFHP.Filter(ab);//accelkf
+		worldAccel = acceBHP.Filter(ab).Add(acceFHP.Filter(af)).Divide(2.0);//accelkf
 
 		//std::cout << rotation.ToString() << std::endl;
 
 		velocity = velocity.Add(worldAccel.Multiply(9.81).Multiply(dT));//g-force to m/s^2
 		position = position.Add(velocity.Multiply(dT));
 
-		std::cout << worldAccel.ToString() << std::endl;
+		std::cout << worldAccel.ToString() << " " << position.ToString() << std::endl;
 
 		quad.SetTarget(position, rotation);
 		quad.SetCurrent(position, rotation);

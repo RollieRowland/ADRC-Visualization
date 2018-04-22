@@ -132,6 +132,12 @@
     <ClCompile Include="VectorHighPassFilter.cpp">
       <Filter>Source Files\Mathematics</Filter>
     </ClCompile>
+    <ClCompile Include="FiniteImpulseResponse.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorFIRFilter.cpp">
+      <Filter>Source Files\Mathematics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Thruster.h">
@@ -225,6 +231,12 @@
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
     <ClInclude Include="VectorHighPassFilter.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="FiniteImpulseResponse.h">
+      <Filter>Header Files\Mathematics</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorFIRFilter.h">
       <Filter>Header Files\Mathematics</Filter>
     </ClInclude>
   </ItemGroup>
