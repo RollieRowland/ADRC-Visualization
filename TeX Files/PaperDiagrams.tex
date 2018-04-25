@@ -8,14 +8,14 @@
 
 
 \section{Quaternion Multiplication}
-\begin{linenomath*}
-\begin{equation}
-Q_\textrm{Wnew} = Q_\textrm{W1}(Q_\textrm{W2}) - Q_\textrm{X1}(Q_\textrm{X2}) - Q_\textrm{Y1}(Q_\textrm{Y2}) - Q_\textrm{Z1}(Q_\textrm{Z2}) \\
-Q_\textrm{Xnew} = Q_\textrm{W1}(Q_\textrm{X2}) - Q_\textrm{X1}(Q_\textrm{W2}) - Q_\textrm{Y1}(Q_\textrm{Z2}) - Q_\textrm{Z1}(Q_\textrm{Y2}) \\
-Q_\textrm{Ynew} = Q_\textrm{W1}(Q_\textrm{Y2}) - Q_\textrm{X1}(Q_\textrm{Z2}) - Q_\textrm{Y1}(Q_\textrm{W2}) - Q_\textrm{Z1}(Q_\textrm{X2}) \\
-Q_\textrm{Znew} = Q_\textrm{W1}(Q_\textrm{Z2}) - Q_\textrm{X1}(Q_\textrm{Y2}) - Q_\textrm{Y1}(Q_\textrm{X2}) - Q_\textrm{Z1}(Q_\textrm{W2}) \\
-\end{equation}
-\end{linenomath*}
+\begin{center}
+$
+Q_\textrm{Wnew} = Q_\textrm{W1}(Q_\textrm{W2}) - Q_\textrm{X1}(Q_\textrm{X2}) - Q_\textrm{Y1}(Q_\textrm{Y2}) - Q_\textrm{Z1}(Q_\textrm{Z2}) \newline
+Q_\textrm{Xnew} = Q_\textrm{W1}(Q_\textrm{X2}) - Q_\textrm{X1}(Q_\textrm{W2}) - Q_\textrm{Y1}(Q_\textrm{Z2}) - Q_\textrm{Z1}(Q_\textrm{Y2}) \newline
+Q_\textrm{Ynew} = Q_\textrm{W1}(Q_\textrm{Y2}) - Q_\textrm{X1}(Q_\textrm{Z2}) - Q_\textrm{Y1}(Q_\textrm{W2}) - Q_\textrm{Z1}(Q_\textrm{X2}) \newline
+Q_\textrm{Znew} = Q_\textrm{W1}(Q_\textrm{Z2}) - Q_\textrm{X1}(Q_\textrm{Y2}) - Q_\textrm{Y1}(Q_\textrm{X2}) - Q_\textrm{Z1}(Q_\textrm{W2}) \newline
+$
+\end{center}
 
 
 
@@ -796,10 +796,40 @@ D_\textrm{EAZ} = \begin{cases}
 $
 
 
+\section{Kalman Filter}
+$
+Array_\textrm{Dataset}.Add(D_\textrm{Datapoint})\\
+\newline
+\text{if  } I_\textrm{DatasetLength} > I_\textrm{Memory},\text{ }   Array_\textrm{Dataset}.RemoveLast()\\
+\newline
+D_\textrm{Sum} = \sum Array_\textrm{Dataset}\\
+\newline
+D_\textrm{Average} = \frac{D_\textrm{Sum}} {I_\textrm{Memory}} \\
+\newline
+D_\textrm{FilteredValue} = D_\textrm{KalmanGain} \times D_\textrm{Datapoint} + (1 - D_\textrm{KalmanGain}) \times D_\textrm{Average}\\
+$
 
 
 
+\section{Quaternion Kalman Filter}
+$
+Array_\textrm{Dataset}.Add(Q_\textrm{Datapoint})\\
+\newline
+\text{if  } I_\textrm{DatasetLength} > I_\textrm{Memory},\text{ }   Array_\textrm{Dataset}.RemoveLast()\\
+\newline
+Q_\textrm{Sum} = \sum Array_\textrm{Dataset}\\
+\newline
+Q_\textrm{Average} = \frac{Q_\textrm{Sum}} {I_\textrm{Memory}} \\
+\newline
+D_\textrm{FilteredValue} = SphericalInterpolation(Q_\textrm{Datapoint}, Q_\textrm{Average}, 1 - D_\textrm{KalmanGain})\\
+$
 
+
+\section{Finite Impulse Response Filter}
+$
+\lambda = \frac{\pi \times D_\textrm{CutFrequency} \times 2} {D_\textrm{SamplingRate}}\\
+\phi = \frac{\pi \times D_\textrm{SecondaryCutFrequency} \times 2} {D_\textrm{SamplingRate}}\\
+$
 
 
 

@@ -8,51 +8,52 @@ void FastFourierTransform::FFT(std::complex<double> *real, int length) {
 void FastFourierTransform::IFFT(std::complex<double> *imag, int length, bool scale) {
 	Perform(imag, length, true);
 
+	//scales outputs of transform due to change in size during forward pass
 	if (scale) {
 		Scale(imag, length);
 	}
 }
 
 void FastFourierTransform::Perform(std::complex<double> *data, int length, bool inverse) {
-	double flip = 1.0;
+	double flip = 1.0;//forward Fourier transform
+
+	//inverse Fourier transform
 	if (inverse) {
 		flip = -1.0;
 	}
 
-	if (length < 2) {
-		// bottom of recursion.
-		// Do nothing here, because already X[0] = x[0]
-	}
-	else {
-		Rearrange(data, length);// all evens to lower half, all odds to upper half
-		Perform(data, length / 2, inverse);// recurse even items
-		Perform(data + length / 2, length / 2, inverse);// recurse odd  items
-		
-		// combine results of two half recursions
-		for (int k = 0; k < length / 2; k++) {
-			std::complex<double> e = data[k];// even
-			std::complex<double> o = data[k + length / 2];// odd
-			std::complex<double> w = exp(std::complex<double>(0, -2.0 * Mathematics::PI * flip * k / length));// w is the "twiddle-factor"
+	if (length >= 2) {
+		Rearrange(data, length);//rearranges data
+		Perform(data, length / 2, inverse);//recursion on even data
+		Perform(data + length / 2, length / 2, inverse);//recursion on odd data
 
-			data[k] = e + w * o;
-			data[k + length / 2] = e - w * o;
+		//Joint two bottom recursions
+		for (int k = 0; k < length / 2; k++) {
+			std::complex<double> even = data[k];
+			std::complex<double> odd = data[k + length / 2];
+			std::complex<double> twiddle = exp(std::complex<double>(0, -2.0 * Mathematics::PI * flip * k / length));
+
+			data[k] = even + twiddle * odd;
+			data[k + length / 2] = even - twiddle * odd;
 		}
 	}
+
+	//else the recursion ends, x at zero is x at zero
 }
 
 void FastFourierTransform::Rearrange(std::complex<double> *a, int length) {
-	std::complex<double>* b = new std::complex<double>[length / 2];  // get temp heap storage
+	std::complex<double>* b = new std::complex<double>[length / 2];
+
+	//Splits odd an even elements into the lower and upper halves of the output data, respectively
+	for (int i = 0; i < length / 2; i++) {
+		b[i] = a[i * 2 + 1];
+	}
 
 	for (int i = 0; i < length / 2; i++) {
-		// copy all odd elements to heap storage
-		b[i] = a[i * 2 + 1];
-	}    
-	for (int i = 0; i < length / 2; i++) {
-		// copy all even elements to lower-half of a[]
 		a[i] = a[i * 2];
-	}    
+	}
+
 	for (int i = 0; i < length / 2; i++) {
-		// copy all odd (from heap) to upper-half of a[]
 		a[i + length / 2] = b[i];
 	}    
 
