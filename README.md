@@ -1,4 +1,4 @@
-# Dual-Tiltrotor Quadcopter
+# Dual-Tiltrotor Quadcopter Control Structure
 This project is the control structure for a dual-tiltrotor quadcopter with a testing interface in C# and C++ with physics simulation, and a hardware implementation written in C++.
 
 ## Simulation
@@ -7,7 +7,7 @@ Written in C# with C++/CLI/CLR interface with C++ control structure library.
 ![alt text](/videoScreenshot.PNG)
 
 ## Hardware Implementation
-Written in C++ using C++ control structure code in secondary project for running on BCM2835 Raspberry PI with PCA9685 16 channel PWM controller, 6 MPU6050s, and 1 MPU9150.
+Written in C++ using C++ control structure code in secondary project for running on BCM2835 Raspberry PI with PCA9685 16 channel PWM controller, a TCA9548A multiplexer, six MPU6050s, and one MPU9150.
 
 
 ## Abstract
