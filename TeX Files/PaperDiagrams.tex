@@ -827,14 +827,119 @@ $
 
 \section{Finite Impulse Response Filter}
 $
-\lambda = \frac{\pi \times D_\textrm{CutFrequency} \times 2} {D_\textrm{SamplingRate}}\\
-\phi = \frac{\pi \times D_\textrm{SecondaryCutFrequency} \times 2} {D_\textrm{SamplingRate}}\\
+D_\textrm{Output} = f^\textrm{N} = \sum{Dataset_\textrm{N} \times Taps_\textrm{N}}\\
 $
 
 
+\section{FIR High-Pass Taps}
+$
+\lambda = \frac{\pi \times D_\textrm{CutFrequency} \times 2} {D_\textrm{SamplingRate}}\\
+\newline
+Taps_\textrm{N} = f^\textrm{N} (x) = \begin{cases}
+    \frac{1 - (\lambda)} {\pi}, & \text{if } \frac{I_\textrm{N} - 1} {2} \text{ is 0}\\
+    \frac{-sin(\frac{I_\textrm{N} - 1} {2} \times \lambda)} {\frac{I_\textrm{N} - 1} {2} \times \pi}, & \textrm{otherwise}\\
+\end{cases}
+$
 
 
+\section{FIR Low-Pass Taps}
+$
+\lambda = \frac{\pi \times D_\textrm{CutFrequency} \times 2} {D_\textrm{SamplingRate}}\\
+\newline
+Taps_\textrm{N} = f^\textrm{N} (x) = \begin{cases}
+    \frac{1 - (\lambda)} {\pi}, & \text{if } \frac{I_\textrm{N} - 1} {2} \text{ is 0}\\
+    \frac{sin(\frac{I_\textrm{N} - 1} {2} \times \lambda)} {\frac{I_\textrm{N} - 1} {2} \times \pi}, & \textrm{otherwise}\\
+\end{cases}
+$
 
+
+\section{FIR Band-Pass Taps}
+$
+\lambda = \frac{\pi \times D_\textrm{CutFrequency} \times 2} {D_\textrm{SamplingRate}}\\
+\newline
+\phi = \frac{\pi \times D_\textrm{SecondaryCutFrequency} \times 2} {D_\textrm{SamplingRate}}\\
+\newline
+Taps_\textrm{N} = f^\textrm{N} (x) = \begin{cases}
+    \frac{\phi - (\lambda)} {\pi}, & \text{if } \frac{I_\textrm{N} - 1} {2} \text{ is 0}\\
+    \frac{sin(\frac{I_\textrm{N} - 1} {2} \times \phi) - sin(\frac{I_\textrm{N} - 1} {2} \times \lambda)} {\frac{I_\textrm{N} - 1} {2} \times \pi}, & \textrm{otherwise}\\
+\end{cases}
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+$
+
+\section{Least Squares Regression}
+$
+D_\textrm{Output} = f^\textrm{N} \text{(X, Y, Target)}\\
+\newline
+D_\textrm{SumX} = \sum{ X_\textrm{N} }\\
+D_\textrm{SumXX} = \sum{ (X_\textrm{N} \times X_\textrm{N}) }\\
+D_\textrm{SumXY} = \sum{ (X_\textrm{N} \times Y_\textrm{N}) }\\
+D_\textrm{SumY} = \sum{ Y_\textrm{N} }\\
+D_\textrm{SumYY} = \sum{ (Y_\textrm{N} \times Y_\textrm{N}) }\\
+\newline
+D_\textrm{Denom} = X_\textrm{Size} \times D_\textrm{SumXX} - D_\textrm{SumX}^2\\
+\newline
+D_\textrm{Slope} = \begin{cases}
+   \frac{X_\textrm{Size} \times D_\textrm{SumXY} - D_\textrm{SumX} \times D_\textrm{SumY}} {D_\textrm{Denom}}, & \text{if } D_\textrm{Denom} \text{ != 0} \\
+   0, & \text{otherwise}\\
+\end{cases}\\
+\newline
+D_\textrm{Intercept} = \begin{cases}
+   \frac{D_\textrm{SumY} \times D_\textrm{SumXX} - D_\textrm{SumX} \times D_\textrm{SumXY}} {D_\textrm{Denom}}, & \text{if } D_\textrm{Denom} \text{ != 0} \\
+   0, & \text{otherwise}\\
+\end{cases}
+\newline
+\newline
+D_\textrm{Output} = D_\textrm{Slope} \times D_\textrm{Target} + D_\textrm{Intercept}\\
+$
+
+\section{Cooley-Tukey Fast Fourier Transform}
+$
+I_\textrm{Flip} = \begin{cases}
+   -1, & \text{if inverse transform}\\
+    1, & \text{otherwise}\\
+\end{cases}\\
+B_\textrm{Continue} = \begin{cases}
+    Continue, & \text{if } D_\textrm{DatasetLength} \ge 2\\
+    Break, & \text{otherwise}\\
+\end{cases}
+\newline
+\newline
+ComplexArray_\textrm{Dataset} = Rearrange(ComplexArray_\textrm{Dataset})\\
+ComplexArray_\textrm{Dataset} = FFT(ComplexArray_\textrm{Dataset},\frac{ D_\textrm{DatasetLength}} {2}, isInverse)\\
+ComplexArray_\textrm{Dataset} = FFT(ComplexArray_\textrm{Dataset} + \frac{ D_\textrm{DatasetLength}} {2}, \frac{ D_\textrm{DatasetLength}} {2}, isInverse)\\
+\newline
+Complex_\textrm{Even} = f^\textrm{N}[N < \frac{ D_\textrm{DatasetLength}} {2}] = D_\textrm{Dataset}[N]\\
+Complex_\textrm{Odd}  = f^\textrm{N}[N < \frac{ D_\textrm{DatasetLength}} {2}] = D_\textrm{Dataset}[N + \frac{ D_\textrm{DatasetLength}} {2}]\\
+Complex_\textrm{Exp} = Complex(0, -2 \times \pi \times D_\textrm{Flip} \times N / D_\textrm{DatasetLength} )\\
+Complex_\textrm{Twiddle} = f^\textrm{N}[N < \frac{ D_\textrm{DatasetLength}} {2}] = e^\textrm{Exp}\\
+\newline
+CA_\textrm{Dataset} = f^\textrm{N}[N < \frac{ D_\textrm{DatasetLength}} {2}] = C_\textrm{Even} + C_\textrm{Twiddle} \times C_\textrm{Odd}\\
+CA_\textrm{Dataset} = f^\textrm{N}[N + \frac{ D_\textrm{DatasetLength}} {2} < D_\textrm{DatasetLength}] = C_\textrm{Even} - C\textrm{Twiddle} \times C_\textrm{Odd}\\
+$
+
+\section{FFT Rearrange Odd/Even}
+$
+ComplexArray_\textrm{Temp} = f^\textrm{N} [ N < \frac{D_\textrm{ InputLength}}{2} ] = ComplexArray_\textrm{Input}[N \times 2 + 1]\\
+\newline
+ComplexArray_\textrm{Input} = f^\textrm{N} [ N < \frac{D_\textrm{ InputLength}}{2} ] = ComplexArray_\textrm{Input}[N \times 2]\\
+\newline
+ComplexArray_\textrm{Input} = f^\textrm{N} [ N + \frac{D_\textrm{ InputLength}}{2} < D_\textrm{InputLength} ] = ComplexArray_\textrm{Temp}[N]\\
+$
+
+\section{FFT Scale Inverse}
+$
+ComplexArray_\textrm{N} = f^\textrm{N} = \Pi_\textrm{N} \frac{1} {D_\textrm{ComplexArrayLength}}\\
+$
 
 
 \end{document}
