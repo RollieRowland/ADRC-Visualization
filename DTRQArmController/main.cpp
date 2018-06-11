@@ -79,6 +79,7 @@ int main() {
 	std::cout << "Temperature: " << i2cController->GetAvgTemperature() << std::endl;
 
 	i2cController->CalibrateMPUs();
+	//i2cController->SetDefaultMPUOffsets();
 
 	i2cController->SetBThrustVector(Vector3D(0, 0, 0));
 	i2cController->SetCThrustVector(Vector3D(0, 0, 0));
@@ -167,7 +168,8 @@ int main() {
 
 		//worldAccel = af;//(af.Add(ab)).Divide(2);
 		//acceFHP.Filter(accelKF.Filter(af));
-		worldAccel = acceBHP.Filter(ab).Add(acceFHP.Filter(af)).Divide(2.0);//accelkf
+		worldAccel = acceBHP.Filter(ab.Divide(2.0)).Add(acceFHP.Filter(af.Divide(2.0)));//accelkf
+		//worldAccel = ab.Divide(2.0).Add(af.Divide(2.0));
 
 		//std::cout << rotation.ToString() << std::endl;
 

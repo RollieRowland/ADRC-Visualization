@@ -37,6 +37,7 @@ public:
 	void InitializePCA();
 	void CalibrateMPUs();
 	void ClearMPUFIFOs();
+	void SetDefaultMPUOffsets();
 
 	Quaternion GetMainRotation();
 	Quaternion GetMainFRotation();
@@ -74,6 +75,5 @@ private:
 	PWMController *hPWM;
 
 	void SelectDevice(Device mpu);
-	void SetDefaultMPUOffsets();
 
 };

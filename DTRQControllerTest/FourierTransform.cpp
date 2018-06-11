@@ -12,7 +12,7 @@ namespace DTRQControllerTest
 		void Print(std::string str) {
 			Logger::WriteMessage((str + "\n").c_str());
 		}
-
+		
 		TEST_METHOD(TestHighPassFilter) {
 			int samples = 10000;
 			double samplingFrequency = 44100;
